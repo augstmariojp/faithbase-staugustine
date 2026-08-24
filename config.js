@@ -53,7 +53,7 @@ const FAITHBASE_CONFIG = {
 
   // ── Backend (per-client isolated Supabase project) ─────────────
   supabase: {
-    url: "https://ltoottyqfikodfylwjda.supabase.co/rest/v1/",
+    url: "https://ltoottyqfikodfylwjda.supabase.co",
     anonKey: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imx0b290dHlxZmlrb2RmeWx3amRhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ1NDg2MTAsImV4cCI6MjEwMDEyNDYxMH0.twoLMnFjamhNquyJmrpwPnb-NpDz5qAbwVeTovbWbd0"
   },
 
