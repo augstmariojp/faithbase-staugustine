@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard — St. Augustine Choir</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+  :root{
+    --maroon-deep:  #3E0F1C;
+    --maroon:       #6B1F35;
+    --maroon-light: #8A2E45;
+    --gold:         #C9A227;
+    --gold-bright:  #F0CC5C;
+    --parchment:    #F7EFE0;
+    --ivory:        #FFFBF3;
+    --ink:          #241019;
+    --ink-soft:     #5C3A44;
+
+    --font-display: 'Cormorant Garamond', Georgia, serif;
+    --font-body: 'Work Sans', -apple-system, sans-serif;
+  }
+
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    font-family:var(--font-body);
+    color:var(--ink);
+    background:var(--parchment);
+    -webkit-font-smoothing:antialiased;
+    min-height:100vh;
+  }
+  a{color:inherit;text-decoration:none;}
+  :focus-visible{outline:3px solid var(--gold-bright);outline-offset:3px;}
+
+  /* ── Header ─────────────────────────────────────────────────── */
+  .site-header{
+    position:sticky;top:0;z-index:50;
+    display:flex;align-items:center;justify-content:space-between;
+    padding:18px 24px;
+    background:var(--maroon-deep);
+    border-bottom:1px solid rgba(201,162,39,0.25);
+  }
+  .brand{
+    display:flex;align-items:center;gap:10px;
+    font-family:var(--font-display);
+    font-size:20px;font-weight:600;
+    color:var(--ivory);
+    letter-spacing:0.01em;
+  }
+  .brand-mark{
+    width:28px;height:28px;flex-shrink:0;
+    color:var(--gold-bright);
+  }
+  .brand-mark svg{width:100%;height:100%;}
+  .header-actions{
+    display:flex;align-items:center;gap:12px;
+  }
+  .header-member-name{
+    font-family:var(--font-body);
+    font-size:14px;font-weight:600;
+    color:var(--gold-bright);
+    white-space:nowrap;
+  }
+  .header-signin{
+    font-family:var(--font-body);
+    font-size:14px;font-weight:600;
+    color:var(--gold-bright);
+    padding:9px 18px;
+    border:1px solid rgba(240,204,92,0.5);
+    border-radius:999px;
+    background:transparent;
+    cursor:pointer;
+    transition:background .18s ease, color .18s ease, border-color .18s ease;
+    white-space:nowrap;
+  }
+  .header-signin:hover,.header-signin:focus-visible{
+    background:var(--gold-bright);
+    color:var(--maroon-deep);
+    border-color:var(--gold-bright);
+  }
+  .header-signin:disabled{
+    opacity:0.7;
+    cursor:not-allowed;
+  }
+
+  /* ── Auth layout ────────────────────────────────────────────── */
+  .auth-page{
+    display:flex;
+    align-items:flex-start;
+    justify-content:center;
+    padding:48px 20px 64px;
+  }
+  .auth-card{
+    width:100%;
+    max-width:440px;
+    background:var(--ivory);
+    border:1px solid rgba(107,31,53,0.12);
+    border-top:3px solid var(--maroon);
+    border-radius:10px;
+    padding:44px 32px 40px;
+    box-shadow:0 4px 24px -8px rgba(36,16,25,0.12);
+    text-align:center;
+  }
+  .auth-card h1{
+    font-family:var(--font-display);
+    font-weight:600;
+    font-size:28px;
+    color:var(--maroon);
+    margin-bottom:12px;
+  }
+  .auth-subtext{
+    font-size:15px;
+    color:var(--ink-soft);
+    line-height:1.65;
+    margin-bottom:24px;
+  }
+  .auth-note{
+    font-size:13px;
+    color:var(--ink-soft);
+    font-style:italic;
+  }
+
+  body.checking-session .auth-page{visibility:hidden;}
+
+  @media (max-width:720px){
+    .site-header{padding:14px 18px;}
+    .header-actions{gap:8px;}
+    .header-member-name{font-size:13px;}
+    .header-signin{padding:8px 14px;font-size:13px;}
+    .auth-page{padding:32px 16px 48px;}
+    .auth-card{padding:36px 22px 32px;}
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    html{scroll-behavior:auto;}
+  }
+</style>
+</head>
+<body class="checking-session">
+
+<header class="site-header">
+  <a href="../index.html" class="brand">
+    <span class="brand-mark" aria-hidden="true">
+      <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M9 18V6l10-2v12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+        <circle cx="6.5" cy="18" r="2.5" stroke="currentColor" stroke-width="1.6"/>
+        <circle cx="16.5" cy="16" r="2.5" stroke="currentColor" stroke-width="1.6"/>
+      </svg>
+    </span>
+    <span data-config="communityShortName">St. Augustine Choir</span>
+  </a>
+  <div class="header-actions">
+    <span class="header-member-name" id="member-name"></span>
+    <button type="button" class="header-signin" id="sign-out-btn">Sign Out</button>
+  </div>
+</header>
+
+<main class="auth-page">
+  <div class="auth-card">
+    <h1 id="welcome-heading">Welcome</h1>
+    <p class="auth-subtext">You&rsquo;re signed in to <span data-config="communityName">St. Augustine Choir</span>.</p>
+    <p class="auth-note" id="role-note"></p>
+  </div>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../config.js"></script>
+<script>
+(function(){
+  "use strict";
+
+  var root = document.documentElement;
+  var c = FAITHBASE_CONFIG.colors;
+  root.style.setProperty('--maroon-deep',  c.maroonDeep);
+  root.style.setProperty('--maroon',       c.maroon);
+  root.style.setProperty('--maroon-light', c.maroonLight);
+  root.style.setProperty('--gold',         c.gold);
+  root.style.setProperty('--gold-bright',  c.goldBright);
+  root.style.setProperty('--parchment',    c.parchment);
+  root.style.setProperty('--ivory',        c.ivory);
+  root.style.setProperty('--ink',          c.ink);
+  root.style.setProperty('--ink-soft',     c.inkSoft);
+
+  document.querySelectorAll('[data-config]').forEach(function(el){
+    var key = el.getAttribute('data-config');
+    if (FAITHBASE_CONFIG[key] !== undefined) el.textContent = FAITHBASE_CONFIG[key];
+  });
+
+  var memberNameEl = document.getElementById('member-name');
+  var welcomeHeading = document.getElementById('welcome-heading');
+  var roleNote = document.getElementById('role-note');
+  var signOutBtn = document.getElementById('sign-out-btn');
+  var supabaseClient = null;
+
+  function firstName(fullName){
+    if (!fullName || !fullName.trim()) return 'Member';
+    return fullName.trim().split(/\s+/)[0];
+  }
+
+  function revealPage(){
+    document.body.classList.remove('checking-session');
+  }
+
+  function redirectToLogin(){
+    window.location.replace('../auth/login.html');
+  }
+
+  try {
+    var url = FAITHBASE_CONFIG.supabase.url;
+    var key = FAITHBASE_CONFIG.supabase.anonKey;
+    if (url && key && url.indexOf('YOUR-') === -1){
+      supabaseClient = supabase.createClient(url, key);
+    }
+  } catch (e) {}
+
+  signOutBtn.addEventListener('click', async function(){
+    signOutBtn.disabled = true;
+    signOutBtn.textContent = 'Signing out\u2026';
+
+    try {
+      if (supabaseClient){
+        await supabaseClient.auth.signOut();
+      }
+    } catch (e) {}
+
+    window.location.replace('../index.html');
+  });
+
+  (async function init(){
+    if (!supabaseClient){
+      redirectToLogin();
+      return;
+    }
+
+    try {
+      var sessionResult = await supabaseClient.auth.getSession();
+      var session = sessionResult.data && sessionResult.data.session;
+
+      if (!session){
+        redirectToLogin();
+        return;
+      }
+
+      var profileResult = await supabaseClient
+        .from('profiles')
+        .select('full_name, role, status')
+        .eq('id', session.user.id)
+        .single();
+
+      var profile = profileResult.data;
+      var profileError = profileResult.error;
+
+      if (profileError || !profile || profile.status !== 'active'){
+        await supabaseClient.auth.signOut();
+        redirectToLogin();
+        return;
+      }
+
+      var name = firstName(profile.full_name);
+      memberNameEl.textContent = name;
+      welcomeHeading.textContent = 'Welcome, ' + name;
+      roleNote.textContent = 'role: ' + profile.role;
+      document.title = 'Dashboard — ' + FAITHBASE_CONFIG.communityName;
+
+      revealPage();
+    } catch (e){
+      if (supabaseClient){
+        try { await supabaseClient.auth.signOut(); } catch (err) {}
+      }
+      redirectToLogin();
+    }
+  })();
+})();
+</script>
+</body>
+</html>
