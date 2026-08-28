@@ -8,7 +8,7 @@
  */
 const FAITHBASE_CONFIG = {
 
-  authScreensLive: false,
+  authScreensLive: true,
 
   // ── Identity ──────────────────────────────────────────────────
   communityName: "St. Augustine Choir",
