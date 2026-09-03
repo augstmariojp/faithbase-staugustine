@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Manage Meetings — St. Augustine Choir</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{--maroon-deep:#3E0F1C;--maroon:#6B1F35;--gold:#C9A227;--gold-bright:#F0CC5C;--parchment:#F7EFE0;--ivory:#FFFBF3;--ink:#241019;--ink-soft:#5C3A44;--error:#B42318;--success:#2D6A4F;--amber:#B7791F;--font-display:'Cormorant Garamond',Georgia,serif;--font-body:'Work Sans',-apple-system,sans-serif;}
+  *{margin:0;padding:0;box-sizing:border-box;} html{scroll-behavior:smooth;}
+  body{font-family:var(--font-body);color:var(--ink);background:var(--parchment);-webkit-font-smoothing:antialiased;min-height:100vh;}
+  a{color:inherit;text-decoration:none;} :focus-visible{outline:3px solid var(--gold-bright);outline-offset:3px;}
+  .site-header{position:sticky;top:0;z-index:50;display:flex;align-items:center;justify-content:space-between;padding:18px 24px;background:var(--maroon-deep);border-bottom:1px solid rgba(201,162,39,0.25);}
+  .brand{display:flex;align-items:center;gap:10px;font-family:var(--font-display);font-size:20px;font-weight:600;color:var(--ivory);}
+  .brand-mark{width:28px;height:28px;color:var(--gold-bright);} .brand-mark svg{width:100%;height:100%;}
+  .header-actions{display:flex;align-items:center;gap:12px;}
+  .header-member-name{font-size:14px;font-weight:600;color:var(--gold-bright);white-space:nowrap;}
+  .header-signin{font-size:14px;font-weight:600;color:var(--gold-bright);padding:9px 18px;border:1px solid rgba(240,204,92,0.5);border-radius:999px;background:transparent;cursor:pointer;white-space:nowrap;transition:background .18s ease,color .18s ease;}
+  .header-signin:hover,.header-signin:focus-visible{background:var(--gold-bright);color:var(--maroon-deep);}
+  .header-signin:disabled{opacity:0.7;cursor:not-allowed;}
+  .admin-page{padding:24px 20px 40px;max-width:760px;margin:0 auto;}
+  .back-link{display:inline-flex;align-items:center;gap:6px;font-size:14px;font-weight:600;color:var(--maroon);margin-bottom:20px;}
+  .back-link svg{width:18px;height:18px;}
+  .page-header{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:24px;flex-wrap:wrap;}
+  .page-heading{font-family:var(--font-display);font-weight:600;font-size:32px;color:var(--maroon);}
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;font-family:var(--font-body);font-size:14px;font-weight:600;padding:12px 22px;border-radius:999px;border:none;cursor:pointer;background:var(--gold-bright);color:var(--maroon-deep);transition:transform .15s ease,box-shadow .15s ease;white-space:nowrap;}
+  .btn:hover,.btn:focus-visible{transform:translateY(-2px);box-shadow:0 10px 24px -8px rgba(240,204,92,0.55);}
+  .btn-sm{font-size:13px;padding:9px 16px;}
+  .btn-outline{background:transparent;border:1px solid rgba(107,31,53,0.35);color:var(--maroon);}
+  .btn-outline:hover,.btn-outline:focus-visible{background:rgba(107,31,53,0.06);box-shadow:none;transform:none;}
+  .success-banner{display:none;position:relative;background:rgba(240,204,92,0.18);border:1px solid rgba(201,162,39,0.45);border-radius:8px;padding:12px 40px 12px 14px;font-size:14px;color:var(--maroon-deep);margin-bottom:20px;line-height:1.5;}
+  .success-banner.visible{display:block;}
+  .success-banner-dismiss{position:absolute;top:50%;right:10px;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--maroon);font-size:18px;padding:4px;}
+  .tabs{display:flex;border-bottom:1px solid rgba(107,31,53,0.15);margin-bottom:24px;}
+  .tab-btn{flex:1;padding:12px 8px;background:none;border:none;border-bottom:2px solid transparent;font-family:var(--font-body);font-size:15px;font-weight:600;color:var(--ink-soft);cursor:pointer;margin-bottom:-1px;}
+  .tab-btn.active{color:var(--maroon);border-bottom-color:var(--gold);}
+  .tab-panel{display:none;} .tab-panel.active{display:block;}
+  .meeting-list{display:flex;flex-direction:column;gap:12px;}
+  .meeting-row{background:var(--ivory);border:1px solid rgba(107,31,53,0.12);border-left:3px solid var(--maroon);border-radius:10px;padding:16px 18px;}
+  .meeting-row-top{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:6px;}
+  .meeting-row h3{font-family:var(--font-display);font-size:19px;font-weight:600;color:var(--maroon);line-height:1.25;}
+  .meeting-meta{font-size:13.5px;color:var(--ink-soft);line-height:1.5;margin-bottom:8px;}
+  .meeting-actions{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:10px;}
+  .meeting-summary{font-size:13px;color:var(--ink-soft);font-weight:500;}
+  .badge{flex-shrink:0;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;padding:4px 10px;border-radius:999px;white-space:nowrap;}
+  .badge-scheduled{background:rgba(201,162,39,0.18);color:var(--maroon);}
+  .badge-completed{background:rgba(45,106,79,0.12);color:var(--success);}
+  .badge-cancelled{background:rgba(180,35,24,0.1);color:var(--error);}
+  .empty-state{text-align:center;padding:48px 20px;color:var(--ink-soft);}
+  .empty-state svg{width:48px;height:48px;color:var(--gold);margin:0 auto 16px;opacity:0.7;}
+  .empty-state p{font-size:15px;margin-bottom:20px;line-height:1.6;}
+  .skeleton-list{display:flex;flex-direction:column;gap:12px;}
+  .skeleton-row{height:96px;border-radius:10px;background:linear-gradient(90deg,rgba(107,31,53,0.06) 25%,rgba(107,31,53,0.12) 50%,rgba(107,31,53,0.06) 75%);background-size:200% 100%;animation:shimmer 1.4s ease-in-out infinite;}
+  @keyframes shimmer{0%{background-position:200% 0;}100%{background-position:-200% 0;}}
+  body.checking-session .admin-page{visibility:hidden;}
+  @media (max-width:720px){.site-header{padding:14px 18px;}.admin-page{padding:20px 16px 32px;}.page-heading{font-size:28px;}}
+  @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto;}.skeleton-row{animation:none;background:rgba(107,31,53,0.08);}.btn:hover,.btn:focus-visible{transform:none;}}
+</style>
+</head>
+<body class="checking-session">
+<header class="site-header">
+  <a href="../../index.html" class="brand"><span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M9 18V6l10-2v12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><circle cx="6.5" cy="18" r="2.5" stroke="currentColor" stroke-width="1.6"/><circle cx="16.5" cy="16" r="2.5" stroke="currentColor" stroke-width="1.6"/></svg></span><span data-config="communityShortName">St. Augustine Choir</span></a>
+  <div class="header-actions"><span class="header-member-name" id="member-name"></span><button type="button" class="header-signin" id="sign-out-btn">Sign Out</button></div>
+</header>
+<main class="admin-page">
+  <a href="../../member/dashboard.html" class="back-link"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M15 6l-6 6 6 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>Back to Dashboard</a>
+  <div class="page-header"><h1 class="page-heading">Manage Meetings</h1><a href="create.html" class="btn">+ New Meeting</a></div>
+  <div id="success-banner" class="success-banner" role="status">Meeting scheduled.<button type="button" class="success-banner-dismiss" id="dismiss-success" aria-label="Dismiss">&times;</button></div>
+  <div class="tabs" role="tablist"><button type="button" class="tab-btn active" id="tab-upcoming" aria-selected="true">Upcoming</button><button type="button" class="tab-btn" id="tab-past" aria-selected="false">Past</button></div>
+  <div class="tab-panel active" id="panel-upcoming"><div id="upcoming-loading" class="skeleton-list"><div class="skeleton-row"></div><div class="skeleton-row"></div><div class="skeleton-row"></div></div><div id="upcoming-content" hidden></div></div>
+  <div class="tab-panel" id="panel-past" hidden><div id="past-loading" class="skeleton-list"><div class="skeleton-row"></div><div class="skeleton-row"></div><div class="skeleton-row"></div></div><div id="past-content" hidden></div></div>
+</main>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../../config.js"></script>
+<script>
+(function(){
+  "use strict";
+  var c=FAITHBASE_CONFIG.colors,root=document.documentElement;
+  ["maroon-deep","maroon","gold","gold-bright","parchment","ivory","ink","ink-soft"].forEach(function(k,i){
+    var keys=["maroonDeep","maroon","gold","goldBright","parchment","ivory","ink","inkSoft"];
+    root.style.setProperty("--"+["maroon-deep","maroon","gold","gold-bright","parchment","ivory","ink","ink-soft"][i],c[keys[i]]);
+  });
+  document.title="Manage Meetings — "+FAITHBASE_CONFIG.communityName;
+  document.querySelectorAll("[data-config]").forEach(function(el){var k=el.getAttribute("data-config");if(FAITHBASE_CONFIG[k]!==undefined)el.textContent=FAITHBASE_CONFIG[k];});
+
+  if(new URLSearchParams(window.location.search).get("created")==="success"){
+    document.getElementById("success-banner").classList.add("visible");
+    if(window.history.replaceState)window.history.replaceState({},document.title,window.location.pathname);
+  }
+  document.getElementById("dismiss-success").addEventListener("click",function(){document.getElementById("success-banner").classList.remove("visible");});
+
+  var supabaseClient=null, pastLoaded=false;
+  function firstName(n){return!n||!n.trim()?"Member":n.trim().split(/\s+/)[0];}
+  function revealPage(){document.body.classList.remove("checking-session");}
+  function redirectLogin(){window.location.replace("../../auth/login.html");}
+  function redirectMember(){window.location.replace("../../member/dashboard.html");}
+  function escapeHtml(s){return String(s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");}
+  function formatDate(iso){return new Date(iso).toLocaleString("en-GB",{weekday:"long",day:"numeric",month:"long",year:"numeric",hour:"numeric",minute:"2-digit",hour12:true}).replace(",","");}
+  function canOpenAttendance(m){var diff=new Date(m.meeting_date)-new Date();return diff<=2*60*60*1000||m.attendance_unlocked===true;}
+  function statusBadge(s){var cls=s==="completed"?"badge-completed":s==="cancelled"?"badge-cancelled":"badge-scheduled";return'<span class="badge '+cls+'">'+escapeHtml(s||"scheduled")+'</span>';}
+
+  try{var u=FAITHBASE_CONFIG.supabase.url,k=FAITHBASE_CONFIG.supabase.anonKey;if(u&&k&&u.indexOf("YOUR-")===-1)supabaseClient=supabase.createClient(u,k);}catch(e){}
+
+  document.getElementById("sign-out-btn").addEventListener("click",async function(){
+    this.disabled=true;this.textContent="Signing out\u2026";
+    try{if(supabaseClient)await supabaseClient.auth.signOut();}catch(e){}
+    window.location.replace("../../index.html");
+  });
+
+  async function adminGuard(){
+    if(!supabaseClient){redirectLogin();return null;}
+    var sr=await supabaseClient.auth.getSession(),session=sr.data&&sr.data.session;
+    if(!session){redirectLogin();return null;}
+    var pr=await supabaseClient.from("profiles").select("full_name,role,status").eq("id",session.user.id).single();
+    var p=pr.data;
+    if(pr.error||!p||p.status!=="active"){await supabaseClient.auth.signOut();redirectLogin();return null;}
+    if(p.role!=="admin"){redirectMember();return null;}
+    document.getElementById("member-name").textContent=firstName(p.full_name);
+    return{session:session,profile:p};
+  }
+
+  async function getAttendanceCounts(meetingIds){
+    var map={};
+    meetingIds.forEach(function(id){map[id]={total:0,present:0,hasRows:false};});
+    if(!meetingIds.length)return map;
+    var r=await supabaseClient.from("attendance").select("meeting_id,status").in("meeting_id",meetingIds);
+    (r.data||[]).forEach(function(row){
+      if(!map[row.meeting_id])return;
+      map[row.meeting_id].hasRows=true;map[row.meeting_id].total++;
+      if(row.status==="present")map[row.meeting_id].present++;
+    });
+    return map;
+  }
+
+  async function loadUpcoming(){
+    var loading=document.getElementById("upcoming-loading"),content=document.getElementById("upcoming-content");
+    var r=await supabaseClient.from("meetings").select("id,title,meeting_date,location,status,attendance_unlocked").eq("status","scheduled").order("meeting_date",{ascending:true});
+    var counts=await getAttendanceCounts((r.data||[]).map(function(m){return m.id;}));
+    loading.hidden=true;content.hidden=false;
+    if(r.error||!r.data||!r.data.length){
+      content.innerHTML='<div class="empty-state"><svg viewBox="0 0 24 24" fill="none"><rect x="4" y="5" width="16" height="15" rx="2" stroke="currentColor" stroke-width="1.6"/><path d="M8 3v4M16 3v4M4 10h16" stroke="currentColor" stroke-width="1.6"/></svg><p>No meetings scheduled yet — Create your first meeting</p><a href="create.html" class="btn">+ New Meeting</a></div>';
+      return;
+    }
+    content.innerHTML='<div class="meeting-list">'+r.data.map(function(m){
+      var att=counts[m.id]||{hasRows:false};
+      var actions="";
+      if(att.hasRows)actions='<a href="detail.html?id='+encodeURIComponent(m.id)+'" class="btn btn-sm btn-outline">View Attendance</a>';
+      else if(canOpenAttendance(m))actions='<a href="attendance.html?id='+encodeURIComponent(m.id)+'" class="btn btn-sm">Open for Attendance</a>';
+      return'<article class="meeting-row"><div class="meeting-row-top"><h3>'+escapeHtml(m.title)+'</h3>'+statusBadge(m.status)+'</div><p class="meeting-meta">'+escapeHtml(formatDate(m.meeting_date))+(m.location?" &middot; "+escapeHtml(m.location):"")+'</p><div class="meeting-actions">'+actions+'</div></article>';
+    }).join("")+"</div>";
+  }
+
+  async function loadPast(){
+    if(pastLoaded)return;pastLoaded=true;
+    var loading=document.getElementById("past-loading"),content=document.getElementById("past-content");
+    var now=new Date().toISOString();
+    var r=await supabaseClient.from("meetings").select("id,title,meeting_date,location,status").or("status.eq.completed,status.eq.cancelled,meeting_date.lt."+now).order("meeting_date",{ascending:false});
+    var counts=await getAttendanceCounts((r.data||[]).map(function(m){return m.id;}));
+    loading.hidden=true;content.hidden=false;
+    if(r.error||!r.data||!r.data.length){
+      content.innerHTML='<div class="empty-state"><svg viewBox="0 0 24 24" fill="none"><rect x="4" y="5" width="16" height="15" rx="2" stroke="currentColor" stroke-width="1.6"/></svg><p>No past meetings yet</p></div>';
+      return;
+    }
+    content.innerHTML='<div class="meeting-list">'+r.data.map(function(m){
+      var att=counts[m.id]||{hasRows:false,present:0,total:0};
+      var summary=att.hasRows?'<span class="meeting-summary">'+att.present+'/'+att.total+' present</span>':'';
+      var minutesLink=att.hasRows?'<a href="detail.html?id='+encodeURIComponent(m.id)+'" class="btn btn-sm btn-outline">View Minutes</a>':'';
+      return'<article class="meeting-row"><div class="meeting-row-top"><h3>'+escapeHtml(m.title)+'</h3>'+statusBadge(m.status)+'</div><p class="meeting-meta">'+escapeHtml(formatDate(m.meeting_date))+(m.location?" &middot; "+escapeHtml(m.location):"")+'</p><div class="meeting-actions">'+summary+minutesLink+'</div></article>';
+    }).join("")+"</div>";
+  }
+
+  var tabUpcoming=document.getElementById("tab-upcoming"),tabPast=document.getElementById("tab-past");
+  var panelUpcoming=document.getElementById("panel-upcoming"),panelPast=document.getElementById("panel-past");
+  function switchTab(tab){
+    var past=tab==="past";
+    tabUpcoming.classList.toggle("active",!past);tabPast.classList.toggle("active",past);
+    tabUpcoming.setAttribute("aria-selected",String(!past));tabPast.setAttribute("aria-selected",String(past));
+    panelUpcoming.classList.toggle("active",!past);panelPast.classList.toggle("active",past);
+    panelUpcoming.hidden=past;panelPast.hidden=!past;
+    if(past)loadPast();
+  }
+  tabUpcoming.addEventListener("click",function(){switchTab("upcoming");});
+  tabPast.addEventListener("click",function(){switchTab("past");});
+
+  (async function init(){
+    var auth=await adminGuard();if(!auth)return;
+    await loadUpcoming();revealPage();
+  })();
+})();
+</script>
+</body>
+</html>

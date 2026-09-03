@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Schedule Meeting — St. Augustine Choir</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{--maroon-deep:#3E0F1C;--maroon:#6B1F35;--gold:#C9A227;--gold-bright:#F0CC5C;--parchment:#F7EFE0;--ivory:#FFFBF3;--ink:#241019;--ink-soft:#5C3A44;--error:#B42318;--font-display:'Cormorant Garamond',Georgia,serif;--font-body:'Work Sans',-apple-system,sans-serif;}
+  *{margin:0;padding:0;box-sizing:border-box;} body{font-family:var(--font-body);color:var(--ink);background:var(--parchment);min-height:100vh;-webkit-font-smoothing:antialiased;}
+  a{color:inherit;text-decoration:none;} :focus-visible{outline:3px solid var(--gold-bright);outline-offset:3px;}
+  .site-header{position:sticky;top:0;z-index:50;display:flex;align-items:center;justify-content:space-between;padding:18px 24px;background:var(--maroon-deep);border-bottom:1px solid rgba(201,162,39,0.25);}
+  .brand{display:flex;align-items:center;gap:10px;font-family:var(--font-display);font-size:20px;font-weight:600;color:var(--ivory);}
+  .brand-mark{width:28px;height:28px;color:var(--gold-bright);} .brand-mark svg{width:100%;height:100%;}
+  .header-actions{display:flex;align-items:center;gap:12px;}
+  .header-member-name{font-size:14px;font-weight:600;color:var(--gold-bright);}
+  .header-signin{font-size:14px;font-weight:600;color:var(--gold-bright);padding:9px 18px;border:1px solid rgba(240,204,92,0.5);border-radius:999px;background:transparent;cursor:pointer;}
+  .header-signin:hover,.header-signin:focus-visible{background:var(--gold-bright);color:var(--maroon-deep);}
+  .admin-page{padding:24px 20px 40px;max-width:520px;margin:0 auto;}
+  .back-link{display:inline-flex;align-items:center;gap:6px;font-size:14px;font-weight:600;color:var(--maroon);margin-bottom:20px;}
+  .back-link svg{width:18px;height:18px;}
+  .auth-card{background:var(--ivory);border:1px solid rgba(107,31,53,0.12);border-top:3px solid var(--maroon);border-radius:10px;padding:32px 28px 36px;box-shadow:0 4px 24px -8px rgba(36,16,25,0.12);}
+  .auth-card h1{font-family:var(--font-display);font-size:28px;font-weight:600;color:var(--maroon);margin-bottom:24px;text-align:center;}
+  .error-banner{display:none;background:rgba(180,35,24,0.08);border:1px solid rgba(180,35,24,0.25);border-radius:8px;padding:12px 14px;font-size:14px;color:var(--error);margin-bottom:20px;}
+  .error-banner.visible{display:block;}
+  .form-field{margin-bottom:20px;}
+  .form-field label{display:block;font-size:13px;font-weight:600;color:var(--maroon);margin-bottom:6px;}
+  .form-field input,.form-field textarea{width:100%;font-family:var(--font-body);font-size:15px;color:var(--ink);background:var(--parchment);border:1px solid rgba(107,31,53,0.2);border-radius:8px;padding:12px 14px;}
+  .form-field textarea{min-height:100px;resize:vertical;}
+  .form-field input:focus,.form-field textarea:focus{outline:none;border-color:var(--maroon);box-shadow:0 0 0 3px rgba(107,31,53,0.12);}
+  .form-field input.input-error,.form-field textarea.input-error{border-color:var(--error);}
+  .field-error{display:none;font-size:12.5px;color:var(--error);margin-top:6px;}
+  .field-error.visible{display:block;}
+  .form-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+  .btn{width:100%;font-family:var(--font-body);font-size:15px;font-weight:600;padding:14px 30px;border-radius:999px;border:none;cursor:pointer;background:var(--gold-bright);color:var(--maroon-deep);display:inline-flex;align-items:center;justify-content:center;gap:8px;margin-top:8px;}
+  .btn:disabled{opacity:0.7;cursor:not-allowed;}
+  .form-footer{text-align:center;margin-top:18px;font-size:14px;color:var(--ink-soft);}
+  .form-footer a{color:var(--maroon);font-weight:600;text-decoration:underline;}
+  .spinner{width:16px;height:16px;border:2px solid rgba(62,15,28,0.2);border-top-color:var(--maroon-deep);border-radius:50%;animation:spin .7s linear infinite;}
+  @keyframes spin{to{transform:rotate(360deg);}}
+  body.checking-session .admin-page{visibility:hidden;}
+  @media (max-width:720px){.form-row{grid-template-columns:1fr;}.site-header{padding:14px 18px;}}
+  @media (prefers-reduced-motion:reduce){.spinner{animation:none;}}
+</style>
+</head>
+<body class="checking-session">
+<header class="site-header">
+  <a href="../../index.html" class="brand"><span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M9 18V6l10-2v12" stroke="currentColor" stroke-width="1.6"/><circle cx="6.5" cy="18" r="2.5" stroke="currentColor" stroke-width="1.6"/><circle cx="16.5" cy="16" r="2.5" stroke="currentColor" stroke-width="1.6"/></svg></span><span data-config="communityShortName">St. Augustine Choir</span></a>
+  <div class="header-actions"><span class="header-member-name" id="member-name"></span><button type="button" class="header-signin" id="sign-out-btn">Sign Out</button></div>
+</header>
+<main class="admin-page">
+  <a href="index.html" class="back-link"><svg viewBox="0 0 24 24" fill="none"><path d="M15 6l-6 6 6 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>Back to Meetings</a>
+  <div class="auth-card">
+    <h1>Schedule Meeting</h1>
+    <div id="error-banner" class="error-banner" role="alert"></div>
+    <form id="create-form" novalidate>
+      <div class="form-field"><label for="title">Meeting Title</label><input type="text" id="title" required><p class="field-error" id="error-title"></p></div>
+      <div class="form-row">
+        <div class="form-field"><label for="date">Date</label><input type="date" id="date" required><p class="field-error" id="error-date"></p></div>
+        <div class="form-field"><label for="time">Time</label><input type="time" id="time" required><p class="field-error" id="error-time"></p></div>
+      </div>
+      <div class="form-field"><label for="location">Location</label><input type="text" id="location" required><p class="field-error" id="error-location"></p></div>
+      <div class="form-field"><label for="agenda">Agenda <span style="font-weight:400;color:var(--ink-soft)">(optional)</span></label><textarea id="agenda"></textarea></div>
+      <div class="form-field"><label for="quorum">Quorum Required <span style="font-weight:400;color:var(--ink-soft)">(optional)</span></label><input type="number" id="quorum" min="0" step="1"><p class="field-error" id="error-quorum"></p></div>
+      <button type="submit" class="btn" id="submit-btn">Schedule Meeting</button>
+      <p class="form-footer"><a href="index.html">Cancel</a></p>
+    </form>
+  </div>
+</main>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../../config.js"></script>
+<script>
+(function(){
+  "use strict";
+  document.title="Schedule Meeting — "+FAITHBASE_CONFIG.communityName;
+  document.querySelectorAll("[data-config]").forEach(function(el){var k=el.getAttribute("data-config");if(FAITHBASE_CONFIG[k]!==undefined)el.textContent=FAITHBASE_CONFIG[k];});
+  var supabaseClient=null,currentUserId=null;
+  var form=document.getElementById("create-form"),submitBtn=document.getElementById("submit-btn"),errorBanner=document.getElementById("error-banner");
+  var dateInput=document.getElementById("date");
+  dateInput.min=new Date().toISOString().split("T")[0];
+
+  var fields=[
+    {id:"title",errorId:"error-title",validate:function(i){return!i.value.trim()?"This field is required.":"";}},
+    {id:"date",errorId:"error-date",validate:function(i){if(!i.value)return"This field is required.";if(i.value<dateInput.min)return"Date cannot be in the past.";return"";}},
+    {id:"time",errorId:"error-time",validate:function(i){return!i.value?"This field is required.":"";}},
+    {id:"location",errorId:"error-location",validate:function(i){return!i.value.trim()?"This field is required.":"";}}
+  ];
+
+  function showFieldError(fid,eid,msg){var inp=document.getElementById(fid),el=document.getElementById(eid);if(msg){inp.classList.add("input-error");el.textContent=msg;el.classList.add("visible");}else{inp.classList.remove("input-error");el.textContent="";el.classList.remove("visible");}}
+  fields.forEach(function(f){document.getElementById(f.id).addEventListener("blur",function(){showFieldError(f.id,f.errorId,f.validate(this));});});
+
+  function firstName(n){return!n||!n.trim()?"Member":n.trim().split(/\s+/)[0];}
+  function revealPage(){document.body.classList.remove("checking-session");}
+  try{var u=FAITHBASE_CONFIG.supabase.url,k=FAITHBASE_CONFIG.supabase.anonKey;if(u&&k&&u.indexOf("YOUR-")===-1)supabaseClient=supabase.createClient(u,k);}catch(e){}
+
+  document.getElementById("sign-out-btn").addEventListener("click",async function(){this.disabled=true;try{if(supabaseClient)await supabaseClient.auth.signOut();}catch(e){}window.location.replace("../../index.html");});
+
+  async function adminGuard(){
+    if(!supabaseClient){window.location.replace("../../auth/login.html");return null;}
+    var sr=await supabaseClient.auth.getSession(),session=sr.data&&sr.data.session;
+    if(!session){window.location.replace("../../auth/login.html");return null;}
+    var pr=await supabaseClient.from("profiles").select("full_name,role,status").eq("id",session.user.id).single(),p=pr.data;
+    if(pr.error||!p||p.status!=="active"){await supabaseClient.auth.signOut();window.location.replace("../../auth/login.html");return null;}
+    if(p.role!=="admin"){window.location.replace("../../member/dashboard.html");return null;}
+    document.getElementById("member-name").textContent=firstName(p.full_name);
+    currentUserId=session.user.id;return p;
+  }
+
+  form.addEventListener("submit",async function(e){
+    e.preventDefault();errorBanner.classList.remove("visible");
+    var valid=true;
+    fields.forEach(function(f){var msg=f.validate(document.getElementById(f.id));showFieldError(f.id,f.errorId,msg);if(msg)valid=false;});
+    if(!valid)return;
+    submitBtn.disabled=true;
+    submitBtn.innerHTML='<span class="spinner"></span> Scheduling\u2026';
+    var iso=new Date(document.getElementById("date").value+"T"+document.getElementById("time").value).toISOString();
+    var quorumVal=document.getElementById("quorum").value;
+    var payload={title:document.getElementById("title").value.trim(),meeting_date:iso,location:document.getElementById("location").value.trim(),created_by:currentUserId};
+    var agenda=document.getElementById("agenda").value.trim();if(agenda)payload.agenda=agenda;
+    if(quorumVal!=="")payload.quorum_required=parseInt(quorumVal,10);
+    var r=await supabaseClient.from("meetings").insert(payload);
+    if(r.error){submitBtn.disabled=false;submitBtn.textContent="Schedule Meeting";errorBanner.textContent=r.error.message||"Something went wrong.";errorBanner.classList.add("visible");return;}
+    window.location.replace("index.html?created=success");
+  });
+
+  (async function(){if(await adminGuard())revealPage();})();
+})();
+</script>
+</body>
+</html>

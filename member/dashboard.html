@@ -92,8 +92,9 @@
   /* ── Auth layout ────────────────────────────────────────────── */
   .auth-page{
     display:flex;
-    align-items:flex-start;
-    justify-content:center;
+    flex-direction:column;
+    align-items:center;
+    justify-content:flex-start;
     padding:48px 20px 64px;
   }
   .auth-card{
@@ -125,6 +126,44 @@
     color:var(--ink-soft);
     font-style:italic;
   }
+
+  .admin-tools-card{
+    width:100%;
+    max-width:440px;
+    background:var(--ivory);
+    border:1px solid rgba(107,31,53,0.12);
+    border-top:3px solid var(--gold);
+    border-radius:10px;
+    padding:28px 26px 30px;
+    box-shadow:0 4px 24px -8px rgba(36,16,25,0.12);
+    margin-top:24px;
+    text-align:left;
+  }
+  .admin-tools-card h2{
+    font-family:var(--font-display);
+    font-weight:600;
+    font-size:22px;
+    color:var(--maroon);
+    margin-bottom:16px;
+  }
+  .admin-tools-link{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:14px 16px;
+    background:var(--parchment);
+    border:1px solid rgba(107,31,53,0.12);
+    border-radius:10px;
+    font-size:15px;
+    font-weight:600;
+    color:var(--maroon);
+    transition:background .15s ease, border-color .15s ease;
+  }
+  .admin-tools-link:hover,.admin-tools-link:focus-visible{
+    background:rgba(201,162,39,0.12);
+    border-color:rgba(201,162,39,0.4);
+  }
+  .admin-tools-link svg{width:18px;height:18px;color:var(--gold);flex-shrink:0;}
 
   body.checking-session .auth-page{visibility:hidden;}
 
@@ -227,6 +266,13 @@
     <h1 id="welcome-heading">Welcome</h1>
     <p class="auth-subtext">You&rsquo;re signed in to <span data-config="communityName">St. Augustine Choir</span>.</p>
     <p class="auth-note" id="role-note"></p>
+  </div>
+  <div class="admin-tools-card" id="admin-tools" hidden>
+    <h2>Admin Tools</h2>
+    <a href="../admin/meetings/index.html" class="admin-tools-link">
+      Manage Meetings
+      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </a>
   </div>
 </main>
 
@@ -361,6 +407,10 @@
       welcomeHeading.textContent = 'Welcome, ' + name;
       roleNote.textContent = 'role: ' + profile.role;
       document.title = 'Dashboard — ' + FAITHBASE_CONFIG.communityName;
+
+      if (profile.role === 'admin'){
+        document.getElementById('admin-tools').hidden = false;
+      }
 
       revealPage();
     } catch (e){
