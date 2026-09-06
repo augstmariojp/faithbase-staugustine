@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Levy Detail — St. Augustine Choir</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{--maroon-deep:#3E0F1D;--maroon:#6B1F35;--gold:#C9A227;--gold-bright:#F0CC5C;--parchment:#F7EFE0;--ivory:#FFFBF3;--ink:#241019;--ink-soft:#5C3A44;--error:#B42318;--success:#2D6A4F;--amber:#B7791F;--font-display:'Cormorant Garamond',Georgia,serif;--font-body:'Work Sans',-apple-system,sans-serif;}
+  *{margin:0;padding:0;box-sizing:border-box;} body{font-family:var(--font-body);color:var(--ink);background:var(--parchment);min-height:100vh;-webkit-font-smoothing:antialiased;}
+  a{color:inherit;text-decoration:none;} :focus-visible{outline:3px solid var(--gold-bright);outline-offset:3px;}
+  .site-header{position:sticky;top:0;z-index:50;display:flex;align-items:center;justify-content:space-between;padding:18px 24px;background:var(--maroon-deep);border-bottom:1px solid rgba(201,162,39,0.25);}
+  .brand{display:flex;align-items:center;gap:10px;font-family:var(--font-display);font-size:20px;font-weight:600;color:var(--ivory);}
+  .brand-mark{width:28px;height:28px;color:var(--gold-bright);} .brand-mark svg{width:100%;height:100%;}
+  .header-actions{display:flex;align-items:center;gap:12px;}
+  .header-member-name{font-size:14px;font-weight:600;color:var(--gold-bright);}
+  .header-signin{font-size:14px;font-weight:600;color:var(--gold-bright);padding:9px 18px;border:1px solid rgba(240,204,92,0.5);border-radius:999px;background:transparent;cursor:pointer;}
+  .header-signin:hover,.header-signin:focus-visible{background:var(--gold-bright);color:var(--maroon-deep);}
+  .admin-page{padding:24px 20px 40px;max-width:760px;margin:0 auto;}
+  .back-link{display:inline-flex;align-items:center;gap:6px;font-size:14px;font-weight:600;color:var(--maroon);margin-bottom:20px;}
+  .back-link svg{width:18px;height:18px;}
+  .detail-card{background:var(--ivory);border:1px solid rgba(107,31,53,0.12);border-top:3px solid var(--maroon);border-radius:10px;padding:22px 24px;margin-bottom:20px;}
+  .detail-title-row{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:10px;}
+  .detail-title{font-family:var(--font-display);font-size:clamp(26px,5vw,32px);font-weight:600;color:var(--maroon);line-height:1.15;}
+  .detail-meta{font-size:15px;color:var(--ink-soft);line-height:1.65;margin-bottom:4px;}
+  .detail-description{font-size:14px;color:var(--ink-soft);line-height:1.6;margin-top:12px;padding-top:12px;border-top:1px solid rgba(107,31,53,0.1);}
+  .totals-bar{font-size:15px;font-weight:600;color:var(--maroon);padding:14px 18px;background:var(--parchment);border-radius:8px;margin-bottom:20px;text-align:center;}
+  .section-heading{font-family:var(--font-display);font-size:22px;font-weight:600;color:var(--maroon);margin-bottom:16px;}
+  .member-list{display:flex;flex-direction:column;gap:8px;}
+  .member-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 14px;background:var(--ivory);border:1px solid rgba(107,31,53,0.1);border-radius:8px;flex-wrap:wrap;}
+  .member-row .name{font-size:15px;font-weight:600;color:var(--ink);flex:1;min-width:120px;}
+  .member-row .actions{display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+  .member-row .pay-date{font-size:12px;color:var(--ink-soft);font-weight:500;}
+  .badge{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;padding:4px 10px;border-radius:999px;white-space:nowrap;}
+  .badge-paid{background:rgba(45,106,79,0.12);color:var(--success);}
+  .badge-outstanding{background:rgba(180,35,24,0.1);color:var(--error);}
+  .badge-active{background:rgba(45,106,79,0.12);color:var(--success);}
+  .badge-closed{background:rgba(92,58,68,0.12);color:var(--ink-soft);}
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;font-family:var(--font-body);font-size:13px;font-weight:600;padding:9px 16px;border-radius:999px;border:none;cursor:pointer;background:var(--gold-bright);color:var(--maroon-deep);white-space:nowrap;}
+  .btn-sm{font-size:12px;padding:7px 14px;}
+  .btn-danger{background:var(--maroon);color:var(--ivory);}
+  .close-section{margin-top:8px;padding-top:20px;border-top:1px solid rgba(107,31,53,0.12);}
+  .close-note{font-size:13px;color:var(--ink-soft);font-style:italic;margin-bottom:14px;line-height:1.55;}
+  .empty-state{text-align:center;padding:48px 20px;color:var(--ink-soft);background:var(--ivory);border:1px solid rgba(107,31,53,0.1);border-radius:10px;}
+  .empty-state p{font-size:15px;margin-bottom:20px;line-height:1.6;}
+  .error-banner{display:none;background:rgba(180,35,24,0.08);border:1px solid rgba(180,35,24,0.25);border-radius:8px;padding:12px 14px;font-size:14px;color:var(--error);margin-bottom:16px;}
+  .error-banner.visible{display:block;}
+  .success-banner{display:none;position:relative;background:rgba(240,204,92,0.18);border:1px solid rgba(201,162,39,0.45);border-radius:8px;padding:12px 40px 12px 14px;font-size:14px;color:var(--maroon-deep);margin-bottom:16px;}
+  .success-banner.visible{display:block;}
+  .success-banner-dismiss{position:absolute;top:50%;right:10px;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--maroon);font-size:18px;padding:4px;}
+  .modal-backdrop{position:fixed;inset:0;background:rgba(36,16,25,0.55);z-index:90;opacity:0;pointer-events:none;transition:opacity .2s;}
+  .modal-backdrop.open{opacity:1;pointer-events:auto;}
+  .modal{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%) scale(0.95);z-index:100;background:var(--ivory);border-radius:12px;border-top:3px solid var(--maroon);padding:28px 24px;width:calc(100% - 40px);max-width:440px;max-height:90vh;overflow-y:auto;opacity:0;pointer-events:none;transition:opacity .2s,transform .2s;box-shadow:0 20px 48px -12px rgba(36,16,25,0.35);}
+  .modal.open{opacity:1;pointer-events:auto;transform:translate(-50%,-50%) scale(1);}
+  .modal h2{font-family:var(--font-display);font-size:22px;color:var(--maroon);margin-bottom:12px;}
+  .modal p{font-size:15px;color:var(--ink-soft);line-height:1.6;margin-bottom:24px;}
+  .modal-summary{background:var(--parchment);border-radius:8px;padding:14px 16px;margin-bottom:20px;font-size:14px;line-height:1.6;color:var(--ink-soft);}
+  .modal-summary strong{color:var(--ink);}
+  .form-field{margin-bottom:16px;}
+  .form-field label{display:block;font-size:13px;font-weight:600;color:var(--maroon);margin-bottom:6px;}
+  .form-field input{width:100%;font-family:var(--font-body);font-size:15px;padding:12px 14px;border:1px solid rgba(107,31,53,0.2);border-radius:8px;background:var(--parchment);}
+  .form-field input:focus{outline:none;border-color:var(--maroon);box-shadow:0 0 0 3px rgba(107,31,53,0.12);}
+  .modal-actions{display:flex;gap:12px;margin-top:8px;}
+  .modal-actions .btn,.modal-actions button{flex:1;margin-top:0;}
+  .modal-cancel{background:transparent;border:1px solid rgba(107,31,53,0.3)!important;color:var(--maroon);box-shadow:none;}
+  .modal-confirm{background:var(--gold-bright);color:var(--maroon-deep);padding:14px;border-radius:999px;font-size:15px;font-weight:600;cursor:pointer;border:none;}
+  .spinner{width:16px;height:16px;border:2px solid rgba(62,15,28,0.2);border-top-color:var(--maroon-deep);border-radius:50%;animation:spin .7s linear infinite;}
+  @keyframes spin{to{transform:rotate(360deg);}}
+  body.checking-session .admin-page{visibility:hidden;}
+  @media (max-width:720px){.site-header{padding:14px 18px;}}
+  @media (prefers-reduced-motion:reduce){.modal,.modal-backdrop,.spinner{animation:none;transition:none;}}
+</style>
+</head>
+<body class="checking-session">
+<header class="site-header">
+  <a href="../../index.html" class="brand"><span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M9 18V6l10-2v12" stroke="currentColor" stroke-width="1.6"/><circle cx="6.5" cy="18" r="2.5" stroke="currentColor" stroke-width="1.6"/><circle cx="16.5" cy="16" r="2.5" stroke="currentColor" stroke-width="1.6"/></svg></span><span data-config="communityShortName">St. Augustine Choir</span></a>
+  <div class="header-actions"><span class="header-member-name" id="member-name"></span><button type="button" class="header-signin" id="sign-out-btn">Sign Out</button></div>
+</header>
+<main class="admin-page">
+  <div id="not-found" hidden>
+    <a href="index.html" class="back-link"><svg viewBox="0 0 24 24" fill="none"><path d="M15 6l-6 6 6 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>Back to Levies</a>
+    <div class="empty-state"><p>Levy not found</p><a href="index.html" class="btn">Back to Manage Levies</a></div>
+  </div>
+  <div id="page-content" hidden>
+    <a href="index.html" class="back-link"><svg viewBox="0 0 24 24" fill="none"><path d="M15 6l-6 6 6 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>Back to Levies</a>
+    <div id="error-banner" class="error-banner" role="alert"></div>
+    <div id="success-banner" class="success-banner" role="status"><span id="toast-message">Payment recorded.</span><button type="button" class="success-banner-dismiss" id="dismiss-success" aria-label="Dismiss">&times;</button></div>
+    <div class="detail-card" id="levy-info"></div>
+    <div class="totals-bar" id="totals-bar"></div>
+    <h2 class="section-heading">Members</h2>
+    <div class="member-list" id="member-list"></div>
+    <div class="detail-card close-section" id="close-section" hidden>
+      <p class="close-note">Closing a levy stops new payments from being recorded against it.</p>
+      <button type="button" class="btn btn-danger" id="close-levy-btn">Close Levy</button>
+    </div>
+  </div>
+</main>
+<div class="modal-backdrop" id="modal-backdrop" hidden></div>
+<div class="modal" id="payment-modal" role="dialog" aria-labelledby="payment-modal-title" aria-hidden="true" hidden>
+  <h2 id="payment-modal-title">Record Payment</h2>
+  <div class="modal-summary" id="payment-summary"></div>
+  <div id="modal-error" class="error-banner" role="alert"></div>
+  <div class="form-field"><label for="pay-amount">Amount Paid</label><input type="number" id="pay-amount" min="0" step="1"></div>
+  <div class="form-field"><label for="pay-date">Payment Date</label><input type="date" id="pay-date"></div>
+  <div class="modal-actions">
+    <button type="button" class="btn modal-cancel" id="payment-cancel">Cancel</button>
+    <button type="button" class="btn" id="payment-save">Save Payment</button>
+  </div>
+</div>
+<div class="modal" id="confirm-modal" role="dialog" aria-hidden="true" hidden>
+  <h2>Close Levy?</h2>
+  <p>This will close the levy and stop new payments from being recorded against it. Continue?</p>
+  <div class="modal-actions">
+    <button type="button" class="modal-cancel" id="confirm-cancel">Cancel</button>
+    <button type="button" class="modal-confirm" id="confirm-close">Confirm</button>
+  </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../../config.js"></script>
+<script>
+(function(){
+  "use strict";
+  var levyId=new URLSearchParams(window.location.search).get("id");
+  document.querySelectorAll("[data-config]").forEach(function(el){var k=el.getAttribute("data-config");if(FAITHBASE_CONFIG[k]!==undefined)el.textContent=FAITHBASE_CONFIG[k];});
+
+  var supabaseClient=null,currentUserId=null;
+  var levy=null,members=[],payments=[],paymentModalMember=null;
+
+  function firstName(n){return!n||!n.trim()?"Member":n.trim().split(/\s+/)[0];}
+  function revealPage(){document.body.classList.remove("checking-session");}
+  function formatNaira(a){return"\u20A6"+Number(a).toLocaleString("en-NG");}
+  function formatDate(iso){return new Date(iso).toLocaleDateString("en-GB",{day:"numeric",month:"long",year:"numeric"});}
+  function escapeHtml(s){return String(s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");}
+  function getPayment(memberId){return payments.find(function(p){return p.member_id===memberId;});}
+  function isActive(){return levy&&levy.status==="active";}
+
+  try{var u=FAITHBASE_CONFIG.supabase.url,k=FAITHBASE_CONFIG.supabase.anonKey;if(u&&k&&u.indexOf("YOUR-")===-1)supabaseClient=supabase.createClient(u,k);}catch(e){}
+
+  document.getElementById("sign-out-btn").addEventListener("click",async function(){try{if(supabaseClient)await supabaseClient.auth.signOut();}catch(e){}window.location.replace("../../index.html");});
+  document.getElementById("dismiss-success").addEventListener("click",function(){document.getElementById("success-banner").classList.remove("visible");});
+
+  async function adminGuard(){
+    if(!supabaseClient||!levyId){window.location.replace("../../auth/login.html");return null;}
+    var sr=await supabaseClient.auth.getSession(),session=sr.data&&sr.data.session;
+    if(!session){window.location.replace("../../auth/login.html");return null;}
+    var pr=await supabaseClient.from("profiles").select("full_name,role,status").eq("id",session.user.id).single(),p=pr.data;
+    if(pr.error||!p||p.status!=="active"){await supabaseClient.auth.signOut();window.location.replace("../../auth/login.html");return null;}
+    if(p.role!=="admin"){window.location.replace("../../member/dashboard.html");return null;}
+    document.getElementById("member-name").textContent=firstName(p.full_name);
+    currentUserId=session.user.id;return p;
+  }
+
+  function renderLevyInfo(){
+    var badge=levy.status==="active"?'<span class="badge badge-active">Active</span>':'<span class="badge badge-closed">Closed</span>';
+    var dueStr=levy.due_date?formatDate(levy.due_date):"No due date";
+    var desc=levy.description?'<p class="detail-description">'+escapeHtml(levy.description)+'</p>':"";
+    document.getElementById("levy-info").innerHTML=
+      '<div class="detail-title-row"><h1 class="detail-title">'+escapeHtml(levy.title)+'</h1>'+badge+'</div>'+
+      '<p class="detail-meta">'+escapeHtml(formatNaira(levy.amount))+' &middot; Due '+escapeHtml(dueStr)+'</p>'+desc;
+    document.title=(levy.title||"Levy")+" — Admin";
+    document.getElementById("close-section").hidden=!isActive();
+  }
+
+  function renderTotals(){
+    var collected=payments.reduce(function(sum,p){return sum+Number(p.amount_paid||0);},0);
+    var expected=Number(levy.amount)*members.length;
+    document.getElementById("totals-bar").textContent="Collected: "+formatNaira(collected)+" of "+formatNaira(expected)+" expected";
+  }
+
+  function renderMemberRow(member){
+    var pay=getPayment(member.id);
+    var actions="";
+    if(pay){
+      var dateStr=pay.payment_date?formatDate(pay.payment_date.split("T")[0]):"";
+      actions='<span class="badge badge-paid">Paid</span>'+(dateStr?'<span class="pay-date">'+escapeHtml(dateStr)+'</span>':"");
+    }else{
+      actions='<span class="badge badge-outstanding">Outstanding</span>';
+      if(isActive())actions+='<button type="button" class="btn btn-sm record-pay-btn" data-member="'+member.id+'">Record Payment</button>';
+    }
+    return'<div class="member-row" data-member="'+member.id+'"><span class="name">'+escapeHtml(member.full_name)+'</span><div class="actions">'+actions+'</div></div>';
+  }
+
+  function renderMemberList(){
+    document.getElementById("member-list").innerHTML=members.map(renderMemberRow).join("");
+  }
+
+  function showToast(msg){
+    document.getElementById("toast-message").textContent=msg;
+    document.getElementById("success-banner").classList.add("visible");
+    setTimeout(function(){document.getElementById("success-banner").classList.remove("visible");},3500);
+  }
+
+  var backdrop=document.getElementById("modal-backdrop");
+  var paymentModal=document.getElementById("payment-modal");
+  var confirmModal=document.getElementById("confirm-modal");
+  var openModalEl=null;
+
+  function openModal(el){
+    openModalEl=el;
+    el.hidden=false;backdrop.hidden=false;
+    requestAnimationFrame(function(){el.classList.add("open");backdrop.classList.add("open");el.setAttribute("aria-hidden","false");});
+  }
+  function closeModals(){
+    [paymentModal,confirmModal].forEach(function(el){
+      el.classList.remove("open");el.setAttribute("aria-hidden","true");
+    });
+    backdrop.classList.remove("open");
+    setTimeout(function(){
+      paymentModal.hidden=true;confirmModal.hidden=true;backdrop.hidden=true;
+      paymentModalMember=null;openModalEl=null;
+      document.getElementById("modal-error").classList.remove("visible");
+    },200);
+  }
+
+  function openPaymentModal(memberId){
+    var member=members.find(function(m){return m.id===memberId;});
+    if(!member||!isActive())return;
+    paymentModalMember=member;
+    document.getElementById("payment-summary").innerHTML='<strong>'+escapeHtml(member.full_name)+'</strong><br>'+escapeHtml(levy.title)+' &middot; '+escapeHtml(formatNaira(levy.amount));
+    var today=new Date().toISOString().split("T")[0];
+    document.getElementById("pay-amount").value=levy.amount;
+    document.getElementById("pay-date").value=today;
+    document.getElementById("pay-date").max=today;
+    openModal(paymentModal);
+  }
+
+  document.getElementById("member-list").addEventListener("click",function(e){
+    var btn=e.target.closest(".record-pay-btn");
+    if(btn)openPaymentModal(btn.getAttribute("data-member"));
+  });
+
+  document.getElementById("payment-cancel").addEventListener("click",closeModals);
+  document.getElementById("confirm-cancel").addEventListener("click",closeModals);
+  backdrop.addEventListener("click",closeModals);
+  document.addEventListener("keydown",function(e){
+    if(e.key==="Escape"&&(paymentModal.classList.contains("open")||confirmModal.classList.contains("open")))closeModals();
+  });
+
+  document.getElementById("payment-save").addEventListener("click",async function(){
+    if(!paymentModalMember)return;
+    var errEl=document.getElementById("modal-error"),btn=this;
+    errEl.classList.remove("visible");
+    var amount=Number(document.getElementById("pay-amount").value);
+    var pdate=document.getElementById("pay-date").value;
+    var today=new Date().toISOString().split("T")[0];
+    if(!amount&&amount!==0){errEl.textContent="Enter a valid amount.";errEl.classList.add("visible");return;}
+    if(!pdate){errEl.textContent="Payment date is required.";errEl.classList.add("visible");return;}
+    if(pdate>today){errEl.textContent="Payment date cannot be in the future.";errEl.classList.add("visible");return;}
+    btn.disabled=true;btn.innerHTML='<span class="spinner"></span> Saving\u2026';
+    var row={
+      levy_id:levyId,
+      member_id:paymentModalMember.id,
+      amount_paid:amount,
+      payment_date:pdate,
+      recorded_by:currentUserId
+    };
+    var r=await supabaseClient.from("levy_payments").insert(row);
+    btn.disabled=false;btn.textContent="Save Payment";
+    if(r.error){errEl.textContent=r.error.message||"Failed to save.";errEl.classList.add("visible");return;}
+    payments.push(row);
+    closeModals();
+    renderTotals();
+    var rowEl=document.querySelector('.member-row[data-member="'+paymentModalMember.id+'"]');
+    if(rowEl)rowEl.outerHTML=renderMemberRow(paymentModalMember);
+    showToast("Payment recorded.");
+  });
+
+  document.getElementById("close-levy-btn").addEventListener("click",function(){openModal(confirmModal);});
+
+  document.getElementById("confirm-close").addEventListener("click",async function(){
+    closeModals();
+    var r=await supabaseClient.from("levies").update({status:"closed"}).eq("id",levyId);
+    if(r.error){document.getElementById("error-banner").textContent=r.error.message;document.getElementById("error-banner").classList.add("visible");return;}
+    levy.status="closed";
+    renderLevyInfo();
+    renderMemberList();
+    showToast("Levy closed.");
+  });
+
+  (async function init(){
+    if(!await adminGuard())return;
+    var results=await Promise.all([
+      supabaseClient.from("levies").select("id, title, amount, due_date, description, status").eq("id",levyId).maybeSingle(),
+      supabaseClient.from("profiles").select("id, full_name").eq("status","active").order("full_name",{ascending:true}),
+      supabaseClient.from("levy_payments").select("member_id, amount_paid, payment_date").eq("levy_id",levyId)
+    ]);
+    if(results[0].error||!results[0].data){
+      document.getElementById("not-found").hidden=false;
+      revealPage();return;
+    }
+    levy=results[0].data;
+    members=results[1].data||[];
+    payments=results[2].data||[];
+    renderLevyInfo();
+    renderTotals();
+    renderMemberList();
+    document.getElementById("page-content").hidden=false;
+    revealPage();
+  })();
+})();
+</script>
+</body>
+</html>

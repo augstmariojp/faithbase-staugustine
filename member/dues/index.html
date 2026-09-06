@@ -586,7 +586,7 @@
         ? new Date(levy.due_date).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })
         : '';
       return '<article class="levy-row">' +
-        '<div><h3>' + escapeHtml(levy.name) + '</h3>' +
+        '<div><h3>' + escapeHtml(levy.title) + '</h3>' +
         '<p class="levy-meta">' + escapeHtml(formatNaira(levy.amount)) +
         (dueStr ? ' &middot; Due ' + escapeHtml(dueStr) : '') + '</p></div>' +
         '<span class="badge ' + (paid ? 'badge-present' : 'badge-absent') + '">' +
@@ -658,7 +658,7 @@
       var results = await Promise.all([
         supabaseClient.from('dues_config').select('amount, effective_from').order('effective_from', { ascending: true }),
         supabaseClient.from('dues_payments').select('period_year, period_month').eq('member_id', currentUserId),
-        supabaseClient.from('levies').select('id, name, amount, due_date').eq('status', 'active').order('due_date', { ascending: true }),
+        supabaseClient.from('levies').select('id, title, amount, due_date').eq('status', 'active').order('due_date', { ascending: true }),
         supabaseClient.from('levy_payments').select('levy_id').eq('member_id', currentUserId)
       ]);
 
