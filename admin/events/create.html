@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>New Event — St. Augustine Choir</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{--maroon-deep:#3E0F1D;--maroon:#6B1F35;--gold:#C9A227;--gold-bright:#F0CC5C;--parchment:#F7EFE0;--ivory:#FFFBF3;--ink:#241019;--ink-soft:#5C3A44;--error:#B42318;--font-display:'Cormorant Garamond',Georgia,serif;--font-body:'Work Sans',-apple-system,sans-serif;}
+  *{margin:0;padding:0;box-sizing:border-box;} body{font-family:var(--font-body);color:var(--ink);background:var(--parchment);min-height:100vh;-webkit-font-smoothing:antialiased;}
+  a{color:inherit;text-decoration:none;} :focus-visible{outline:3px solid var(--gold-bright);outline-offset:3px;}
+  .site-header{position:sticky;top:0;z-index:50;display:flex;align-items:center;justify-content:space-between;padding:18px 24px;background:var(--maroon-deep);border-bottom:1px solid rgba(201,162,39,0.25);}
+  .brand{display:flex;align-items:center;gap:10px;font-family:var(--font-display);font-size:20px;font-weight:600;color:var(--ivory);}
+  .brand-mark{width:28px;height:28px;color:var(--gold-bright);} .brand-mark svg{width:100%;height:100%;}
+  .header-actions{display:flex;align-items:center;gap:12px;}
+  .header-member-name{font-size:14px;font-weight:600;color:var(--gold-bright);}
+  .header-signin{font-size:14px;font-weight:600;color:var(--gold-bright);padding:9px 18px;border:1px solid rgba(240,204,92,0.5);border-radius:999px;background:transparent;cursor:pointer;}
+  .header-signin:hover,.header-signin:focus-visible{background:var(--gold-bright);color:var(--maroon-deep);}
+  .admin-page{padding:24px 20px 40px;max-width:560px;margin:0 auto;}
+  .back-link{display:inline-flex;align-items:center;gap:6px;font-size:14px;font-weight:600;color:var(--maroon);margin-bottom:20px;}
+  .back-link svg{width:18px;height:18px;}
+  .auth-card{background:var(--ivory);border:1px solid rgba(107,31,53,0.12);border-top:3px solid var(--maroon);border-radius:10px;padding:32px 28px 36px;box-shadow:0 4px 24px -8px rgba(36,16,25,0.12);}
+  .auth-card h1{font-family:var(--font-display);font-size:28px;font-weight:600;color:var(--maroon);margin-bottom:24px;text-align:center;}
+  .error-banner{display:none;background:rgba(180,35,24,0.08);border:1px solid rgba(180,35,24,0.25);border-radius:8px;padding:12px 14px;font-size:14px;color:var(--error);margin-bottom:20px;}
+  .error-banner.visible{display:block;}
+  .form-field{margin-bottom:20px;}
+  .form-field label{display:block;font-size:13px;font-weight:600;color:var(--maroon);margin-bottom:6px;}
+  .form-field input,.form-field select,.form-field textarea{width:100%;font-family:var(--font-body);font-size:15px;color:var(--ink);background:var(--parchment);border:1px solid rgba(107,31,53,0.2);border-radius:8px;padding:12px 14px;}
+  .form-field textarea{min-height:100px;resize:vertical;}
+  .form-field input:focus,.form-field select:focus,.form-field textarea:focus{outline:none;border-color:var(--maroon);box-shadow:0 0 0 3px rgba(107,31,53,0.12);}
+  .form-field input.input-error,.form-field select.input-error,.form-field textarea.input-error{border-color:var(--error);}
+  .field-error{display:none;font-size:12.5px;color:var(--error);margin-top:6px;}
+  .field-error.visible{display:block;}
+  .form-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+  .toggle-row{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:12px 14px;background:var(--parchment);border-radius:8px;margin-bottom:20px;}
+  .toggle-row span{font-size:14px;font-weight:600;color:var(--maroon);}
+  .toggle-switch{position:relative;width:52px;height:28px;flex-shrink:0;}
+  .toggle-switch input{opacity:0;width:0;height:0;position:absolute;}
+  .toggle-slider{position:absolute;inset:0;background:rgba(107,31,53,0.2);border-radius:999px;cursor:pointer;transition:background .2s;}
+  .toggle-slider::before{content:"";position:absolute;width:22px;height:22px;left:3px;top:3px;background:var(--ivory);border-radius:50%;transition:transform .2s;}
+  .toggle-switch input:checked+.toggle-slider{background:var(--gold);}
+  .toggle-switch input:checked+.toggle-slider::before{transform:translateX(24px);}
+  .btn{width:100%;font-family:var(--font-body);font-size:15px;font-weight:600;padding:14px 30px;border-radius:999px;border:none;cursor:pointer;background:var(--gold-bright);color:var(--maroon-deep);display:inline-flex;align-items:center;justify-content:center;gap:8px;margin-top:8px;}
+  .btn:disabled{opacity:0.7;cursor:not-allowed;}
+  .form-footer{text-align:center;margin-top:18px;font-size:14px;color:var(--ink-soft);}
+  .form-footer a{color:var(--maroon);font-weight:600;text-decoration:underline;}
+  .empty-state{text-align:center;padding:48px 20px;color:var(--ink-soft);}
+  .empty-state h1{font-family:var(--font-display);font-size:26px;color:var(--maroon);margin-bottom:10px;}
+  .empty-state p{font-size:15px;margin-bottom:20px;line-height:1.6;}
+  .spinner{width:16px;height:16px;border:2px solid rgba(62,15,28,0.2);border-top-color:var(--maroon-deep);border-radius:50%;animation:spin .7s linear infinite;}
+  @keyframes spin{to{transform:rotate(360deg);}}
+  body.checking-session .admin-page{visibility:hidden;}
+  @media (max-width:720px){.form-row{grid-template-columns:1fr;}.site-header{padding:14px 18px;}}
+  @media (prefers-reduced-motion:reduce){.spinner,.toggle-slider,.toggle-slider::before{animation:none;transition:none;}}
+</style>
+</head>
+<body class="checking-session">
+<header class="site-header">
+  <a href="../../index.html" class="brand"><span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M9 18V6l10-2v12" stroke="currentColor" stroke-width="1.6"/><circle cx="6.5" cy="18" r="2.5" stroke="currentColor" stroke-width="1.6"/><circle cx="16.5" cy="16" r="2.5" stroke="currentColor" stroke-width="1.6"/></svg></span><span data-config="communityShortName">St. Augustine Choir</span></a>
+  <div class="header-actions"><span class="header-member-name" id="member-name"></span><button type="button" class="header-signin" id="sign-out-btn">Sign Out</button></div>
+</header>
+<main class="admin-page">
+  <a href="index.html" class="back-link"><svg viewBox="0 0 24 24" fill="none"><path d="M15 6l-6 6 6 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>Back to Events</a>
+  <div id="not-found" hidden>
+    <div class="empty-state">
+      <h1>Event not found</h1>
+      <p>This event may have been removed or the link is no longer valid.</p>
+      <a href="index.html" class="btn">Back to Manage Events</a>
+    </div>
+  </div>
+  <div class="auth-card" id="form-card" hidden>
+    <h1 id="page-title">New Event</h1>
+    <div id="error-banner" class="error-banner" role="alert"></div>
+    <form id="event-form" novalidate>
+      <div class="form-field"><label for="title">Event Title</label><input type="text" id="title" required><p class="field-error" id="error-title"></p></div>
+      <div class="form-field"><label for="description">Description <span style="font-weight:400;color:var(--ink-soft)">(optional)</span></label><textarea id="description"></textarea></div>
+      <div class="form-row">
+        <div class="form-field"><label for="date">Date</label><input type="date" id="date" required><p class="field-error" id="error-date"></p></div>
+        <div class="form-field"><label for="time">Time</label><input type="time" id="time" required><p class="field-error" id="error-time"></p></div>
+      </div>
+      <div class="form-field"><label for="location">Location <span style="font-weight:400;color:var(--ink-soft)">(optional)</span></label><input type="text" id="location"></div>
+      <div class="toggle-row">
+        <span>Recurring</span>
+        <label class="toggle-switch"><input type="checkbox" id="is-recurring" aria-label="Recurring event"><span class="toggle-slider"></span></label>
+      </div>
+      <div class="form-field" id="pattern-field" hidden>
+        <label for="recurrence-pattern">Pattern</label>
+        <select id="recurrence-pattern">
+          <option value="weekly">Weekly</option>
+          <option value="monthly">Monthly</option>
+          <option value="annually">Annually</option>
+        </select>
+        <p class="field-error" id="error-pattern"></p>
+      </div>
+      <div class="toggle-row">
+        <span>RSVP Required</span>
+        <label class="toggle-switch"><input type="checkbox" id="rsvp-required" aria-label="RSVP required"><span class="toggle-slider"></span></label>
+      </div>
+      <button type="submit" class="btn" id="submit-btn">Create Event</button>
+      <p class="form-footer"><a href="index.html">Cancel</a></p>
+    </form>
+  </div>
+</main>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../../config.js"></script>
+<script>
+(function(){
+  "use strict";
+  var editId=new URLSearchParams(window.location.search).get("id");
+  var isEdit=!!editId;
+  var supabaseClient=null,currentUserId=null;
+  var dateInput=document.getElementById("date");
+  var isRecurringEl=document.getElementById("is-recurring");
+  var patternField=document.getElementById("pattern-field");
+
+  if(!isEdit)dateInput.min=new Date().toISOString().split("T")[0];
+
+  function showFieldError(fid,eid,msg){
+    var inp=document.getElementById(fid),el=document.getElementById(eid);
+    if(msg){if(inp)inp.classList.add("input-error");if(el){el.textContent=msg;el.classList.add("visible");}}
+    else{if(inp)inp.classList.remove("input-error");if(el){el.textContent="";el.classList.remove("visible");}}
+  }
+
+  function togglePatternField(){
+    patternField.hidden=!isRecurringEl.checked;
+    if(!isRecurringEl.checked)showFieldError("recurrence-pattern","error-pattern","");
+  }
+  isRecurringEl.addEventListener("change",togglePatternField);
+
+  function validateTitle(){var v=document.getElementById("title").value.trim();var m=!v?"This field is required.":"";showFieldError("title","error-title",m);return !m;}
+  function validateDate(){
+    var v=dateInput.value,m="";
+    if(!v)m="This field is required.";
+    else if(!isEdit&&v<dateInput.min)m="Date cannot be in the past.";
+    showFieldError("date","error-date",m);return !m;
+  }
+  function validateTime(){var v=document.getElementById("time").value,m=!v?"This field is required.":"";showFieldError("time","error-time",m);return !m;}
+  function validatePattern(){
+    if(!isRecurringEl.checked){showFieldError("recurrence-pattern","error-pattern","");return true;}
+    var v=document.getElementById("recurrence-pattern").value,m=!v?"Select a pattern.":"";
+    showFieldError("recurrence-pattern","error-pattern",m);return !m;
+  }
+
+  document.getElementById("title").addEventListener("blur",validateTitle);
+  dateInput.addEventListener("blur",validateDate);
+  document.getElementById("time").addEventListener("blur",validateTime);
+
+  function firstName(n){return!n||!n.trim()?"Member":n.trim().split(/\s+/)[0];}
+  function revealPage(){document.body.classList.remove("checking-session");}
+  function pad(n){return String(n).padStart(2,"0");}
+
+  try{var u=FAITHBASE_CONFIG.supabase.url,k=FAITHBASE_CONFIG.supabase.anonKey;if(u&&k&&u.indexOf("YOUR-")===-1)supabaseClient=supabase.createClient(u,k);}catch(e){}
+
+  document.getElementById("sign-out-btn").addEventListener("click",async function(){try{if(supabaseClient)await supabaseClient.auth.signOut();}catch(e){}window.location.replace("../../index.html");});
+
+  async function adminGuard(){
+    if(!supabaseClient){window.location.replace("../../auth/login.html");return null;}
+    var sr=await supabaseClient.auth.getSession(),session=sr.data&&sr.data.session;
+    if(!session){window.location.replace("../../auth/login.html");return null;}
+    var pr=await supabaseClient.from("profiles").select("full_name,role,status").eq("id",session.user.id).single(),p=pr.data;
+    if(pr.error||!p||p.status!=="active"){await supabaseClient.auth.signOut();window.location.replace("../../auth/login.html");return null;}
+    if(p.role!=="admin"){window.location.replace("../../member/dashboard.html");return null;}
+    document.getElementById("member-name").textContent=firstName(p.full_name);
+    currentUserId=session.user.id;return p;
+  }
+
+  document.getElementById("event-form").addEventListener("submit",async function(e){
+    e.preventDefault();
+    document.getElementById("error-banner").classList.remove("visible");
+    var ok=validateTitle()&validateDate()&validateTime()&validatePattern();
+    if(!ok)return;
+
+    var btn=document.getElementById("submit-btn");
+    btn.disabled=true;btn.innerHTML='<span class="spinner"></span> Saving\u2026';
+    var recurring=isRecurringEl.checked;
+    var payload={
+      title:document.getElementById("title").value.trim(),
+      event_date:new Date(document.getElementById("date").value+"T"+document.getElementById("time").value).toISOString(),
+      is_recurring:recurring,
+      recurrence_pattern:recurring?document.getElementById("recurrence-pattern").value:null,
+      rsvp_required:document.getElementById("rsvp-required").checked
+    };
+    var loc=document.getElementById("location").value.trim();
+    var desc=document.getElementById("description").value.trim();
+    if(loc)payload.location=loc;else if(isEdit)payload.location=null;
+    if(desc)payload.description=desc;else if(isEdit)payload.description=null;
+
+    var r;
+    if(isEdit)r=await supabaseClient.from("events").update(payload).eq("id",editId);
+    else{payload.created_by=currentUserId;r=await supabaseClient.from("events").insert(payload);}
+
+    btn.disabled=false;btn.textContent=isEdit?"Update Event":"Create Event";
+    if(r.error){document.getElementById("error-banner").textContent=r.error.message||"Something went wrong.";document.getElementById("error-banner").classList.add("visible");return;}
+    if(isEdit)window.location.replace("detail.html?id="+encodeURIComponent(editId)+"&updated=success");
+    else window.location.replace("index.html?created=success");
+  });
+
+  (async function init(){
+    if(!await adminGuard())return;
+    if(isEdit){
+      document.getElementById("page-title").textContent="Edit Event";
+      document.getElementById("submit-btn").textContent="Update Event";
+      document.title="Edit Event — "+FAITHBASE_CONFIG.communityName;
+      var r=await supabaseClient.from("events").select("title, description, event_date, location, is_recurring, recurrence_pattern, rsvp_required").eq("id",editId).maybeSingle();
+      if(r.error||!r.data){document.getElementById("not-found").hidden=false;revealPage();return;}
+      var ev=r.data;
+      document.getElementById("title").value=ev.title||"";
+      document.getElementById("description").value=ev.description||"";
+      document.getElementById("location").value=ev.location||"";
+      var dt=new Date(ev.event_date);
+      dateInput.value=dt.getFullYear()+"-"+pad(dt.getMonth()+1)+"-"+pad(dt.getDate());
+      document.getElementById("time").value=pad(dt.getHours())+":"+pad(dt.getMinutes());
+      isRecurringEl.checked=!!ev.is_recurring;
+      if(ev.recurrence_pattern)document.getElementById("recurrence-pattern").value=ev.recurrence_pattern;
+      document.getElementById("rsvp-required").checked=!!ev.rsvp_required;
+      togglePatternField();
+    }else{
+      document.title="New Event — "+FAITHBASE_CONFIG.communityName;
+    }
+    document.getElementById("form-card").hidden=false;
+    revealPage();
+  })();
+})();
+</script>
+</body>
+</html>
