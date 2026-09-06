@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Announcement Detail — St. Augustine Choir</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{--maroon-deep:#3E0F1D;--maroon:#6B1F35;--gold:#C9A227;--gold-bright:#F0CC5C;--parchment:#F7EFE0;--ivory:#FFFBF3;--ink:#241019;--ink-soft:#5C3A44;--error:#B42318;--success:#2D6A4F;--font-display:'Cormorant Garamond',Georgia,serif;--font-body:'Work Sans',-apple-system,sans-serif;}
+  *{margin:0;padding:0;box-sizing:border-box;} body{font-family:var(--font-body);color:var(--ink);background:var(--parchment);min-height:100vh;-webkit-font-smoothing:antialiased;}
+  a{color:inherit;text-decoration:none;} :focus-visible{outline:3px solid var(--gold-bright);outline-offset:3px;}
+  .site-header{position:sticky;top:0;z-index:50;display:flex;align-items:center;justify-content:space-between;padding:18px 24px;background:var(--maroon-deep);border-bottom:1px solid rgba(201,162,39,0.25);}
+  .brand{display:flex;align-items:center;gap:10px;font-family:var(--font-display);font-size:20px;font-weight:600;color:var(--ivory);}
+  .brand-mark{width:28px;height:28px;color:var(--gold-bright);} .brand-mark svg{width:100%;height:100%;}
+  .header-actions{display:flex;align-items:center;gap:12px;}
+  .header-member-name{font-size:14px;font-weight:600;color:var(--gold-bright);}
+  .header-signin{font-size:14px;font-weight:600;color:var(--gold-bright);padding:9px 18px;border:1px solid rgba(240,204,92,0.5);border-radius:999px;background:transparent;cursor:pointer;}
+  .header-signin:hover,.header-signin:focus-visible{background:var(--gold-bright);color:var(--maroon-deep);}
+  .admin-page{padding:24px 20px 40px;max-width:760px;margin:0 auto;}
+  .back-link{display:inline-flex;align-items:center;gap:6px;font-size:14px;font-weight:600;color:var(--maroon);margin-bottom:20px;}
+  .back-link svg{width:18px;height:18px;}
+  .action-row{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:20px;}
+  .detail-title{font-family:var(--font-display);font-size:clamp(26px,5vw,32px);font-weight:600;color:var(--maroon);line-height:1.15;margin-bottom:10px;}
+  .detail-meta{font-size:15px;color:var(--ink-soft);line-height:1.65;margin-bottom:16px;}
+  .badge-row{margin-bottom:20px;}
+  .badge{display:inline-block;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;padding:4px 10px;border-radius:999px;white-space:nowrap;}
+  .badge-pinned{background:rgba(201,162,39,0.22);color:var(--maroon);}
+  .badge-unpinned{background:rgba(92,58,68,0.12);color:var(--ink-soft);}
+  .detail-card{background:var(--ivory);border:1px solid rgba(107,31,53,0.12);border-top:3px solid var(--maroon);border-radius:10px;padding:22px 24px;margin-bottom:20px;}
+  .detail-body{font-size:15px;line-height:1.75;color:var(--ink-soft);}
+  .detail-body strong{color:var(--ink);font-weight:600;}
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;font-family:var(--font-body);font-size:13px;font-weight:600;padding:9px 16px;border-radius:999px;border:none;cursor:pointer;background:var(--gold-bright);color:var(--maroon-deep);white-space:nowrap;transition:transform .15s ease,box-shadow .15s ease;}
+  .btn:hover,.btn:focus-visible{transform:translateY(-1px);box-shadow:0 8px 20px -8px rgba(240,204,92,0.5);}
+  .btn-outline{background:transparent;border:1px solid rgba(107,31,53,0.35);color:var(--maroon);box-shadow:none;}
+  .btn-outline:hover,.btn-outline:focus-visible{background:rgba(107,31,53,0.06);transform:none;box-shadow:none;}
+  .btn-danger{background:var(--error);color:var(--ivory);box-shadow:none;}
+  .btn-danger:hover,.btn-danger:focus-visible{background:#9a1e14;transform:none;box-shadow:none;}
+  .empty-state{text-align:center;padding:48px 20px;color:var(--ink-soft);background:var(--ivory);border:1px solid rgba(107,31,53,0.1);border-radius:10px;}
+  .empty-state p{font-size:15px;margin-bottom:20px;line-height:1.6;}
+  .error-banner{display:none;background:rgba(180,35,24,0.08);border:1px solid rgba(180,35,24,0.25);border-radius:8px;padding:12px 14px;font-size:14px;color:var(--error);margin-bottom:16px;}
+  .error-banner.visible{display:block;}
+  .success-banner{display:none;position:relative;background:rgba(240,204,92,0.18);border:1px solid rgba(201,162,39,0.45);border-radius:8px;padding:12px 40px 12px 14px;font-size:14px;color:var(--maroon-deep);margin-bottom:16px;}
+  .success-banner.visible{display:block;}
+  .success-banner-dismiss{position:absolute;top:50%;right:10px;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--maroon);font-size:18px;padding:4px;}
+  .modal-backdrop{position:fixed;inset:0;background:rgba(36,16,25,0.55);z-index:90;opacity:0;pointer-events:none;transition:opacity .2s;}
+  .modal-backdrop.open{opacity:1;pointer-events:auto;}
+  .modal{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%) scale(0.95);z-index:100;background:var(--ivory);border-radius:12px;border-top:3px solid var(--maroon);padding:28px 24px;width:calc(100% - 40px);max-width:400px;opacity:0;pointer-events:none;transition:opacity .2s,transform .2s;box-shadow:0 20px 48px -12px rgba(36,16,25,0.35);}
+  .modal.open{opacity:1;pointer-events:auto;transform:translate(-50%,-50%) scale(1);}
+  .modal h2{font-family:var(--font-display);font-size:22px;color:var(--maroon);margin-bottom:12px;}
+  .modal p{font-size:15px;color:var(--ink-soft);line-height:1.6;margin-bottom:24px;}
+  .modal-actions{display:flex;gap:12px;}
+  .modal-actions button{flex:1;padding:14px;border-radius:999px;font-size:15px;font-weight:600;cursor:pointer;border:none;font-family:var(--font-body);}
+  .modal-cancel{background:transparent;border:1px solid rgba(107,31,53,0.3)!important;color:var(--maroon);}
+  .modal-delete{background:var(--error);color:var(--ivory);}
+  body.checking-session .admin-page{visibility:hidden;}
+  @media (max-width:720px){.site-header{padding:14px 18px;}.action-row{flex-direction:column;}.action-row .btn{width:100%;}}
+  @media (prefers-reduced-motion:reduce){.modal,.modal-backdrop,.btn{transition:none;}.btn:hover,.btn:focus-visible{transform:none;}}
+</style>
+</head>
+<body class="checking-session">
+<header class="site-header">
+  <a href="../../index.html" class="brand"><span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M9 18V6l10-2v12" stroke="currentColor" stroke-width="1.6"/><circle cx="6.5" cy="18" r="2.5" stroke="currentColor" stroke-width="1.6"/><circle cx="16.5" cy="16" r="2.5" stroke="currentColor" stroke-width="1.6"/></svg></span><span data-config="communityShortName">St. Augustine Choir</span></a>
+  <div class="header-actions"><span class="header-member-name" id="member-name"></span><button type="button" class="header-signin" id="sign-out-btn">Sign Out</button></div>
+</header>
+<main class="admin-page">
+  <div id="not-found" hidden>
+    <a href="index.html" class="back-link"><svg viewBox="0 0 24 24" fill="none"><path d="M15 6l-6 6 6 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>Back to Announcements</a>
+    <div class="empty-state"><p>Announcement not found</p><a href="index.html" class="btn btn-outline">Back to Manage Announcements</a></div>
+  </div>
+  <div id="page-content" hidden>
+    <a href="index.html" class="back-link"><svg viewBox="0 0 24 24" fill="none"><path d="M15 6l-6 6 6 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>Back to Announcements</a>
+    <div id="error-banner" class="error-banner" role="alert"></div>
+    <div id="success-banner" class="success-banner" role="status"><span id="toast-message">Announcement updated.</span><button type="button" class="success-banner-dismiss" id="dismiss-success" aria-label="Dismiss">&times;</button></div>
+    <div class="action-row">
+      <a href="#" class="btn" id="edit-link">Edit</a>
+      <button type="button" class="btn btn-outline" id="pin-toggle-btn">Pin to Notice Board</button>
+      <button type="button" class="btn btn-danger" id="delete-btn">Delete</button>
+    </div>
+    <h1 class="detail-title" id="announcement-title"></h1>
+    <p class="detail-meta" id="announcement-meta"></p>
+    <div class="badge-row" id="pin-badge-row"></div>
+    <div class="detail-card"><div class="detail-body" id="announcement-body"></div></div>
+  </div>
+</main>
+<div class="modal-backdrop" id="modal-backdrop" hidden></div>
+<div class="modal" id="delete-modal" role="dialog" aria-hidden="true" hidden>
+  <h2>Delete Announcement?</h2>
+  <p>This will permanently delete this announcement. This cannot be undone.</p>
+  <div class="modal-actions">
+    <button type="button" class="modal-cancel" id="delete-cancel">Cancel</button>
+    <button type="button" class="modal-delete" id="delete-confirm">Delete</button>
+  </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../../config.js"></script>
+<script>
+(function(){
+  "use strict";
+  var announcementId=new URLSearchParams(window.location.search).get("id");
+  var announcement=null;
+  var supabaseClient=null;
+
+  if(new URLSearchParams(window.location.search).get("updated")==="success"){
+    document.getElementById("success-banner").classList.add("visible");
+    if(window.history.replaceState)window.history.replaceState({},document.title,window.location.pathname+"?id="+encodeURIComponent(announcementId||""));
+  }
+  document.getElementById("dismiss-success").addEventListener("click",function(){document.getElementById("success-banner").classList.remove("visible");});
+
+  document.title="Announcement Detail — "+FAITHBASE_CONFIG.communityName;
+  document.querySelectorAll("[data-config]").forEach(function(el){var k=el.getAttribute("data-config");if(FAITHBASE_CONFIG[k]!==undefined)el.textContent=FAITHBASE_CONFIG[k];});
+
+  function firstName(n){return!n||!n.trim()?"Member":n.trim().split(/\s+/)[0];}
+  function revealPage(){document.body.classList.remove("checking-session");}
+  function escapeHtml(s){return String(s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");}
+  function formatDate(iso){return new Date(iso).toLocaleString("en-GB",{day:"numeric",month:"long",year:"numeric",hour:"numeric",minute:"2-digit",hour12:true});}
+  function posterName(profiles){return profiles&&profiles.full_name?profiles.full_name:"Community Executive";}
+  function formatBody(raw){
+    var escaped=escapeHtml(raw||"");
+    escaped=escaped.replace(/\r\n/g,"\n").replace(/\r/g,"\n");
+    escaped=escaped.replace(/\n/g,"<br>");
+    escaped=escaped.replace(/\*\*(.+?)\*\*/g,"<strong>$1</strong>");
+    return escaped;
+  }
+
+  try{var u=FAITHBASE_CONFIG.supabase.url,k=FAITHBASE_CONFIG.supabase.anonKey;if(u&&k&&u.indexOf("YOUR-")===-1)supabaseClient=supabase.createClient(u,k);}catch(e){}
+
+  document.getElementById("sign-out-btn").addEventListener("click",async function(){try{if(supabaseClient)await supabaseClient.auth.signOut();}catch(e){}window.location.replace("../../index.html");});
+
+  async function adminGuard(){
+    if(!supabaseClient||!announcementId){return null;}
+    var sr=await supabaseClient.auth.getSession(),session=sr.data&&sr.data.session;
+    if(!session){window.location.replace("../../auth/login.html");return null;}
+    var pr=await supabaseClient.from("profiles").select("full_name,role,status").eq("id",session.user.id).single(),p=pr.data;
+    if(pr.error||!p||p.status!=="active"){await supabaseClient.auth.signOut();window.location.replace("../../auth/login.html");return null;}
+    if(p.role!=="admin"){window.location.replace("../../member/dashboard.html");return null;}
+    document.getElementById("member-name").textContent=firstName(p.full_name);
+    return p;
+  }
+
+  function renderPinState(){
+    var pinned=!!announcement.is_pinned;
+    document.getElementById("pin-badge-row").innerHTML=pinned
+      ?'<span class="badge badge-pinned">Pinned</span>'
+      :'<span class="badge badge-unpinned">Not Pinned</span>';
+    document.getElementById("pin-toggle-btn").textContent=pinned?"Unpin":"Pin to Notice Board";
+  }
+
+  function renderDetail(item){
+    announcement=item;
+    document.getElementById("announcement-title").textContent=item.title;
+    document.getElementById("announcement-meta").textContent=formatDate(item.created_at)+" · Posted by "+posterName(item.profiles);
+    document.getElementById("announcement-body").innerHTML=formatBody(item.body);
+    document.getElementById("edit-link").href="create.html?id="+encodeURIComponent(item.id);
+    document.title=(item.title||"Announcement")+" — Admin";
+    renderPinState();
+  }
+
+  document.getElementById("pin-toggle-btn").addEventListener("click",async function(){
+    if(!announcement)return;
+    var btn=this,newPinned=!announcement.is_pinned;
+    btn.disabled=true;
+    var r=await supabaseClient.from("announcements").update({is_pinned:newPinned}).eq("id",announcementId);
+    btn.disabled=false;
+    if(r.error){document.getElementById("error-banner").textContent=r.error.message;document.getElementById("error-banner").classList.add("visible");return;}
+    announcement.is_pinned=newPinned;
+    renderPinState();
+  });
+
+  var backdrop=document.getElementById("modal-backdrop"),deleteModal=document.getElementById("delete-modal");
+  function openDeleteModal(){deleteModal.hidden=false;backdrop.hidden=false;requestAnimationFrame(function(){deleteModal.classList.add("open");backdrop.classList.add("open");});}
+  function closeDeleteModal(){deleteModal.classList.remove("open");backdrop.classList.remove("open");setTimeout(function(){deleteModal.hidden=true;backdrop.hidden=true;},200);}
+
+  document.getElementById("delete-btn").addEventListener("click",openDeleteModal);
+  document.getElementById("delete-cancel").addEventListener("click",closeDeleteModal);
+  backdrop.addEventListener("click",closeDeleteModal);
+  document.addEventListener("keydown",function(e){if(e.key==="Escape"&&deleteModal.classList.contains("open"))closeDeleteModal();});
+
+  document.getElementById("delete-confirm").addEventListener("click",async function(){
+    closeDeleteModal();
+    var r=await supabaseClient.from("announcements").delete().eq("id",announcementId);
+    if(r.error){document.getElementById("error-banner").textContent=r.error.message;document.getElementById("error-banner").classList.add("visible");return;}
+    window.location.replace("index.html");
+  });
+
+  (async function init(){
+    if(!await adminGuard()||!announcementId){
+      document.getElementById("not-found").hidden=false;revealPage();return;
+    }
+    var r=await supabaseClient.from("announcements")
+      .select("id, title, body, is_pinned, created_at, profiles(full_name)")
+      .eq("id",announcementId)
+      .maybeSingle();
+    if(r.error||!r.data){
+      document.getElementById("not-found").hidden=false;revealPage();return;
+    }
+    renderDetail(r.data);
+    document.getElementById("page-content").hidden=false;
+    revealPage();
+  })();
+})();
+</script>
+</body>
+</html>
