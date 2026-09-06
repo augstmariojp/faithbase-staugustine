@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Manage Dues — St. Augustine Choir</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{--maroon-deep:#3E0F1C;--maroon:#6B1F35;--gold:#C9A227;--gold-bright:#F0CC5C;--parchment:#F7EFE0;--ivory:#FFFBF3;--ink:#241019;--ink-soft:#5C3A44;--error:#B42318;--success:#2D6A4F;--amber:#B7791F;--font-display:'Cormorant Garamond',Georgia,serif;--font-body:'Work Sans',-apple-system,sans-serif;}
+  *{margin:0;padding:0;box-sizing:border-box;} html{scroll-behavior:smooth;}
+  body{font-family:var(--font-body);color:var(--ink);background:var(--parchment);min-height:100vh;-webkit-font-smoothing:antialiased;}
+  a{color:inherit;text-decoration:none;} :focus-visible{outline:3px solid var(--gold-bright);outline-offset:3px;}
+  .site-header{position:sticky;top:0;z-index:50;display:flex;align-items:center;justify-content:space-between;padding:18px 24px;background:var(--maroon-deep);border-bottom:1px solid rgba(201,162,39,0.25);}
+  .brand{display:flex;align-items:center;gap:10px;font-family:var(--font-display);font-size:20px;font-weight:600;color:var(--ivory);}
+  .brand-mark{width:28px;height:28px;color:var(--gold-bright);} .brand-mark svg{width:100%;height:100%;}
+  .header-actions{display:flex;align-items:center;gap:12px;}
+  .header-member-name{font-size:14px;font-weight:600;color:var(--gold-bright);white-space:nowrap;}
+  .header-signin{font-size:14px;font-weight:600;color:var(--gold-bright);padding:9px 18px;border:1px solid rgba(240,204,92,0.5);border-radius:999px;background:transparent;cursor:pointer;}
+  .header-signin:hover,.header-signin:focus-visible{background:var(--gold-bright);color:var(--maroon-deep);}
+  .admin-page{padding:24px 20px 40px;max-width:100%;margin:0 auto;}
+  .admin-inner{max-width:1200px;margin:0 auto;}
+  .back-link{display:inline-flex;align-items:center;gap:6px;font-size:14px;font-weight:600;color:var(--maroon);margin-bottom:20px;}
+  .back-link svg{width:18px;height:18px;}
+  .page-header{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:20px;flex-wrap:wrap;}
+  .page-heading{font-family:var(--font-display);font-weight:600;font-size:32px;color:var(--maroon);}
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;font-family:var(--font-body);font-size:14px;font-weight:600;padding:12px 22px;border-radius:999px;border:none;cursor:pointer;background:var(--gold-bright);color:var(--maroon-deep);transition:transform .15s ease,box-shadow .15s ease;white-space:nowrap;}
+  .btn:hover,.btn:focus-visible{transform:translateY(-2px);box-shadow:0 10px 24px -8px rgba(240,204,92,0.55);}
+  .btn:disabled{opacity:0.7;cursor:not-allowed;transform:none;box-shadow:none;}
+  .success-banner{display:none;position:relative;background:rgba(240,204,92,0.18);border:1px solid rgba(201,162,39,0.45);border-radius:8px;padding:12px 40px 12px 14px;font-size:14px;color:var(--maroon-deep);margin-bottom:20px;}
+  .success-banner.visible{display:block;}
+  .success-banner-dismiss{position:absolute;top:50%;right:10px;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--maroon);font-size:18px;padding:4px;}
+  .year-row{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:20px;flex-wrap:wrap;}
+  .year-row label{font-size:14px;font-weight:600;color:var(--maroon);}
+  .year-row select{font-family:var(--font-body);font-size:15px;font-weight:600;color:var(--ink);background:var(--ivory);border:1px solid rgba(107,31,53,0.2);border-radius:8px;padding:10px 14px;min-width:120px;cursor:pointer;}
+  .year-row select:focus{outline:none;border-color:var(--maroon);box-shadow:0 0 0 3px rgba(107,31,53,0.12);}
+  .grid-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;margin-bottom:28px;border:1px solid rgba(107,31,53,0.12);border-radius:10px;background:var(--ivory);box-shadow:0 4px 24px -8px rgba(36,16,25,0.08);}
+  .dues-grid{width:100%;border-collapse:separate;border-spacing:0;min-width:880px;font-size:13px;}
+  .dues-grid th,.dues-grid td{border-bottom:1px solid rgba(107,31,53,0.1);border-right:1px solid rgba(107,31,53,0.08);padding:10px 8px;text-align:center;vertical-align:middle;}
+  .dues-grid th:last-child,.dues-grid td:last-child{border-right:none;}
+  .dues-grid thead th{background:var(--maroon-deep);color:var(--ivory);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;position:sticky;top:0;z-index:3;}
+  .dues-grid .sticky-col{position:sticky;left:0;z-index:4;text-align:left;min-width:140px;max-width:180px;background:var(--ivory);box-shadow:2px 0 6px -2px rgba(36,16,25,0.12);}
+  .dues-grid thead .sticky-col{background:var(--maroon-deep);z-index:5;box-shadow:2px 0 6px -2px rgba(0,0,0,0.2);}
+  .dues-grid .sticky-totals{position:sticky;right:0;z-index:4;min-width:110px;background:var(--parchment);font-size:12px;font-weight:600;text-align:left;padding-left:12px;box-shadow:-2px 0 6px -2px rgba(36,16,25,0.12);}
+  .dues-grid thead .sticky-totals{background:var(--maroon);z-index:5;}
+  .dues-grid tfoot td{background:var(--parchment);font-size:11px;font-weight:700;color:var(--maroon);}
+  .dues-grid tfoot .sticky-col{background:var(--parchment);font-weight:700;}
+  .member-name-cell{font-weight:600;color:var(--ink);font-size:13px;line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .grid-cell{min-width:52px;height:52px;display:flex;align-items:center;justify-content:center;margin:0 auto;}
+  .grid-cell.tappable{cursor:pointer;border-radius:8px;transition:background .12s ease;}
+  .grid-cell.tappable:hover,.grid-cell.tappable:focus-visible{background:rgba(201,162,39,0.15);}
+  .grid-cell.neutral{color:rgba(92,58,68,0.35);font-size:18px;font-weight:400;}
+  .grid-cell.paid{color:var(--success);}
+  .grid-cell.outstanding{color:var(--error);}
+  .member-totals{font-size:11px;line-height:1.5;color:var(--ink-soft);}
+  .member-totals strong{color:var(--ink);display:block;}
+  .section-heading{font-family:var(--font-display);font-size:22px;font-weight:600;color:var(--maroon);margin-bottom:16px;}
+  .outstanding-list{display:flex;flex-direction:column;gap:10px;margin-bottom:8px;}
+  .outstanding-row{background:var(--ivory);border:1px solid rgba(107,31,53,0.12);border-left:3px solid var(--error);border-radius:10px;padding:14px 18px;display:flex;justify-content:space-between;align-items:center;gap:12px;}
+  .outstanding-row span:first-child{font-weight:600;color:var(--ink);}
+  .outstanding-row span:last-child{font-size:13px;font-weight:600;color:var(--error);}
+  .empty-state{text-align:center;padding:32px 20px;color:var(--ink-soft);background:var(--ivory);border:1px solid rgba(107,31,53,0.1);border-radius:10px;}
+  .empty-state p{font-size:15px;}
+  .skeleton-list{display:flex;flex-direction:column;gap:12px;margin-bottom:24px;}
+  .skeleton-row{height:120px;border-radius:10px;background:linear-gradient(90deg,rgba(107,31,53,0.06) 25%,rgba(107,31,53,0.12) 50%,rgba(107,31,53,0.06) 75%);background-size:200% 100%;animation:shimmer 1.4s ease-in-out infinite;}
+  @keyframes shimmer{0%{background-position:200% 0;}100%{background-position:-200% 0;}}
+  .error-banner{display:none;background:rgba(180,35,24,0.08);border:1px solid rgba(180,35,24,0.25);border-radius:8px;padding:12px 14px;font-size:14px;color:var(--error);margin-bottom:16px;}
+  .error-banner.visible{display:block;}
+  .modal-backdrop{position:fixed;inset:0;background:rgba(36,16,25,0.55);z-index:90;opacity:0;pointer-events:none;transition:opacity .2s;}
+  .modal-backdrop.open{opacity:1;pointer-events:auto;}
+  .modal{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%) scale(0.95);z-index:100;background:var(--ivory);border-radius:12px;border-top:3px solid var(--maroon);padding:28px 24px;width:calc(100% - 40px);max-width:440px;max-height:90vh;overflow-y:auto;opacity:0;pointer-events:none;transition:opacity .2s,transform .2s;box-shadow:0 20px 48px -12px rgba(36,16,25,0.35);}
+  .modal.open{opacity:1;pointer-events:auto;transform:translate(-50%,-50%) scale(1);}
+  .modal h2{font-family:var(--font-display);font-size:22px;color:var(--maroon);margin-bottom:12px;}
+  .modal-summary{background:var(--parchment);border-radius:8px;padding:14px 16px;margin-bottom:20px;font-size:14px;line-height:1.6;color:var(--ink-soft);}
+  .modal-summary strong{color:var(--ink);}
+  .form-field{margin-bottom:16px;}
+  .form-field label{display:block;font-size:13px;font-weight:600;color:var(--maroon);margin-bottom:6px;}
+  .form-field input,.form-field select,.form-field textarea{width:100%;font-family:var(--font-body);font-size:15px;padding:12px 14px;border:1px solid rgba(107,31,53,0.2);border-radius:8px;background:var(--parchment);}
+  .form-field textarea{min-height:80px;resize:vertical;}
+  .form-field input:focus,.form-field select:focus,.form-field textarea:focus{outline:none;border-color:var(--maroon);box-shadow:0 0 0 3px rgba(107,31,53,0.12);}
+  .readonly-field{margin-bottom:12px;font-size:14px;line-height:1.55;}
+  .readonly-field .lbl{font-size:12px;font-weight:600;color:var(--maroon);display:block;margin-bottom:2px;}
+  .modal-actions{display:flex;gap:12px;margin-top:8px;}
+  .modal-actions .btn{flex:1;margin-top:0;}
+  .modal-cancel{background:transparent;border:1px solid rgba(107,31,53,0.3)!important;color:var(--maroon);box-shadow:none;}
+  .spinner{width:16px;height:16px;border:2px solid rgba(62,15,28,0.2);border-top-color:var(--maroon-deep);border-radius:50%;animation:spin .7s linear infinite;}
+  @keyframes spin{to{transform:rotate(360deg);}}
+  body.checking-session .admin-inner{visibility:hidden;}
+  @media (max-width:720px){.site-header{padding:14px 18px;}.page-heading{font-size:28px;}.admin-page{padding:20px 12px 32px;}}
+  @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto;}.skeleton-row,.modal,.modal-backdrop{animation:none;transition:none;}.btn:hover,.btn:focus-visible{transform:none;}}
+</style>
+</head>
+<body class="checking-session">
+<header class="site-header">
+  <a href="../../index.html" class="brand"><span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M9 18V6l10-2v12" stroke="currentColor" stroke-width="1.6"/><circle cx="6.5" cy="18" r="2.5" stroke="currentColor" stroke-width="1.6"/><circle cx="16.5" cy="16" r="2.5" stroke="currentColor" stroke-width="1.6"/></svg></span><span data-config="communityShortName">St. Augustine Choir</span></a>
+  <div class="header-actions"><span class="header-member-name" id="member-name"></span><button type="button" class="header-signin" id="sign-out-btn">Sign Out</button></div>
+</header>
+<main class="admin-page">
+<div class="admin-inner">
+  <a href="../../member/dashboard.html" class="back-link"><svg viewBox="0 0 24 24" fill="none"><path d="M15 6l-6 6 6 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>Back to Dashboard</a>
+  <div class="page-header"><h1 class="page-heading">Manage Dues</h1><a href="config.html" class="btn">Configure Dues</a></div>
+  <div id="success-banner" class="success-banner" role="status">Payment recorded.<button type="button" class="success-banner-dismiss" id="dismiss-success" aria-label="Dismiss">&times;</button></div>
+  <div id="page-loading" class="skeleton-list"><div class="skeleton-row"></div><div class="skeleton-row"></div></div>
+  <div id="page-content" hidden>
+    <div class="year-row"><label for="year-select">Year</label><select id="year-select" aria-label="Select year"></select></div>
+    <div class="grid-scroll" id="grid-wrap"></div>
+    <h2 class="section-heading">Members with Outstanding Dues</h2>
+    <div id="outstanding-section"></div>
+  </div>
+</div>
+</main>
+<div class="modal-backdrop" id="modal-backdrop" hidden></div>
+<div class="modal" id="payment-modal" role="dialog" aria-labelledby="modal-title" aria-hidden="true" hidden>
+  <h2 id="modal-title">Record Payment</h2>
+  <div class="modal-summary" id="modal-summary"></div>
+  <div id="modal-form-wrap"></div>
+  <div id="modal-error" class="error-banner" role="alert"></div>
+  <div class="modal-actions" id="modal-actions"></div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../../config.js"></script>
+<script>
+(function(){
+  "use strict";
+  document.title="Manage Dues — "+FAITHBASE_CONFIG.communityName;
+  document.querySelectorAll("[data-config]").forEach(function(el){var k=el.getAttribute("data-config");if(FAITHBASE_CONFIG[k]!==undefined)el.textContent=FAITHBASE_CONFIG[k];});
+
+  var MONTH_LABELS=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+  var MONTH_NAMES=["January","February","March","April","May","June","July","August","September","October","November","December"];
+  var CHECK_SVG='<svg viewBox="0 0 24 24" fill="none" width="22" height="22" aria-hidden="true"><path d="M6 12l4 4 8-8" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  var CIRCLE_SVG='<svg viewBox="0 0 24 24" fill="none" width="20" height="20" aria-hidden="true"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2"/></svg>';
+
+  var supabaseClient=null,currentUserId=null;
+  var members=[],duesConfig=[],payments=[],paymentYears=[],selectedYear=null;
+  var modalCtx=null;
+
+  function firstName(n){return!n||!n.trim()?"Member":n.trim().split(/\s+/)[0];}
+  function revealPage(){document.body.classList.remove("checking-session");}
+  function formatNaira(a){if(a===null||a===undefined)return"\u2014";return"\u20A6"+Number(a).toLocaleString("en-NG");}
+  function escapeHtml(s){return String(s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");}
+  function payKey(mid,m,y){return mid+"|"+m;}
+  function getPayment(mid,m,y){return payments.find(function(p){return p.member_id===mid&&Number(p.period_month)===m&&Number(p.period_year)===y;});}
+  function joinedParts(d){var dt=new Date(d||Date.now());return{year:dt.getFullYear(),month:dt.getMonth()+1};}
+  function expectedAmountForMonth(y,m){var first=new Date(y,m-1,1),app=null;for(var i=0;i<duesConfig.length;i++){var eff=new Date(duesConfig[i].effective_from);if(eff<=first)app=duesConfig[i];else break;}return app?Number(app.amount):null;}
+  function getMonthState(member,y,m){
+    var j=joinedParts(member.date_joined),now=new Date(),cy=now.getFullYear(),cm=now.getMonth()+1;
+    if(y<j.year||(y===j.year&&m<j.month))return"before-joined";
+    if(y>cy||(y===cy&&m>cm))return"not-due";
+    if(getPayment(member.id,m,y))return"paid";
+    if(expectedAmountForMonth(y,m)===null)return"not-configured";
+    return"outstanding";
+  }
+  function isNeutralState(s){return s==="before-joined"||s==="not-due"||s==="not-configured";}
+  function isCurrentYear(y){return y===new Date().getFullYear();}
+
+  try{var u=FAITHBASE_CONFIG.supabase.url,k=FAITHBASE_CONFIG.supabase.anonKey;if(u&&k&&u.indexOf("YOUR-")===-1)supabaseClient=supabase.createClient(u,k);}catch(e){}
+
+  document.getElementById("sign-out-btn").addEventListener("click",async function(){try{if(supabaseClient)await supabaseClient.auth.signOut();}catch(e){}window.location.replace("../../index.html");});
+  document.getElementById("dismiss-success").addEventListener("click",function(){document.getElementById("success-banner").classList.remove("visible");});
+
+  async function adminGuard(){
+    if(!supabaseClient){window.location.replace("../../auth/login.html");return null;}
+    var sr=await supabaseClient.auth.getSession(),session=sr.data&&sr.data.session;
+    if(!session){window.location.replace("../../auth/login.html");return null;}
+    var pr=await supabaseClient.from("profiles").select("full_name,role,status").eq("id",session.user.id).single(),p=pr.data;
+    if(pr.error||!p||p.status!=="active"){await supabaseClient.auth.signOut();window.location.replace("../../auth/login.html");return null;}
+    if(p.role!=="admin"){window.location.replace("../../member/dashboard.html");return null;}
+    document.getElementById("member-name").textContent=firstName(p.full_name);
+    currentUserId=session.user.id;return p;
+  }
+
+  async function fetchPaymentsForYear(y){
+    var r=await supabaseClient.from("dues_payments").select("member_id, period_month, period_year, amount_paid, payment_date, payment_method, notes").eq("period_year",y);
+    payments=r.data||[];
+  }
+
+  function computeEarliestYear(){
+    var y=new Date().getFullYear();
+    duesConfig.forEach(function(c){var ey=new Date(c.effective_from).getFullYear();if(ey<y)y=ey;});
+    paymentYears.forEach(function(py){if(py<y)y=py;});
+    return y;
+  }
+
+  function populateYearSelect(){
+    var sel=document.getElementById("year-select"),start=computeEarliestYear(),now=new Date().getFullYear();
+    sel.innerHTML="";
+    for(var y=now;y>=start;y--){var o=document.createElement("option");o.value=String(y);o.textContent=String(y);if(y===selectedYear)o.selected=true;sel.appendChild(o);}
+  }
+
+  function renderCell(member,m,y,state){
+    var cls="grid-cell",content="\u2014",tab=-1,tap=false,label=state;
+    if(state==="paid"){cls+=" paid";content=CHECK_SVG;tap=true;}
+    else if(state==="outstanding"){cls+=" outstanding";content=CIRCLE_SVG;tap=true;}
+    else{cls+=" neutral";}
+    if(isNeutralState(state))return'<div class="'+cls+'" aria-label="'+MONTH_NAMES[m-1]+' '+y+': '+label+'">'+content+'</div>';
+    var readOnly=!isCurrentYear(y);
+    if(readOnly&&state==="outstanding")tap=false;
+    if(tap){cls+=" tappable";tab=0;}
+    return'<button type="button" class="'+cls+'" data-member="'+member.id+'" data-month="'+m+'" data-state="'+state+'" '+(tab===0?'tabindex="0"':'')+' aria-label="'+escapeHtml(member.full_name)+' '+MONTH_NAMES[m-1]+' '+y+': '+label+'">'+content+'</button>';
+  }
+
+  function renderGrid(){
+    var y=selectedYear,html='<table class="dues-grid"><thead><tr><th class="sticky-col">Member</th>';
+    for(var i=0;i<12;i++)html+='<th>'+MONTH_LABELS[i]+'</th>';
+    html+='<th class="sticky-totals">Totals</th></tr></thead><tbody>';
+    var monthCollected=[0,0,0,0,0,0,0,0,0,0,0,0],monthExpected=[0,0,0,0,0,0,0,0,0,0,0,0];
+    var outstandingMembers=[];
+
+    members.forEach(function(member){
+      var paidTotal=0,outstandingTotal=0,outstandingCount=0;
+      html+='<tr><td class="sticky-col"><div class="member-name-cell">'+escapeHtml(member.full_name)+'</div></td>';
+      for(var m=1;m<=12;m++){
+        var state=getMonthState(member,y,m);
+        html+='<td>'+renderCell(member,m,y,state)+'</td>';
+        var pay=getPayment(member.id,m,y);
+        if(pay)paidTotal+=Number(pay.amount_paid||0);
+        if(state==="outstanding"){var exp=expectedAmountForMonth(y,m);outstandingTotal+=exp;outstandingCount++;}
+        if(!isNeutralState(state)&&state!=="not-configured"){
+          if(pay)monthCollected[m-1]+=Number(pay.amount_paid||0);
+          var expAmt=expectedAmountForMonth(y,m);
+          if(expAmt!==null)monthExpected[m-1]+=expAmt;
+        }
+      }
+      html+='<td class="sticky-totals"><div class="member-totals"><strong>Paid: '+escapeHtml(formatNaira(paidTotal))+'</strong>Outstanding: '+escapeHtml(formatNaira(outstandingTotal))+'</div></td></tr>';
+      if(outstandingCount>0)outstandingMembers.push({name:member.full_name,count:outstandingCount});
+    });
+
+    html+='</tbody><tfoot><tr><td class="sticky-col">Collected / Expected</td>';
+    for(var t=0;t<12;t++)html+='<td>'+escapeHtml(formatNaira(monthCollected[t]))+' / '+escapeHtml(formatNaira(monthExpected[t]))+'</td>';
+    html+='<td class="sticky-totals"></td></tr></tfoot></table>';
+    document.getElementById("grid-wrap").innerHTML=html;
+
+    outstandingMembers.sort(function(a,b){return b.count-a.count;});
+    var sec=document.getElementById("outstanding-section");
+    if(!outstandingMembers.length)sec.innerHTML='<div class="empty-state"><p>No outstanding dues for '+y+'</p></div>';
+    else sec.innerHTML='<div class="outstanding-list">'+outstandingMembers.map(function(o){
+      return'<div class="outstanding-row"><span>'+escapeHtml(o.name)+'</span><span>'+o.count+' month'+(o.count===1?"":"s")+' outstanding</span></div>';
+    }).join("")+'</div>';
+  }
+
+  var backdrop=document.getElementById("modal-backdrop"),modal=document.getElementById("payment-modal");
+  function openModal(){modal.hidden=false;backdrop.hidden=false;requestAnimationFrame(function(){modal.classList.add("open");backdrop.classList.add("open");modal.setAttribute("aria-hidden","false");});}
+  function closeModal(){modal.classList.remove("open");backdrop.classList.remove("open");modal.setAttribute("aria-hidden","true");document.getElementById("modal-error").classList.remove("visible");setTimeout(function(){modal.hidden=true;backdrop.hidden=true;modalCtx=null;},200);}
+
+  function showToast(){var b=document.getElementById("success-banner");b.classList.add("visible");setTimeout(function(){b.classList.remove("visible");},3500);}
+
+  function openPaymentModal(memberId,month,state){
+    var member=members.find(function(m){return m.id===memberId;});
+    if(!member)return;
+    var y=selectedYear,mName=MONTH_NAMES[month-1],expected=expectedAmountForMonth(y,month);
+    var existing=getPayment(memberId,month,y);
+    var readOnly=!isCurrentYear(y);
+    var isEdit=!!existing&&isCurrentYear(y);
+
+    modalCtx={member:member,month:month,year:y,existing:existing,readOnly:readOnly,isEdit:isEdit};
+
+    document.getElementById("modal-title").textContent=readOnly?"Payment Record":isEdit?"Update Payment":"Record Payment";
+    document.getElementById("modal-summary").innerHTML=
+      '<strong>'+escapeHtml(member.full_name)+'</strong><br>'+mName+' '+y+'<br>Expected: <strong>'+escapeHtml(formatNaira(expected))+'</strong>';
+
+    var wrap=document.getElementById("modal-form-wrap"),actions=document.getElementById("modal-actions");
+    if(readOnly&&existing){
+      wrap.innerHTML=
+        '<div class="readonly-field"><span class="lbl">Amount Paid</span>'+escapeHtml(formatNaira(existing.amount_paid))+'</div>'+
+        '<div class="readonly-field"><span class="lbl">Payment Date</span>'+escapeHtml(existing.payment_date||"\u2014")+'</div>'+
+        '<div class="readonly-field"><span class="lbl">Payment Method</span>'+escapeHtml((existing.payment_method||"").replace(/^./,function(c){return c.toUpperCase();}))+'</div>'+
+        '<div class="readonly-field"><span class="lbl">Notes</span>'+escapeHtml(existing.notes||"\u2014")+'</div>';
+      actions.innerHTML='<button type="button" class="btn modal-cancel" id="modal-close-btn">Close</button>';
+      document.getElementById("modal-close-btn").addEventListener("click",closeModal);
+    }else{
+      var today=new Date().toISOString().split("T")[0];
+      wrap.innerHTML=
+        '<div class="form-field"><label for="pay-amount">Amount Paid</label><input type="number" id="pay-amount" min="0" step="1" value="'+(existing?existing.amount_paid:expected||"")+'"></div>'+
+        '<div class="form-field"><label for="pay-date">Payment Date</label><input type="date" id="pay-date" max="'+today+'" value="'+(existing&&existing.payment_date?existing.payment_date.split("T")[0]:today)+'"></div>'+
+        '<div class="form-field"><label for="pay-method">Payment Method</label><select id="pay-method"><option value="cash"'+(existing&&existing.payment_method==="cash"?" selected":"")+'>Cash</option><option value="transfer"'+(existing&&existing.payment_method==="transfer"?" selected":"")+'>Transfer</option><option value="pos"'+(existing&&existing.payment_method==="pos"?" selected":"")+'>POS</option></select></div>'+
+        '<div class="form-field"><label for="pay-notes">Notes <span style="font-weight:400;color:var(--ink-soft)">(optional)</span></label><textarea id="pay-notes">'+(existing&&existing.notes?escapeHtml(existing.notes):"")+'</textarea></div>';
+      actions.innerHTML='<button type="button" class="btn modal-cancel" id="modal-cancel-btn">Cancel</button><button type="button" class="btn" id="modal-save-btn">'+(isEdit?"Update Payment":"Save Payment")+'</button>';
+      document.getElementById("modal-cancel-btn").addEventListener("click",closeModal);
+      document.getElementById("modal-save-btn").addEventListener("click",savePayment);
+    }
+    openModal();
+  }
+
+  async function savePayment(){
+    if(!modalCtx||modalCtx.readOnly)return;
+    var errEl=document.getElementById("modal-error"),btn=document.getElementById("modal-save-btn");
+    errEl.classList.remove("visible");
+    var amount=Number(document.getElementById("pay-amount").value);
+    var pdate=document.getElementById("pay-date").value;
+    if(!amount&&amount!==0){errEl.textContent="Enter a valid amount.";errEl.classList.add("visible");return;}
+    if(!pdate){errEl.textContent="Payment date is required.";errEl.classList.add("visible");return;}
+    if(pdate>new Date().toISOString().split("T")[0]){errEl.textContent="Payment date cannot be in the future.";errEl.classList.add("visible");return;}
+    btn.disabled=true;btn.innerHTML='<span class="spinner"></span> Saving\u2026';
+    var row={
+      member_id:modalCtx.member.id,
+      period_month:modalCtx.month,
+      period_year:modalCtx.year,
+      amount_paid:amount,
+      payment_date:pdate,
+      payment_method:document.getElementById("pay-method").value,
+      notes:document.getElementById("pay-notes").value.trim()||null,
+      recorded_by:currentUserId
+    };
+    var r=await supabaseClient.from("dues_payments").upsert(row,{onConflict:"member_id,period_month,period_year"});
+    btn.disabled=false;btn.textContent=modalCtx.isEdit?"Update Payment":"Save Payment";
+    if(r.error){errEl.textContent=r.error.message||"Failed to save.";errEl.classList.add("visible");return;}
+    var idx=payments.findIndex(function(p){return p.member_id===row.member_id&&Number(p.period_month)===row.period_month&&Number(p.period_year)===row.period_year;});
+    if(idx>=0)payments[idx]=Object.assign({},payments[idx],row);else payments.push(row);
+    closeModal();renderGrid();showToast();
+  }
+
+  document.getElementById("grid-wrap").addEventListener("click",function(e){
+    var btn=e.target.closest("button[data-member]");
+    if(!btn)return;
+    openPaymentModal(btn.getAttribute("data-member"),Number(btn.getAttribute("data-month")),btn.getAttribute("data-state"));
+  });
+
+  backdrop.addEventListener("click",closeModal);
+  document.addEventListener("keydown",function(e){if(e.key==="Escape"&&modal.classList.contains("open"))closeModal();});
+
+  document.getElementById("year-select").addEventListener("change",async function(){
+    selectedYear=Number(this.value);
+    document.getElementById("grid-wrap").innerHTML='<div class="skeleton-list"><div class="skeleton-row"></div></div>';
+    await fetchPaymentsForYear(selectedYear);
+    renderGrid();
+  });
+
+  (async function init(){
+    if(!await adminGuard())return;
+    var results=await Promise.all([
+      supabaseClient.from("profiles").select("id, full_name, date_joined").eq("status","active").order("full_name",{ascending:true}),
+      supabaseClient.from("dues_config").select("amount, effective_from").order("effective_from",{ascending:true}),
+      supabaseClient.from("dues_payments").select("period_year")
+    ]);
+    members=results[0].data||[];
+    duesConfig=results[1].data||[];
+    paymentYears=(results[2].data||[]).map(function(p){return Number(p.period_year);});
+    selectedYear=new Date().getFullYear();
+    await fetchPaymentsForYear(selectedYear);
+    populateYearSelect();
+    document.getElementById("page-loading").hidden=true;
+    document.getElementById("page-content").hidden=false;
+    renderGrid();
+    revealPage();
+  })();
+})();
+</script>
+</body>
+</html>

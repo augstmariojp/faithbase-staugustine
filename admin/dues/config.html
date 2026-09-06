@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Configure Dues — St. Augustine Choir</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{--maroon-deep:#3E0F1C;--maroon:#6B1F35;--gold:#C9A227;--gold-bright:#F0CC5C;--parchment:#F7EFE0;--ivory:#FFFBF3;--ink:#241019;--ink-soft:#5C3A44;--error:#B42318;--amber:#B7791F;--font-display:'Cormorant Garamond',Georgia,serif;--font-body:'Work Sans',-apple-system,sans-serif;}
+  *{margin:0;padding:0;box-sizing:border-box;} body{font-family:var(--font-body);color:var(--ink);background:var(--parchment);min-height:100vh;-webkit-font-smoothing:antialiased;}
+  a{color:inherit;text-decoration:none;} :focus-visible{outline:3px solid var(--gold-bright);outline-offset:3px;}
+  .site-header{position:sticky;top:0;z-index:50;display:flex;align-items:center;justify-content:space-between;padding:18px 24px;background:var(--maroon-deep);border-bottom:1px solid rgba(201,162,39,0.25);}
+  .brand{display:flex;align-items:center;gap:10px;font-family:var(--font-display);font-size:20px;font-weight:600;color:var(--ivory);}
+  .brand-mark{width:28px;height:28px;color:var(--gold-bright);} .brand-mark svg{width:100%;height:100%;}
+  .header-actions{display:flex;align-items:center;gap:12px;}
+  .header-member-name{font-size:14px;font-weight:600;color:var(--gold-bright);}
+  .header-signin{font-size:14px;font-weight:600;color:var(--gold-bright);padding:9px 18px;border:1px solid rgba(240,204,92,0.5);border-radius:999px;background:transparent;cursor:pointer;}
+  .header-signin:hover,.header-signin:focus-visible{background:var(--gold-bright);color:var(--maroon-deep);}
+  .admin-page{padding:24px 20px 40px;max-width:560px;margin:0 auto;}
+  .back-link{display:inline-flex;align-items:center;gap:6px;font-size:14px;font-weight:600;color:var(--maroon);margin-bottom:20px;}
+  .back-link svg{width:18px;height:18px;}
+  .warning-banner{background:rgba(183,121,31,0.15);border:1px solid rgba(183,121,31,0.4);border-radius:8px;padding:12px 14px;font-size:14px;color:var(--amber);margin-bottom:20px;line-height:1.55;font-weight:500;}
+  .auth-card{background:var(--ivory);border:1px solid rgba(107,31,53,0.12);border-top:3px solid var(--maroon);border-radius:10px;padding:32px 28px 36px;box-shadow:0 4px 24px -8px rgba(36,16,25,0.12);margin-bottom:28px;}
+  .auth-card h1{font-family:var(--font-display);font-size:28px;font-weight:600;color:var(--maroon);margin-bottom:24px;text-align:center;}
+  .error-banner{display:none;background:rgba(180,35,24,0.08);border:1px solid rgba(180,35,24,0.25);border-radius:8px;padding:12px 14px;font-size:14px;color:var(--error);margin-bottom:20px;}
+  .error-banner.visible{display:block;}
+  .success-banner{display:none;background:rgba(240,204,92,0.18);border:1px solid rgba(201,162,39,0.45);border-radius:8px;padding:12px 14px;font-size:14px;color:var(--maroon-deep);margin-bottom:20px;}
+  .success-banner.visible{display:block;}
+  .form-field{margin-bottom:20px;}
+  .form-field label{display:block;font-size:13px;font-weight:600;color:var(--maroon);margin-bottom:6px;}
+  .form-field input,.form-field select{width:100%;font-family:var(--font-body);font-size:15px;color:var(--ink);background:var(--parchment);border:1px solid rgba(107,31,53,0.2);border-radius:8px;padding:12px 14px;}
+  .form-field input:focus,.form-field select:focus{outline:none;border-color:var(--maroon);box-shadow:0 0 0 3px rgba(107,31,53,0.12);}
+  .form-field input.input-error{border-color:var(--error);}
+  .field-error{display:none;font-size:12.5px;color:var(--error);margin-top:6px;}
+  .field-error.visible{display:block;}
+  .btn{width:100%;font-family:var(--font-body);font-size:15px;font-weight:600;padding:14px 30px;border-radius:999px;border:none;cursor:pointer;background:var(--gold-bright);color:var(--maroon-deep);display:inline-flex;align-items:center;justify-content:center;gap:8px;margin-top:8px;}
+  .btn:disabled{opacity:0.7;cursor:not-allowed;}
+  .section-heading{font-family:var(--font-display);font-size:22px;font-weight:600;color:var(--maroon);margin-bottom:16px;}
+  .history-list{display:flex;flex-direction:column;gap:10px;}
+  .history-row{background:var(--ivory);border:1px solid rgba(107,31,53,0.12);border-left:3px solid var(--gold);border-radius:10px;padding:16px 18px;}
+  .history-row h3{font-family:var(--font-display);font-size:18px;font-weight:600;color:var(--maroon);margin-bottom:4px;}
+  .history-meta{font-size:14px;color:var(--ink-soft);line-height:1.5;}
+  .empty-state{text-align:center;padding:32px 20px;color:var(--ink-soft);background:var(--ivory);border:1px solid rgba(107,31,53,0.1);border-radius:10px;}
+  .empty-state p{font-size:15px;}
+  .spinner{width:16px;height:16px;border:2px solid rgba(62,15,28,0.2);border-top-color:var(--maroon-deep);border-radius:50%;animation:spin .7s linear infinite;}
+  @keyframes spin{to{transform:rotate(360deg);}}
+  body.checking-session .admin-page{visibility:hidden;}
+  @media (max-width:720px){.site-header{padding:14px 18px;}}
+  @media (prefers-reduced-motion:reduce){.spinner{animation:none;}}
+</style>
+</head>
+<body class="checking-session">
+<header class="site-header">
+  <a href="../../index.html" class="brand"><span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M9 18V6l10-2v12" stroke="currentColor" stroke-width="1.6"/><circle cx="6.5" cy="18" r="2.5" stroke="currentColor" stroke-width="1.6"/><circle cx="16.5" cy="16" r="2.5" stroke="currentColor" stroke-width="1.6"/></svg></span><span data-config="communityShortName">St. Augustine Choir</span></a>
+  <div class="header-actions"><span class="header-member-name" id="member-name"></span><button type="button" class="header-signin" id="sign-out-btn">Sign Out</button></div>
+</header>
+<main class="admin-page">
+  <a href="index.html" class="back-link"><svg viewBox="0 0 24 24" fill="none"><path d="M15 6l-6 6 6 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>Back to Manage Dues</a>
+  <div class="warning-banner">Changing the dues amount will apply to all future periods. Past records are not affected.</div>
+  <div class="auth-card">
+    <h1>Configure Dues</h1>
+    <div id="error-banner" class="error-banner" role="alert"></div>
+    <div id="success-banner" class="success-banner" role="status"></div>
+    <form id="config-form" novalidate>
+      <div class="form-field"><label for="amount">Dues Amount</label><input type="number" id="amount" min="0" step="1" required><p class="field-error" id="error-amount"></p></div>
+      <div class="form-field"><label for="frequency">Frequency</label>
+        <select id="frequency" required>
+          <option value="monthly">Monthly</option>
+          <option value="quarterly">Quarterly</option>
+          <option value="annual">Annual</option>
+        </select>
+      </div>
+      <div class="form-field"><label for="effective-from">Effective From</label><input type="date" id="effective-from" required><p class="field-error" id="error-effective"></p></div>
+      <button type="submit" class="btn" id="submit-btn">Save</button>
+    </form>
+  </div>
+  <h2 class="section-heading">Dues Rate History</h2>
+  <div id="history-list" class="history-list"></div>
+</main>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../../config.js"></script>
+<script>
+(function(){
+  "use strict";
+  document.title="Configure Dues — "+FAITHBASE_CONFIG.communityName;
+  document.querySelectorAll("[data-config]").forEach(function(el){var k=el.getAttribute("data-config");if(FAITHBASE_CONFIG[k]!==undefined)el.textContent=FAITHBASE_CONFIG[k];});
+
+  var supabaseClient=null,currentUserId=null;
+  var effectiveInput=document.getElementById("effective-from");
+  effectiveInput.min=new Date().toISOString().split("T")[0];
+
+  function firstName(n){return!n||!n.trim()?"Member":n.trim().split(/\s+/)[0];}
+  function revealPage(){document.body.classList.remove("checking-session");}
+  function formatNaira(a){return"\u20A6"+Number(a).toLocaleString("en-NG");}
+  function formatDate(iso){return new Date(iso).toLocaleDateString("en-GB",{day:"numeric",month:"long",year:"numeric"});}
+  function escapeHtml(s){return String(s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");}
+  function freqLabel(f){return f==="quarterly"?"Quarterly":f==="annual"?"Annual":"Monthly";}
+
+  try{var u=FAITHBASE_CONFIG.supabase.url,k=FAITHBASE_CONFIG.supabase.anonKey;if(u&&k&&u.indexOf("YOUR-")===-1)supabaseClient=supabase.createClient(u,k);}catch(e){}
+
+  document.getElementById("sign-out-btn").addEventListener("click",async function(){try{if(supabaseClient)await supabaseClient.auth.signOut();}catch(e){}window.location.replace("../../index.html");});
+
+  async function adminGuard(){
+    if(!supabaseClient){window.location.replace("../../auth/login.html");return null;}
+    var sr=await supabaseClient.auth.getSession(),session=sr.data&&sr.data.session;
+    if(!session){window.location.replace("../../auth/login.html");return null;}
+    var pr=await supabaseClient.from("profiles").select("full_name,role,status").eq("id",session.user.id).single(),p=pr.data;
+    if(pr.error||!p||p.status!=="active"){await supabaseClient.auth.signOut();window.location.replace("../../auth/login.html");return null;}
+    if(p.role!=="admin"){window.location.replace("../../member/dashboard.html");return null;}
+    document.getElementById("member-name").textContent=firstName(p.full_name);
+    currentUserId=session.user.id;
+    return p;
+  }
+
+  async function loadHistory(){
+    var r=await supabaseClient.from("dues_config").select("amount, frequency, effective_from").order("effective_from",{ascending:false});
+    var list=document.getElementById("history-list");
+    if(r.error||!r.data||!r.data.length){list.innerHTML='<div class="empty-state"><p>No dues rates configured yet</p></div>';return;}
+    list.innerHTML=r.data.map(function(row){
+      return'<article class="history-row"><h3>'+escapeHtml(formatNaira(row.amount))+'</h3><p class="history-meta">'+escapeHtml(freqLabel(row.frequency))+' &middot; Effective '+escapeHtml(formatDate(row.effective_from))+'</p></article>';
+    }).join("");
+  }
+
+  document.getElementById("config-form").addEventListener("submit",async function(e){
+    e.preventDefault();
+    var errBanner=document.getElementById("error-banner"),okBanner=document.getElementById("success-banner");
+    errBanner.classList.remove("visible");okBanner.classList.remove("visible");
+    var amount=document.getElementById("amount"),eff=document.getElementById("effective-from");
+    var amountErr="",effErr="";
+    if(!amount.value||Number(amount.value)<0)amountErr="Enter a valid amount.";
+    if(!eff.value)effErr="This field is required.";
+    else if(eff.value<effectiveInput.min)effErr="Effective date cannot be in the past.";
+    document.getElementById("error-amount").classList.toggle("visible",!!amountErr);
+    document.getElementById("error-amount").textContent=amountErr;
+    amount.classList.toggle("input-error",!!amountErr);
+    document.getElementById("error-effective").classList.toggle("visible",!!effErr);
+    document.getElementById("error-effective").textContent=effErr;
+    eff.classList.toggle("input-error",!!effErr);
+    if(amountErr||effErr)return;
+
+    var btn=document.getElementById("submit-btn");
+    btn.disabled=true;btn.innerHTML='<span class="spinner"></span> Saving\u2026';
+    var r=await supabaseClient.from("dues_config").insert({
+      amount:Number(amount.value),
+      frequency:document.getElementById("frequency").value,
+      effective_from:eff.value,
+      created_by:currentUserId
+    });
+    btn.disabled=false;btn.textContent="Save";
+    if(r.error){errBanner.textContent=r.error.message||"Something went wrong.";errBanner.classList.add("visible");return;}
+    okBanner.textContent="New dues rate saved.";okBanner.classList.add("visible");
+    document.getElementById("config-form").reset();
+    effectiveInput.min=new Date().toISOString().split("T")[0];
+    await loadHistory();
+  });
+
+  (async function(){if(await adminGuard()){await loadHistory();revealPage();}})();
+})();
+</script>
+</body>
+</html>
