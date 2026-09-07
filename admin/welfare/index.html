@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Manage Welfare — St. Augustine Choir</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{--maroon-deep:#3E0F1D;--maroon:#6B1F35;--gold:#C9A227;--gold-bright:#F0CC5C;--parchment:#F7EFE0;--ivory:#FFFBF3;--ink:#241019;--ink-soft:#5C3A44;--error:#B42318;--success:#2D6A4F;--amber:#B7791F;--font-display:'Cormorant Garamond',Georgia,serif;--font-body:'Work Sans',-apple-system,sans-serif;}
+  *{margin:0;padding:0;box-sizing:border-box;} html{scroll-behavior:smooth;}
+  body{font-family:var(--font-body);color:var(--ink);background:var(--parchment);min-height:100vh;-webkit-font-smoothing:antialiased;}
+  a{color:inherit;text-decoration:none;} :focus-visible{outline:3px solid var(--gold-bright);outline-offset:3px;}
+  .site-header{position:sticky;top:0;z-index:50;display:flex;align-items:center;justify-content:space-between;padding:18px 24px;background:var(--maroon-deep);border-bottom:1px solid rgba(201,162,39,0.25);}
+  .brand{display:flex;align-items:center;gap:10px;font-family:var(--font-display);font-size:20px;font-weight:600;color:var(--ivory);}
+  .brand-mark{width:28px;height:28px;color:var(--gold-bright);} .brand-mark svg{width:100%;height:100%;}
+  .header-actions{display:flex;align-items:center;gap:12px;}
+  .header-member-name{font-size:14px;font-weight:600;color:var(--gold-bright);white-space:nowrap;}
+  .header-signin{font-size:14px;font-weight:600;color:var(--gold-bright);padding:9px 18px;border:1px solid rgba(240,204,92,0.5);border-radius:999px;background:transparent;cursor:pointer;white-space:nowrap;}
+  .header-signin:hover,.header-signin:focus-visible{background:var(--gold-bright);color:var(--maroon-deep);}
+  .admin-page{padding:24px 20px 40px;max-width:760px;margin:0 auto;}
+  .back-link{display:inline-flex;align-items:center;gap:6px;font-size:14px;font-weight:600;color:var(--maroon);margin-bottom:20px;}
+  .back-link svg{width:18px;height:18px;}
+  .page-header{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:20px;flex-wrap:wrap;}
+  .page-heading{font-family:var(--font-display);font-weight:600;font-size:32px;color:var(--maroon);}
+  .header-actions-row{display:flex;flex-wrap:wrap;gap:10px;}
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;font-family:var(--font-body);font-size:14px;font-weight:600;padding:12px 22px;border-radius:999px;border:none;cursor:pointer;background:var(--gold-bright);color:var(--maroon-deep);transition:transform .15s ease,box-shadow .15s ease;white-space:nowrap;}
+  .btn:hover,.btn:focus-visible{transform:translateY(-2px);box-shadow:0 10px 24px -8px rgba(240,204,92,0.55);}
+  .btn-secondary{background:transparent;border:1px solid rgba(107,31,53,0.3);color:var(--maroon);box-shadow:none;}
+  .btn-secondary:hover,.btn-secondary:focus-visible{background:rgba(107,31,53,0.06);transform:none;box-shadow:none;}
+  .balance-card{background:var(--ivory);border:1px solid var(--gold);border-radius:10px;padding:24px 22px;margin-bottom:24px;text-align:center;box-shadow:0 4px 24px -8px rgba(201,162,39,0.18);}
+  .balance-card .balance-label{font-family:var(--font-display);font-size:20px;font-weight:600;color:var(--maroon);margin-bottom:8px;}
+  .balance-card .balance-amount{font-size:clamp(28px,6vw,36px);font-weight:700;color:var(--ink);letter-spacing:0.01em;}
+  .tabs{display:flex;border-bottom:1px solid rgba(107,31,53,0.15);margin-bottom:24px;flex-wrap:wrap;}
+  .tab-btn{flex:1;min-width:0;padding:12px 6px;background:none;border:none;border-bottom:2px solid transparent;font-family:var(--font-body);font-size:14px;font-weight:600;color:var(--ink-soft);cursor:pointer;margin-bottom:-1px;}
+  .tab-btn.active{color:var(--maroon);border-bottom-color:var(--gold);}
+  .tab-btn:hover,.tab-btn:focus-visible{color:var(--maroon);}
+  .tab-panel{display:none;} .tab-panel.active{display:block;}
+  .case-list{display:flex;flex-direction:column;gap:12px;}
+  .case-row{display:block;background:var(--ivory);border:1px solid rgba(107,31,53,0.12);border-left:3px solid var(--maroon);border-radius:10px;padding:16px 18px;transition:box-shadow .15s ease,transform .15s ease;}
+  .case-row:hover,.case-row:focus-visible{box-shadow:0 8px 24px -10px rgba(36,16,25,0.15);transform:translateY(-1px);}
+  .case-row-top{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:6px;flex-wrap:wrap;}
+  .case-row h3{font-family:var(--font-display);font-size:19px;font-weight:600;color:var(--maroon);line-height:1.25;flex:1;min-width:140px;}
+  .case-badges{display:flex;flex-wrap:wrap;gap:6px;justify-content:flex-end;}
+  .case-meta{font-size:13.5px;color:var(--ink-soft);line-height:1.5;}
+  .badge{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;padding:4px 10px;border-radius:999px;white-space:nowrap;}
+  .badge-type{background:rgba(107,31,53,0.1);color:var(--maroon);text-transform:none;letter-spacing:0;}
+  .badge-open{background:rgba(183,121,31,0.15);color:var(--amber);}
+  .badge-visited{background:rgba(107,31,53,0.12);color:var(--maroon);}
+  .badge-resolved{background:rgba(45,106,79,0.12);color:var(--success);}
+  .badge-closed{background:rgba(92,58,68,0.12);color:var(--ink-soft);}
+  .empty-state{text-align:center;padding:48px 20px;color:var(--ink-soft);}
+  .empty-state svg{width:48px;height:48px;color:var(--gold);margin:0 auto 16px;opacity:0.7;display:block;}
+  .empty-state p{font-size:15px;line-height:1.6;}
+  .skeleton-list{display:flex;flex-direction:column;gap:12px;}
+  .skeleton-row{height:96px;border-radius:10px;background:linear-gradient(90deg,rgba(107,31,53,0.06) 25%,rgba(107,31,53,0.12) 50%,rgba(107,31,53,0.06) 75%);background-size:200% 100%;animation:shimmer 1.4s ease-in-out infinite;}
+  @keyframes shimmer{0%{background-position:200% 0;}100%{background-position:-200% 0;}}
+  body.checking-session .admin-page{visibility:hidden;}
+  @media (max-width:720px){.site-header{padding:14px 18px;}.admin-page{padding:20px 16px 32px;}.page-heading{font-size:28px;}.tab-btn{font-size:12px;padding:10px 4px;}}
+  @media (max-width:400px){.tab-btn{font-size:11px;padding:8px 2px;}}
+  @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto;}.skeleton-row,.case-row{animation:none;transition:none;}.btn:hover,.btn:focus-visible,.case-row:hover,.case-row:focus-visible{transform:none;}}
+</style>
+</head>
+<body class="checking-session">
+<header class="site-header">
+  <a href="../../index.html" class="brand"><span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M9 18V6l10-2v12" stroke="currentColor" stroke-width="1.6"/><circle cx="6.5" cy="18" r="2.5" stroke="currentColor" stroke-width="1.6"/><circle cx="16.5" cy="16" r="2.5" stroke="currentColor" stroke-width="1.6"/></svg></span><span data-config="communityShortName">St. Augustine Choir</span></a>
+  <div class="header-actions"><span class="header-member-name" id="member-name"></span><button type="button" class="header-signin" id="sign-out-btn">Sign Out</button></div>
+</header>
+<main class="admin-page">
+  <a href="../../member/dashboard.html" class="back-link"><svg viewBox="0 0 24 24" fill="none"><path d="M15 6l-6 6 6 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>Back to Dashboard</a>
+  <div class="page-header">
+    <h1 class="page-heading">Manage Welfare</h1>
+    <div class="header-actions-row"><a href="ledger.html" class="btn btn-secondary">Fund Ledger</a></div>
+  </div>
+  <div class="balance-card" id="balance-card">
+    <p class="balance-label">Welfare Fund Balance</p>
+    <p class="balance-amount" id="balance-amount">&mdash;</p>
+  </div>
+  <div class="tabs" role="tablist" aria-label="Welfare case status">
+    <button type="button" class="tab-btn active" id="tab-open" aria-selected="true" aria-controls="panel-open">Open</button>
+    <button type="button" class="tab-btn" id="tab-visited" aria-selected="false" aria-controls="panel-visited">Visited</button>
+    <button type="button" class="tab-btn" id="tab-resolved" aria-selected="false" aria-controls="panel-resolved">Resolved</button>
+    <button type="button" class="tab-btn" id="tab-closed" aria-selected="false" aria-controls="panel-closed">Closed</button>
+  </div>
+  <div class="tab-panel active" role="tabpanel" id="panel-open" aria-labelledby="tab-open">
+    <div id="open-loading" class="skeleton-list"><div class="skeleton-row"></div><div class="skeleton-row"></div></div>
+    <div id="open-content" hidden></div>
+  </div>
+  <div class="tab-panel" role="tabpanel" id="panel-visited" aria-labelledby="tab-visited" hidden>
+    <div id="visited-content" hidden></div>
+  </div>
+  <div class="tab-panel" role="tabpanel" id="panel-resolved" aria-labelledby="tab-resolved" hidden>
+    <div id="resolved-content" hidden></div>
+  </div>
+  <div class="tab-panel" role="tabpanel" id="panel-closed" aria-labelledby="tab-closed" hidden>
+    <div id="closed-content" hidden></div>
+  </div>
+</main>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../../config.js"></script>
+<script>
+(function(){
+  "use strict";
+  document.title="Manage Welfare — "+FAITHBASE_CONFIG.communityName;
+  document.querySelectorAll("[data-config]").forEach(function(el){var k=el.getAttribute("data-config");if(FAITHBASE_CONFIG[k]!==undefined)el.textContent=FAITHBASE_CONFIG[k];});
+
+  var supabaseClient=null,allCases=[],rendered={visited:false,resolved:false,closed:false};
+  var STATUSES=["open","visited","resolved","closed"];
+
+  function firstName(n){return!n||!n.trim()?"Member":n.trim().split(/\s+/)[0];}
+  function revealPage(){document.body.classList.remove("checking-session");}
+  function escapeHtml(s){return String(s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");}
+  function formatNaira(a){return"\u20A6"+Number(a).toLocaleString("en-NG");}
+  function formatDate(iso){return new Date(iso).toLocaleDateString("en-GB",{day:"numeric",month:"long",year:"numeric"});}
+  function typeLabel(t){return t==="sick"?"Sick":t==="bereaved"?"Bereaved":t==="celebrating"?"Celebrating":t==="other"?"Other":t||"Unknown";}
+  function statusLabel(s){return s==="open"?"Open":s==="visited"?"Visited":s==="resolved"?"Resolved":s==="closed"?"Closed":s;}
+  function statusBadgeClass(s){return s==="open"?"badge-open":s==="visited"?"badge-visited":s==="resolved"?"badge-resolved":"badge-closed";}
+  function memberName(c){var p=c.profiles;return Array.isArray(p)?(p[0]&&p[0].full_name)||"Unknown Member":(p&&p.full_name)||"Unknown Member";}
+
+  function computeBalance(rows){
+    return(rows||[]).reduce(function(sum,r){
+      if(r.transaction_type==="credit")return sum+Number(r.amount);
+      if(r.transaction_type==="debit")return sum-Number(r.amount);
+      return sum;
+    },0);
+  }
+
+  try{var u=FAITHBASE_CONFIG.supabase.url,k=FAITHBASE_CONFIG.supabase.anonKey;if(u&&k&&u.indexOf("YOUR-")===-1)supabaseClient=supabase.createClient(u,k);}catch(e){}
+
+  document.getElementById("sign-out-btn").addEventListener("click",async function(){try{if(supabaseClient)await supabaseClient.auth.signOut();}catch(e){}window.location.replace("../../index.html");});
+
+  async function adminGuard(){
+    if(!supabaseClient){window.location.replace("../../auth/login.html");return null;}
+    var sr=await supabaseClient.auth.getSession(),session=sr.data&&sr.data.session;
+    if(!session){window.location.replace("../../auth/login.html");return null;}
+    var pr=await supabaseClient.from("profiles").select("full_name,role,status").eq("id",session.user.id).single(),p=pr.data;
+    if(pr.error||!p||p.status!=="active"){await supabaseClient.auth.signOut();window.location.replace("../../auth/login.html");return null;}
+    if(p.role!=="admin"){window.location.replace("../../member/dashboard.html");return null;}
+    document.getElementById("member-name").textContent=firstName(p.full_name);
+    return p;
+  }
+
+  function renderRow(c){
+    return'<a href="detail.html?id='+encodeURIComponent(c.id)+'" class="case-row">'+
+      '<div class="case-row-top"><h3>'+escapeHtml(memberName(c))+'</h3>'+
+      '<div class="case-badges">'+
+      '<span class="badge badge-type">'+escapeHtml(typeLabel(c.welfare_type))+'</span>'+
+      '<span class="badge '+statusBadgeClass(c.status)+'">'+escapeHtml(statusLabel(c.status))+'</span>'+
+      '</div></div>'+
+      '<p class="case-meta">Reported '+escapeHtml(formatDate(c.created_at))+'</p></a>';
+  }
+
+  function renderTab(status){
+    var list=allCases.filter(function(c){return c.status===status;});
+    var el=document.getElementById(status+"-content");
+    var loading=document.getElementById(status+"-loading");
+    if(loading)loading.hidden=true;
+    el.hidden=false;
+    if(!list.length){
+      el.innerHTML='<div class="empty-state"><svg viewBox="0 0 24 24" fill="none"><path d="M12 21s-7-4.5-7-10a4 4 0 017-2.5A4 4 0 0119 11c0 5.5-7 10-7 10z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg><p>No '+status+' cases</p></div>';
+      return;
+    }
+    el.innerHTML='<div class="case-list">'+list.map(renderRow).join("")+'</div>';
+  }
+
+  var tabs={};
+  STATUSES.forEach(function(s){
+    tabs[s]={btn:document.getElementById("tab-"+s),panel:document.getElementById("panel-"+s)};
+  });
+
+  function switchTab(status){
+    STATUSES.forEach(function(s){
+      var active=s===status;
+      tabs[s].btn.classList.toggle("active",active);
+      tabs[s].btn.setAttribute("aria-selected",String(active));
+      tabs[s].panel.classList.toggle("active",active);
+      tabs[s].panel.hidden=!active;
+    });
+    if(status!=="open"&&!rendered[status]){rendered[status]=true;renderTab(status);}
+  }
+
+  STATUSES.forEach(function(s){
+    tabs[s].btn.addEventListener("click",function(){switchTab(s);});
+  });
+
+  (async function init(){
+    if(!await adminGuard())return;
+    var results=await Promise.all([
+      supabaseClient.from("welfare_cases").select("id, welfare_type, status, created_at, profiles(full_name)").order("created_at",{ascending:false}),
+      supabaseClient.from("welfare_fund").select("transaction_type, amount")
+    ]);
+    allCases=results[0].data||[];
+    document.getElementById("balance-amount").textContent=formatNaira(computeBalance(results[1].data));
+    renderTab("open");
+    revealPage();
+  })();
+})();
+</script>
+</body>
+</html>

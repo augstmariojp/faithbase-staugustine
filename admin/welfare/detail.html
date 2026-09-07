@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Welfare Case — St. Augustine Choir</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{--maroon-deep:#3E0F1D;--maroon:#6B1F35;--gold:#C9A227;--gold-bright:#F0CC5C;--parchment:#F7EFE0;--ivory:#FFFBF3;--ink:#241019;--ink-soft:#5C3A44;--error:#B42318;--success:#2D6A4F;--amber:#B7791F;--font-display:'Cormorant Garamond',Georgia,serif;--font-body:'Work Sans',-apple-system,sans-serif;}
+  *{margin:0;padding:0;box-sizing:border-box;} body{font-family:var(--font-body);color:var(--ink);background:var(--parchment);min-height:100vh;-webkit-font-smoothing:antialiased;}
+  a{color:inherit;text-decoration:none;} :focus-visible{outline:3px solid var(--gold-bright);outline-offset:3px;}
+  .site-header{position:sticky;top:0;z-index:50;display:flex;align-items:center;justify-content:space-between;padding:18px 24px;background:var(--maroon-deep);border-bottom:1px solid rgba(201,162,39,0.25);}
+  .brand{display:flex;align-items:center;gap:10px;font-family:var(--font-display);font-size:20px;font-weight:600;color:var(--ivory);}
+  .brand-mark{width:28px;height:28px;color:var(--gold-bright);} .brand-mark svg{width:100%;height:100%;}
+  .header-actions{display:flex;align-items:center;gap:12px;}
+  .header-member-name{font-size:14px;font-weight:600;color:var(--gold-bright);}
+  .header-signin{font-size:14px;font-weight:600;color:var(--gold-bright);padding:9px 18px;border:1px solid rgba(240,204,92,0.5);border-radius:999px;background:transparent;cursor:pointer;}
+  .header-signin:hover,.header-signin:focus-visible{background:var(--gold-bright);color:var(--maroon-deep);}
+  .admin-page{padding:24px 20px 40px;max-width:760px;margin:0 auto;}
+  .back-link{display:inline-flex;align-items:center;gap:6px;font-size:14px;font-weight:600;color:var(--maroon);margin-bottom:20px;}
+  .back-link svg{width:18px;height:18px;}
+  .member-name{font-size:18px;font-weight:700;color:var(--ink);margin-bottom:12px;}
+  .badge-row{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:8px;}
+  .badge{display:inline-block;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;padding:4px 10px;border-radius:999px;white-space:nowrap;}
+  .badge-type{background:rgba(107,31,53,0.1);color:var(--maroon);text-transform:none;letter-spacing:0;}
+  .detail-meta{font-size:14px;color:var(--ink-soft);margin-bottom:20px;}
+  .detail-card{background:var(--ivory);border:1px solid rgba(107,31,53,0.12);border-top:3px solid var(--maroon);border-radius:10px;padding:22px 24px;margin-bottom:20px;}
+  .detail-card h2{font-family:var(--font-display);font-size:20px;font-weight:600;color:var(--maroon);margin-bottom:14px;}
+  .detail-body{font-size:15px;line-height:1.75;color:var(--ink-soft);white-space:pre-wrap;}
+  .form-card{background:var(--ivory);border:1px solid rgba(107,31,53,0.12);border-top:3px solid var(--maroon);border-radius:10px;padding:22px 24px;margin-bottom:12px;}
+  .form-field{margin-bottom:18px;}
+  .form-field label{display:block;font-size:13px;font-weight:600;color:var(--maroon);margin-bottom:6px;}
+  .form-field input,.form-field select,.form-field textarea{width:100%;font-family:var(--font-body);font-size:15px;padding:12px 14px;border:1px solid rgba(107,31,53,0.2);border-radius:8px;background:var(--parchment);}
+  .form-field textarea{min-height:100px;resize:vertical;line-height:1.55;}
+  .form-field input:focus,.form-field select:focus,.form-field textarea:focus{outline:none;border-color:var(--maroon);box-shadow:0 0 0 3px rgba(107,31,53,0.12);}
+  .field-error{display:none;font-size:12.5px;color:var(--error);margin-top:6px;}
+  .field-error.visible{display:block;}
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;font-family:var(--font-body);font-size:14px;font-weight:600;padding:12px 22px;border-radius:999px;border:none;cursor:pointer;background:var(--gold-bright);color:var(--maroon-deep);white-space:nowrap;}
+  .btn:disabled{opacity:0.7;cursor:not-allowed;}
+  .last-updated{font-size:13px;color:var(--ink-soft);margin-top:4px;}
+  .amount-note{display:none;background:rgba(183,121,31,0.12);border:1px solid rgba(183,121,31,0.35);border-radius:8px;padding:12px 14px;font-size:13.5px;line-height:1.55;color:var(--amber);margin-top:16px;}
+  .amount-note.visible{display:block;}
+  .empty-state{text-align:center;padding:48px 20px;color:var(--ink-soft);background:var(--ivory);border:1px solid rgba(107,31,53,0.1);border-radius:10px;}
+  .empty-state p{font-size:15px;margin-bottom:20px;line-height:1.6;}
+  .error-banner{display:none;background:rgba(180,35,24,0.08);border:1px solid rgba(180,35,24,0.25);border-radius:8px;padding:12px 14px;font-size:14px;color:var(--error);margin-bottom:16px;}
+  .error-banner.visible{display:block;}
+  .success-banner{display:none;position:relative;background:rgba(240,204,92,0.18);border:1px solid rgba(201,162,39,0.45);border-radius:8px;padding:12px 40px 12px 14px;font-size:14px;color:var(--maroon-deep);margin-bottom:16px;}
+  .success-banner.visible{display:block;}
+  .success-banner-dismiss{position:absolute;top:50%;right:10px;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--maroon);font-size:18px;padding:4px;}
+  body.checking-session .admin-page{visibility:hidden;}
+  @media (max-width:720px){.site-header{padding:14px 18px;}}
+  @media (prefers-reduced-motion:reduce){*{transition:none!important;}}
+</style>
+</head>
+<body class="checking-session">
+<header class="site-header">
+  <a href="../../index.html" class="brand"><span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M9 18V6l10-2v12" stroke="currentColor" stroke-width="1.6"/><circle cx="6.5" cy="18" r="2.5" stroke="currentColor" stroke-width="1.6"/><circle cx="16.5" cy="16" r="2.5" stroke="currentColor" stroke-width="1.6"/></svg></span><span data-config="communityShortName">St. Augustine Choir</span></a>
+  <div class="header-actions"><span class="header-member-name" id="member-name"></span><button type="button" class="header-signin" id="sign-out-btn">Sign Out</button></div>
+</header>
+<main class="admin-page">
+  <div id="not-found" hidden>
+    <a href="index.html" class="back-link"><svg viewBox="0 0 24 24" fill="none"><path d="M15 6l-6 6 6 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>Back to Welfare</a>
+    <div class="empty-state"><p>Case not found</p><a href="index.html" class="btn">Back to Manage Welfare</a></div>
+  </div>
+  <div id="page-content" hidden>
+    <a href="index.html" class="back-link"><svg viewBox="0 0 24 24" fill="none"><path d="M15 6l-6 6 6 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>Back to Welfare</a>
+    <div id="error-banner" class="error-banner" role="alert"></div>
+    <div id="success-banner" class="success-banner" role="status">Changes saved.<button type="button" class="success-banner-dismiss" id="dismiss-success" aria-label="Dismiss">&times;</button></div>
+    <p class="member-name" id="case-member-name"></p>
+    <div class="badge-row"><span class="badge badge-type" id="case-type-badge"></span></div>
+    <p class="detail-meta" id="case-reported"></p>
+    <div class="detail-card">
+      <h2>Member&rsquo;s Description</h2>
+      <div class="detail-body" id="case-description"></div>
+    </div>
+    <form class="form-card" id="case-form" novalidate>
+      <div class="form-field">
+        <label for="status">Status</label>
+        <select id="status">
+          <option value="open">Open</option>
+          <option value="visited">Visited</option>
+          <option value="resolved">Resolved</option>
+          <option value="closed">Closed</option>
+        </select>
+      </div>
+      <div class="form-field">
+        <label for="amount">Amount Disbursed</label>
+        <input type="number" id="amount" min="0" step="1" placeholder="Leave blank if not yet disbursed">
+        <p class="field-error" id="error-amount"></p>
+      </div>
+      <div class="form-field">
+        <label for="notes">Notes</label>
+        <textarea id="notes" placeholder="Admin case management notes&hellip;"></textarea>
+      </div>
+      <button type="submit" class="btn" id="save-btn">Save Changes</button>
+      <div id="amount-note" class="amount-note">Note: this amount was already recorded once. The Welfare Fund ledger was not automatically adjusted &mdash; record a manual correction there if needed.</div>
+    </form>
+    <p class="last-updated" id="last-updated" hidden></p>
+  </div>
+</main>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../../config.js"></script>
+<script>
+(function(){
+  "use strict";
+  var caseId=new URLSearchParams(window.location.search).get("id");
+  var welfareCase=null,originalAmount=null,adminId=null,supabaseClient=null;
+
+  document.title="Welfare Case — "+FAITHBASE_CONFIG.communityName;
+  document.querySelectorAll("[data-config]").forEach(function(el){var k=el.getAttribute("data-config");if(FAITHBASE_CONFIG[k]!==undefined)el.textContent=FAITHBASE_CONFIG[k];});
+  document.getElementById("dismiss-success").addEventListener("click",function(){document.getElementById("success-banner").classList.remove("visible");});
+
+  function firstName(n){return!n||!n.trim()?"Member":n.trim().split(/\s+/)[0];}
+  function revealPage(){document.body.classList.remove("checking-session");}
+  function escapeHtml(s){return String(s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");}
+  function typeLabel(t){return t==="sick"?"Sick":t==="bereaved"?"Bereaved":t==="celebrating"?"Celebrating":t==="other"?"Other":t||"Unknown";}
+  function formatDate(iso){return new Date(iso).toLocaleString("en-GB",{weekday:"long",day:"numeric",month:"long",year:"numeric",hour:"numeric",minute:"2-digit",hour12:true});}
+  function memberName(c){var p=c.profiles;return Array.isArray(p)?(p[0]&&p[0].full_name)||"Unknown Member":(p&&p.full_name)||"Unknown Member";}
+
+  try{var u=FAITHBASE_CONFIG.supabase.url,k=FAITHBASE_CONFIG.supabase.anonKey;if(u&&k&&u.indexOf("YOUR-")===-1)supabaseClient=supabase.createClient(u,k);}catch(e){}
+
+  document.getElementById("sign-out-btn").addEventListener("click",async function(){try{if(supabaseClient)await supabaseClient.auth.signOut();}catch(e){}window.location.replace("../../index.html");});
+
+  async function adminGuard(){
+    if(!supabaseClient||!caseId){return null;}
+    var sr=await supabaseClient.auth.getSession(),session=sr.data&&sr.data.session;
+    if(!session){window.location.replace("../../auth/login.html");return null;}
+    adminId=session.user.id;
+    var pr=await supabaseClient.from("profiles").select("full_name,role,status").eq("id",session.user.id).single(),p=pr.data;
+    if(pr.error||!p||p.status!=="active"){await supabaseClient.auth.signOut();window.location.replace("../../auth/login.html");return null;}
+    if(p.role!=="admin"){window.location.replace("../../member/dashboard.html");return null;}
+    document.getElementById("member-name").textContent=firstName(p.full_name);
+    return p;
+  }
+
+  function renderLastUpdated(){
+    var el=document.getElementById("last-updated");
+    if(welfareCase.updated_at){
+      el.textContent="Last updated: "+formatDate(welfareCase.updated_at);
+      el.hidden=false;
+    }else{
+      el.hidden=true;
+    }
+  }
+
+  function populateForm(){
+    document.getElementById("case-member-name").textContent=memberName(welfareCase);
+    document.getElementById("case-type-badge").textContent=typeLabel(welfareCase.welfare_type);
+    document.getElementById("case-reported").textContent="Reported "+formatDate(welfareCase.created_at);
+    document.getElementById("case-description").textContent=welfareCase.description||"";
+    document.getElementById("status").value=welfareCase.status||"open";
+    document.getElementById("amount").value=welfareCase.amount_disbursed!=null?welfareCase.amount_disbursed:"";
+    document.getElementById("notes").value=welfareCase.admin_notes||"";
+    originalAmount=welfareCase.amount_disbursed;
+    renderLastUpdated();
+    document.title=memberName(welfareCase)+" — Welfare";
+  }
+
+  document.getElementById("case-form").addEventListener("submit",async function(e){
+    e.preventDefault();
+    document.getElementById("error-banner").classList.remove("visible");
+    document.getElementById("amount-note").classList.remove("visible");
+    showFieldError("error-amount","");
+
+    var status=document.getElementById("status").value;
+    var amountRaw=document.getElementById("amount").value.trim();
+    var newAmount=amountRaw===""?null:Number(amountRaw);
+    var notes=document.getElementById("notes").value.trim();
+    var now=new Date().toISOString();
+
+    if(newAmount!==null&&(isNaN(newAmount)||newAmount<0)){
+      showFieldError("error-amount","Enter a valid amount or leave blank.");
+      return;
+    }
+
+    var btn=document.getElementById("save-btn");
+    btn.disabled=true;btn.textContent="Saving\u2026";
+
+    var updatePayload={
+      status:status,
+      amount_disbursed:newAmount,
+      admin_notes:notes||null,
+      updated_at:now
+    };
+
+    var ur=await supabaseClient.from("welfare_cases").update(updatePayload).eq("id",caseId);
+    if(ur.error){
+      btn.disabled=false;btn.textContent="Save Changes";
+      document.getElementById("error-banner").textContent=ur.error.message;document.getElementById("error-banner").classList.add("visible");
+      return;
+    }
+
+    var shouldInsertDebit=(originalAmount==null||originalAmount===undefined)&&newAmount!=null&&newAmount>0;
+    var amountChanged=originalAmount!=null&&originalAmount!==undefined&&newAmount!==originalAmount;
+
+    if(shouldInsertDebit){
+      var desc="Disbursement \u2014 "+welfareCase.welfare_type+" case for "+memberName(welfareCase);
+      var ir=await supabaseClient.from("welfare_fund").insert({
+        transaction_type:"debit",
+        amount:newAmount,
+        description:desc,
+        welfare_case_id:caseId,
+        recorded_by:adminId
+      });
+      if(ir.error){
+        btn.disabled=false;btn.textContent="Save Changes";
+        document.getElementById("error-banner").textContent="Case saved, but ledger entry failed: "+ir.error.message;
+        document.getElementById("error-banner").classList.add("visible");
+        return;
+      }
+    }
+
+    welfareCase.status=status;
+    welfareCase.amount_disbursed=newAmount;
+    welfareCase.admin_notes=notes||null;
+    welfareCase.updated_at=now;
+    originalAmount=newAmount;
+
+    if(amountChanged&&!shouldInsertDebit){
+      document.getElementById("amount-note").classList.add("visible");
+    }
+
+    btn.disabled=false;btn.textContent="Save Changes";
+    document.getElementById("success-banner").classList.add("visible");
+    renderLastUpdated();
+  });
+
+  function showFieldError(id,msg){
+    var el=document.getElementById(id);
+    if(msg){el.textContent=msg;el.classList.add("visible");}
+    else{el.textContent="";el.classList.remove("visible");}
+  }
+
+  (async function init(){
+    if(!await adminGuard()){
+      document.getElementById("not-found").hidden=false;revealPage();return;
+    }
+    var r=await supabaseClient.from("welfare_cases")
+      .select("id, member_id, welfare_type, description, status, amount_disbursed, admin_notes, updated_at, created_at, profiles(full_name)")
+      .eq("id",caseId).maybeSingle();
+    if(r.error||!r.data){
+      document.getElementById("not-found").hidden=false;revealPage();return;
+    }
+    welfareCase=r.data;
+    populateForm();
+    document.getElementById("page-content").hidden=false;
+    revealPage();
+  })();
+})();
+</script>
+</body>
+</html>
