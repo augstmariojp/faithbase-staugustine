@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Manage Documents — St. Augustine Choir</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{--maroon-deep:#3E0F1D;--maroon:#6B1F35;--gold:#C9A227;--gold-bright:#F0CC5C;--parchment:#F7EFE0;--ivory:#FFFBF3;--ink:#241019;--ink-soft:#5C3A44;--error:#B42318;--success:#2D6A4F;--amber:#B7791F;--font-display:'Cormorant Garamond',Georgia,serif;--font-body:'Work Sans',-apple-system,sans-serif;}
+  *{margin:0;padding:0;box-sizing:border-box;} html{scroll-behavior:smooth;}
+  body{font-family:var(--font-body);color:var(--ink);background:var(--parchment);min-height:100vh;-webkit-font-smoothing:antialiased;}
+  a{color:inherit;text-decoration:none;} :focus-visible{outline:3px solid var(--gold-bright);outline-offset:3px;}
+  .site-header{position:sticky;top:0;z-index:50;display:flex;align-items:center;justify-content:space-between;padding:18px 24px;background:var(--maroon-deep);border-bottom:1px solid rgba(201,162,39,0.25);}
+  .brand{display:flex;align-items:center;gap:10px;font-family:var(--font-display);font-size:20px;font-weight:600;color:var(--ivory);}
+  .brand-mark{width:28px;height:28px;color:var(--gold-bright);} .brand-mark svg{width:100%;height:100%;}
+  .header-actions{display:flex;align-items:center;gap:12px;}
+  .header-member-name{font-size:14px;font-weight:600;color:var(--gold-bright);white-space:nowrap;}
+  .header-signin{font-size:14px;font-weight:600;color:var(--gold-bright);padding:9px 18px;border:1px solid rgba(240,204,92,0.5);border-radius:999px;background:transparent;cursor:pointer;white-space:nowrap;}
+  .header-signin:hover,.header-signin:focus-visible{background:var(--gold-bright);color:var(--maroon-deep);}
+  .admin-page{padding:24px 20px 40px;max-width:760px;margin:0 auto;}
+  .back-link{display:inline-flex;align-items:center;gap:6px;font-size:14px;font-weight:600;color:var(--maroon);margin-bottom:20px;}
+  .back-link svg{width:18px;height:18px;}
+  .page-header{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:16px;flex-wrap:wrap;}
+  .page-heading{font-family:var(--font-display);font-weight:600;font-size:32px;color:var(--maroon);}
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;font-family:var(--font-body);font-size:14px;font-weight:600;padding:12px 22px;border-radius:999px;border:none;cursor:pointer;background:var(--gold-bright);color:var(--maroon-deep);transition:transform .15s ease,box-shadow .15s ease;white-space:nowrap;}
+  .btn:hover,.btn:focus-visible{transform:translateY(-2px);box-shadow:0 10px 24px -8px rgba(240,204,92,0.55);}
+  .btn:disabled{opacity:0.7;cursor:not-allowed;transform:none;box-shadow:none;}
+  .btn-danger-outline{background:transparent;border:1px solid var(--error);color:var(--error);box-shadow:none;}
+  .btn-danger-outline:hover,.btn-danger-outline:focus-visible{background:rgba(180,35,24,0.08);transform:none;box-shadow:none;}
+  .success-banner{display:none;position:relative;background:rgba(240,204,92,0.18);border:1px solid rgba(201,162,39,0.45);border-radius:8px;padding:12px 40px 12px 14px;font-size:14px;color:var(--maroon-deep);margin-bottom:20px;}
+  .success-banner.visible{display:block;}
+  .success-banner-dismiss{position:absolute;top:50%;right:10px;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--maroon);font-size:18px;padding:4px;}
+  .storage-indicator{background:var(--ivory);border:1px solid rgba(107,31,53,0.12);border-radius:10px;padding:14px 18px;margin-bottom:20px;font-size:14px;font-weight:600;color:var(--maroon);text-align:center;line-height:1.5;}
+  .storage-indicator.warning{background:rgba(183,121,31,0.12);border-color:var(--amber);color:var(--amber);}
+  .tabs-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;margin-bottom:24px;border-bottom:1px solid rgba(107,31,53,0.15);scrollbar-width:thin;scrollbar-color:rgba(107,31,53,0.25) transparent;}
+  .tabs-scroll::-webkit-scrollbar{height:4px;}
+  .tabs-scroll::-webkit-scrollbar-thumb{background:rgba(107,31,53,0.25);border-radius:4px;}
+  .tabs{display:flex;flex-wrap:nowrap;min-width:min-content;}
+  .tab-btn{flex:0 0 auto;padding:12px 14px;background:none;border:none;border-bottom:2px solid transparent;font-family:var(--font-body);font-size:14px;font-weight:600;color:var(--ink-soft);cursor:pointer;margin-bottom:-1px;white-space:nowrap;}
+  .tab-btn.active{color:var(--maroon);border-bottom-color:var(--gold);}
+  .tab-btn:hover,.tab-btn:focus-visible{color:var(--maroon);}
+  .doc-list{display:flex;flex-direction:column;gap:12px;}
+  .doc-row{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;background:var(--ivory);border:1px solid rgba(107,31,53,0.12);border-left:3px solid var(--maroon);border-radius:10px;padding:16px 18px;flex-wrap:wrap;}
+  .doc-row-main{flex:1;min-width:180px;}
+  .doc-row h3{font-family:var(--font-display);font-size:19px;font-weight:600;color:var(--maroon);line-height:1.25;margin-bottom:8px;}
+  .doc-badges{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px;}
+  .doc-meta{font-size:13.5px;color:var(--ink-soft);line-height:1.5;}
+  .badge{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;padding:4px 10px;border-radius:999px;white-space:nowrap;}
+  .badge-category{background:rgba(107,31,53,0.1);color:var(--maroon);text-transform:none;letter-spacing:0;}
+  .badge-executive{background:rgba(201,162,39,0.22);color:var(--maroon);}
+  .badge-all-members{background:rgba(92,58,68,0.12);color:var(--ink-soft);text-transform:none;letter-spacing:0;}
+  .empty-state{text-align:center;padding:48px 20px;color:var(--ink-soft);}
+  .empty-state svg{width:48px;height:48px;color:var(--gold);margin:0 auto 16px;opacity:0.7;display:block;}
+  .empty-state p{font-size:15px;margin-bottom:20px;line-height:1.6;}
+  .skeleton-list{display:flex;flex-direction:column;gap:12px;}
+  .skeleton-row{height:96px;border-radius:10px;background:linear-gradient(90deg,rgba(107,31,53,0.06) 25%,rgba(107,31,53,0.12) 50%,rgba(107,31,53,0.06) 75%);background-size:200% 100%;animation:shimmer 1.4s ease-in-out infinite;}
+  @keyframes shimmer{0%{background-position:200% 0;}100%{background-position:-200% 0;}}
+  .error-banner{display:none;background:rgba(180,35,24,0.08);border:1px solid rgba(180,35,24,0.25);border-radius:8px;padding:12px 14px;font-size:14px;color:var(--error);margin-bottom:16px;}
+  .error-banner.visible{display:block;}
+  .modal-backdrop{position:fixed;inset:0;background:rgba(36,16,25,0.55);z-index:90;opacity:0;pointer-events:none;transition:opacity .2s;}
+  .modal-backdrop.open{opacity:1;pointer-events:auto;}
+  .modal{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%) scale(0.95);z-index:100;background:var(--ivory);border-radius:12px;border-top:3px solid var(--maroon);padding:28px 24px;width:calc(100% - 40px);max-width:400px;opacity:0;pointer-events:none;transition:opacity .2s,transform .2s;box-shadow:0 20px 48px -12px rgba(36,16,25,0.35);}
+  .modal.open{opacity:1;pointer-events:auto;transform:translate(-50%,-50%) scale(1);}
+  .modal h2{font-family:var(--font-display);font-size:22px;color:var(--maroon);margin-bottom:12px;}
+  .modal p{font-size:15px;color:var(--ink-soft);line-height:1.6;margin-bottom:24px;}
+  .modal-actions{display:flex;gap:12px;}
+  .modal-actions button{flex:1;padding:14px;border-radius:999px;font-size:15px;font-weight:600;cursor:pointer;border:none;font-family:var(--font-body);}
+  .modal-cancel{background:transparent;border:1px solid rgba(107,31,53,0.3)!important;color:var(--maroon);}
+  .modal-confirm{background:var(--error);color:var(--ivory);}
+  body.checking-session .admin-page{visibility:hidden;}
+  @media (max-width:720px){.site-header{padding:14px 18px;}.admin-page{padding:20px 16px 32px;}.page-heading{font-size:28px;}.tab-btn{font-size:13px;padding:10px 12px;}.doc-row .btn-danger-outline{width:100%;}}
+  @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto;}.skeleton-row,.modal,.modal-backdrop{animation:none;transition:none;}.btn:hover,.btn:focus-visible{transform:none;}}
+</style>
+</head>
+<body class="checking-session">
+<header class="site-header">
+  <a href="../../index.html" class="brand"><span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M9 18V6l10-2v12" stroke="currentColor" stroke-width="1.6"/><circle cx="6.5" cy="18" r="2.5" stroke="currentColor" stroke-width="1.6"/><circle cx="16.5" cy="16" r="2.5" stroke="currentColor" stroke-width="1.6"/></svg></span><span data-config="communityShortName">St. Augustine Choir</span></a>
+  <div class="header-actions"><span class="header-member-name" id="member-name"></span><button type="button" class="header-signin" id="sign-out-btn">Sign Out</button></div>
+</header>
+<main class="admin-page">
+  <a href="../../member/dashboard.html" class="back-link"><svg viewBox="0 0 24 24" fill="none"><path d="M15 6l-6 6 6 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>Back to Dashboard</a>
+  <div class="page-header">
+    <h1 class="page-heading">Manage Documents</h1>
+    <a href="create.html" class="btn">+ Upload Document</a>
+  </div>
+  <div id="success-banner" class="success-banner" role="status">Document uploaded.<button type="button" class="success-banner-dismiss" id="dismiss-success" aria-label="Dismiss">&times;</button></div>
+  <div id="page-error" class="error-banner" role="alert"></div>
+  <div class="storage-indicator" id="storage-indicator">Calculating storage usage&hellip;</div>
+  <div class="tabs-scroll" role="region" aria-label="Document categories">
+    <div class="tabs" role="tablist">
+      <button type="button" class="tab-btn active" data-category="all" aria-selected="true">All</button>
+      <button type="button" class="tab-btn" data-category="constitution" aria-selected="false">Constitution</button>
+      <button type="button" class="tab-btn" data-category="minutes" aria-selected="false">Minutes</button>
+      <button type="button" class="tab-btn" data-category="financial" aria-selected="false">Financial</button>
+      <button type="button" class="tab-btn" data-category="correspondence" aria-selected="false">Correspondence</button>
+      <button type="button" class="tab-btn" data-category="certificate" aria-selected="false">Certificate</button>
+      <button type="button" class="tab-btn" data-category="other" aria-selected="false">Other</button>
+    </div>
+  </div>
+  <div id="docs-loading" class="skeleton-list"><div class="skeleton-row"></div><div class="skeleton-row"></div></div>
+  <div id="docs-content" hidden></div>
+</main>
+<div class="modal-backdrop" id="modal-backdrop" hidden></div>
+<div class="modal" id="delete-modal" role="dialog" aria-labelledby="delete-modal-title" aria-hidden="true" hidden>
+  <h2 id="delete-modal-title">Delete Document?</h2>
+  <p>This will permanently delete this document. This cannot be undone.</p>
+  <div class="modal-actions">
+    <button type="button" class="modal-cancel" id="delete-cancel">Cancel</button>
+    <button type="button" class="modal-confirm" id="delete-confirm">Delete</button>
+  </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../../config.js"></script>
+<script>
+(function(){
+  "use strict";
+  document.title="Manage Documents — "+FAITHBASE_CONFIG.communityName;
+  document.querySelectorAll("[data-config]").forEach(function(el){var k=el.getAttribute("data-config");if(FAITHBASE_CONFIG[k]!==undefined)el.textContent=FAITHBASE_CONFIG[k];});
+
+  if(new URLSearchParams(window.location.search).get("created")==="success"){
+    document.getElementById("success-banner").classList.add("visible");
+    if(window.history.replaceState)window.history.replaceState({},document.title,window.location.pathname);
+  }
+  document.getElementById("dismiss-success").addEventListener("click",function(){document.getElementById("success-banner").classList.remove("visible");});
+
+  var supabaseClient=null,allDocuments=[],activeCategory="all",pendingDeleteId=null;
+  var STORAGE_LIMIT_MB=1000,WARNING_THRESHOLD_MB=800;
+
+  function firstName(n){return!n||!n.trim()?"Member":n.trim().split(/\s+/)[0];}
+  function revealPage(){document.body.classList.remove("checking-session");}
+  function escapeHtml(s){return String(s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");}
+  function categoryLabel(cat){return cat==="constitution"?"Constitution":cat==="minutes"?"Minutes":cat==="financial"?"Financial":cat==="correspondence"?"Correspondence":cat==="certificate"?"Certificate":cat==="other"?"Other":cat||"Other";}
+  function formatFileSize(bytes){if(bytes==null)return"\u2014";var n=Number(bytes);if(isNaN(n)||n<=0)return"\u2014";if(n<1024)return n+" B";if(n<1024*1024)return(n/1024).toFixed(1)+" KB";return(n/(1024*1024)).toFixed(1)+" MB";}
+  function formatDate(iso){return new Date(iso).toLocaleDateString("en-GB",{day:"numeric",month:"long",year:"numeric"});}
+  function accessBadge(doc){return doc.access_level==="executives_only"?'<span class="badge badge-executive">Executive Only</span>':'<span class="badge badge-all-members">All Members</span>';}
+
+  try{var u=FAITHBASE_CONFIG.supabase.url,k=FAITHBASE_CONFIG.supabase.anonKey;if(u&&k&&u.indexOf("YOUR-")===-1)supabaseClient=supabase.createClient(u,k);}catch(e){}
+
+  document.getElementById("sign-out-btn").addEventListener("click",async function(){try{if(supabaseClient)await supabaseClient.auth.signOut();}catch(e){}window.location.replace("../../index.html");});
+
+  async function adminGuard(){
+    if(!supabaseClient){window.location.replace("../../auth/login.html");return null;}
+    var sr=await supabaseClient.auth.getSession(),session=sr.data&&sr.data.session;
+    if(!session){window.location.replace("../../auth/login.html");return null;}
+    var pr=await supabaseClient.from("profiles").select("full_name,role,status").eq("id",session.user.id).single(),p=pr.data;
+    if(pr.error||!p||p.status!=="active"){await supabaseClient.auth.signOut();window.location.replace("../../auth/login.html");return null;}
+    if(p.role!=="admin"){window.location.replace("../../member/dashboard.html");return null;}
+    document.getElementById("member-name").textContent=firstName(p.full_name);
+    return p;
+  }
+
+  function sumFolderBytes(files){
+    return(files||[]).reduce(function(sum,f){
+      var sz=f.metadata&&f.metadata.size!=null?Number(f.metadata.size):0;
+      return sum+(isNaN(sz)?0:sz);
+    },0);
+  }
+
+  async function refreshStorageUsage(){
+    var el=document.getElementById("storage-indicator");
+    var results=await Promise.all([
+      supabaseClient.storage.from("documents").list("all-members",{limit:1000}),
+      supabaseClient.storage.from("documents").list("executives-only",{limit:1000})
+    ]);
+    var totalBytes=sumFolderBytes(results[0].data)+sumFolderBytes(results[1].data);
+    var totalMB=totalBytes/(1024*1024);
+    var displayMB=totalMB<0.1&&totalBytes>0?totalMB.toFixed(2):totalMB.toFixed(1);
+    el.textContent=displayMB+" MB used of "+STORAGE_LIMIT_MB+" MB (Supabase free tier)";
+    el.classList.toggle("warning",totalMB>WARNING_THRESHOLD_MB);
+  }
+
+  function renderDocumentRow(doc){
+    return'<div class="doc-row" data-doc-id="'+escapeHtml(doc.id)+'">'+
+      '<div class="doc-row-main">'+
+      '<h3>'+escapeHtml(doc.title)+'</h3>'+
+      '<div class="doc-badges"><span class="badge badge-category">'+escapeHtml(categoryLabel(doc.category))+'</span>'+accessBadge(doc)+'</div>'+
+      '<p class="doc-meta">'+escapeHtml(formatFileSize(doc.file_size))+' &middot; Uploaded '+escapeHtml(formatDate(doc.created_at))+'</p>'+
+      '</div>'+
+      '<button type="button" class="btn btn-danger-outline delete-btn" data-doc-id="'+escapeHtml(doc.id)+'">Delete</button>'+
+      '</div>';
+  }
+
+  function renderList(){
+    document.getElementById("docs-loading").hidden=true;
+    var content=document.getElementById("docs-content");
+    content.hidden=false;
+    var list=activeCategory==="all"?allDocuments:allDocuments.filter(function(d){return d.category===activeCategory;});
+    if(!list.length){
+      var msg=(activeCategory==="all"&&!allDocuments.length)
+        ?'No documents have been uploaded yet \u2014 Upload your first one'
+        :"No documents in this category yet";
+      content.innerHTML='<div class="empty-state"><svg viewBox="0 0 24 24" fill="none"><path d="M14 3H8a2 2 0 00-2 2v14a2 2 0 002 2h8a2 2 0 002-2V7l-4-4z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M14 3v4h4M10 13h4M10 17h4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg><p>'+escapeHtml(msg)+'</p>'+
+        (activeCategory==="all"&&!allDocuments.length?'<a href="create.html" class="btn">+ Upload Document</a>':"")+'</div>';
+      return;
+    }
+    content.innerHTML='<div class="doc-list">'+list.map(renderDocumentRow).join("")+'</div>';
+    content.querySelectorAll(".delete-btn").forEach(function(btn){
+      btn.addEventListener("click",function(){openDeleteModal(btn.getAttribute("data-doc-id"));});
+    });
+  }
+
+  var backdrop=document.getElementById("modal-backdrop"),deleteModal=document.getElementById("delete-modal");
+  function openDeleteModal(id){
+    pendingDeleteId=id;
+    deleteModal.hidden=false;backdrop.hidden=false;
+    requestAnimationFrame(function(){deleteModal.classList.add("open");backdrop.classList.add("open");deleteModal.setAttribute("aria-hidden","false");});
+  }
+  function closeDeleteModal(){
+    pendingDeleteId=null;
+    deleteModal.classList.remove("open");backdrop.classList.remove("open");
+    deleteModal.setAttribute("aria-hidden","true");
+    setTimeout(function(){deleteModal.hidden=true;backdrop.hidden=true;},200);
+  }
+
+  document.getElementById("delete-cancel").addEventListener("click",closeDeleteModal);
+  backdrop.addEventListener("click",closeDeleteModal);
+  document.addEventListener("keydown",function(e){if(e.key==="Escape"&&deleteModal.classList.contains("open"))closeDeleteModal();});
+
+  document.getElementById("delete-confirm").addEventListener("click",async function(){
+    if(!pendingDeleteId)return;
+    var docId=pendingDeleteId;
+    var doc=allDocuments.find(function(d){return d.id===docId;});
+    closeDeleteModal();
+    document.getElementById("page-error").classList.remove("visible");
+    if(!doc||!doc.file_url){
+      document.getElementById("page-error").textContent="Document not found.";
+      document.getElementById("page-error").classList.add("visible");
+      return;
+    }
+    var sr=await supabaseClient.storage.from("documents").remove([doc.file_url]);
+    if(sr.error){
+      document.getElementById("page-error").textContent=sr.error.message||"Could not remove file from storage.";
+      document.getElementById("page-error").classList.add("visible");
+      return;
+    }
+    var dr=await supabaseClient.from("documents").delete().eq("id",docId);
+    if(dr.error){
+      document.getElementById("page-error").textContent=dr.error.message||"File removed but database record could not be deleted.";
+      document.getElementById("page-error").classList.add("visible");
+      return;
+    }
+    allDocuments=allDocuments.filter(function(d){return d.id!==docId;});
+    renderList();
+    refreshStorageUsage();
+  });
+
+  function switchTab(category){
+    activeCategory=category;
+    document.querySelectorAll(".tab-btn").forEach(function(btn){
+      var active=btn.getAttribute("data-category")===category;
+      btn.classList.toggle("active",active);
+      btn.setAttribute("aria-selected",String(active));
+    });
+    renderList();
+  }
+  document.querySelectorAll(".tab-btn").forEach(function(btn){
+    btn.addEventListener("click",function(){switchTab(btn.getAttribute("data-category"));});
+  });
+
+  (async function init(){
+    if(!await adminGuard())return;
+    var r=await supabaseClient.from("documents")
+      .select("id, title, category, file_url, file_name, file_size, access_level, created_at")
+      .order("created_at",{ascending:false});
+    allDocuments=r.data||[];
+    await refreshStorageUsage();
+    renderList();
+    revealPage();
+  })();
+})();
+</script>
+</body>
+</html>
