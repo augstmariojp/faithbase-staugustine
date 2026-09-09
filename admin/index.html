@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Panel — St. Augustine Choir</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{--maroon-deep:#3E0F1D;--maroon:#6B1F35;--gold:#C9A227;--gold-bright:#F0CC5C;--parchment:#F7EFE0;--ivory:#FFFBF3;--ink:#241019;--ink-soft:#5C3A44;--error:#B42318;--success:#2D6A4F;--amber:#B7791F;--font-display:'Cormorant Garamond',Georgia,serif;--font-body:'Work Sans',-apple-system,sans-serif;}
+  *{margin:0;padding:0;box-sizing:border-box;} html{scroll-behavior:smooth;}
+  body{font-family:var(--font-body);color:var(--ink);background:var(--parchment);min-height:100vh;-webkit-font-smoothing:antialiased;}
+  a{color:inherit;text-decoration:none;} :focus-visible{outline:3px solid var(--gold-bright);outline-offset:3px;}
+  .site-header{position:sticky;top:0;z-index:50;display:flex;align-items:center;justify-content:space-between;padding:18px 24px;background:var(--maroon-deep);border-bottom:1px solid rgba(201,162,39,0.25);}
+  .brand{display:flex;align-items:center;gap:10px;font-family:var(--font-display);font-size:20px;font-weight:600;color:var(--ivory);}
+  .brand-mark{width:28px;height:28px;color:var(--gold-bright);} .brand-mark svg{width:100%;height:100%;}
+  .header-actions{display:flex;align-items:center;gap:12px;}
+  .header-member-name{font-size:14px;font-weight:600;color:var(--gold-bright);white-space:nowrap;}
+  .header-signin{font-size:14px;font-weight:600;color:var(--gold-bright);padding:9px 18px;border:1px solid rgba(240,204,92,0.5);border-radius:999px;background:transparent;cursor:pointer;white-space:nowrap;}
+  .header-signin:hover,.header-signin:focus-visible{background:var(--gold-bright);color:var(--maroon-deep);}
+  .admin-page{padding:24px 20px 40px;max-width:960px;margin:0 auto;}
+  .back-link{display:inline-flex;align-items:center;gap:6px;font-size:14px;font-weight:600;color:var(--maroon);margin-bottom:20px;}
+  .back-link svg{width:18px;height:18px;}
+  .page-heading{font-family:var(--font-display);font-weight:600;font-size:32px;color:var(--maroon);margin-bottom:20px;}
+  .pending-banner{display:none;background:rgba(240,204,92,0.15);border:1px solid var(--gold);border-radius:10px;padding:16px 20px;margin-bottom:24px;}
+  .pending-banner.visible{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;}
+  .pending-banner p{font-size:15px;font-weight:600;color:var(--maroon);line-height:1.5;}
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;font-family:var(--font-body);font-size:14px;font-weight:600;padding:12px 22px;border-radius:999px;border:none;cursor:pointer;background:var(--gold-bright);color:var(--maroon-deep);transition:transform .15s ease,box-shadow .15s ease;white-space:nowrap;}
+  .btn:hover,.btn:focus-visible{transform:translateY(-2px);box-shadow:0 10px 24px -8px rgba(240,204,92,0.55);}
+  .stats-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-bottom:28px;}
+  .stat-card{background:var(--ivory);border:1px solid rgba(107,31,53,0.12);border-top:3px solid var(--maroon);border-radius:10px;padding:20px 18px;text-align:center;}
+  .stat-card .stat-label{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;color:var(--ink-soft);margin-bottom:8px;}
+  .stat-card .stat-value{font-family:var(--font-display);font-size:clamp(24px,5vw,32px);font-weight:600;color:var(--maroon);line-height:1.2;}
+  .section-heading{font-family:var(--font-display);font-size:22px;font-weight:600;color:var(--maroon);margin-bottom:16px;}
+  .actions-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:32px;}
+  .action-card{display:flex;align-items:center;justify-content:center;text-align:center;background:var(--ivory);border:1px solid rgba(107,31,53,0.12);border-left:3px solid var(--gold);border-radius:10px;padding:18px 16px;font-size:14px;font-weight:600;color:var(--maroon);min-height:72px;transition:box-shadow .15s ease,transform .15s ease;}
+  .action-card:hover,.action-card:focus-visible{box-shadow:0 8px 24px -10px rgba(36,16,25,0.15);transform:translateY(-1px);}
+  .activity-list{display:flex;flex-direction:column;gap:0;background:var(--ivory);border:1px solid rgba(107,31,53,0.12);border-radius:10px;overflow:hidden;}
+  .activity-item{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;padding:14px 18px;border-bottom:1px solid rgba(107,31,53,0.08);font-size:14px;line-height:1.55;}
+  .activity-item:last-child{border-bottom:none;}
+  .activity-item .text{color:var(--ink);flex:1;min-width:0;}
+  .activity-item .date{font-size:12.5px;color:var(--ink-soft);white-space:nowrap;flex-shrink:0;}
+  .empty-state{text-align:center;padding:40px 20px;color:var(--ink-soft);background:var(--ivory);border:1px solid rgba(107,31,53,0.1);border-radius:10px;}
+  .empty-state p{font-size:15px;line-height:1.6;}
+  .skeleton-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-bottom:28px;}
+  .skeleton-card{height:100px;border-radius:10px;background:linear-gradient(90deg,rgba(107,31,53,0.06) 25%,rgba(107,31,53,0.12) 50%,rgba(107,31,53,0.06) 75%);background-size:200% 100%;animation:shimmer 1.4s ease-in-out infinite;}
+  @keyframes shimmer{0%{background-position:200% 0;}100%{background-position:-200% 0;}}
+  body.checking-session .admin-page{visibility:hidden;}
+  @media (min-width:720px){.stats-grid{grid-template-columns:repeat(4,1fr);}.skeleton-grid{grid-template-columns:repeat(4,1fr);}}
+  @media (max-width:720px){.site-header{padding:14px 18px;}.admin-page{padding:20px 16px 32px;}.page-heading{font-size:28px;}}
+  @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto;}.skeleton-card,.action-card{animation:none;transition:none;}.btn:hover,.btn:focus-visible,.action-card:hover,.action-card:focus-visible{transform:none;}}
+</style>
+</head>
+<body class="checking-session">
+<header class="site-header">
+  <a href="../index.html" class="brand"><span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M9 18V6l10-2v12" stroke="currentColor" stroke-width="1.6"/><circle cx="6.5" cy="18" r="2.5" stroke="currentColor" stroke-width="1.6"/><circle cx="16.5" cy="16" r="2.5" stroke="currentColor" stroke-width="1.6"/></svg></span><span data-config="communityShortName">St. Augustine Choir</span></a>
+  <div class="header-actions"><span class="header-member-name" id="member-name"></span><button type="button" class="header-signin" id="sign-out-btn">Sign Out</button></div>
+</header>
+<main class="admin-page">
+  <a href="../member/dashboard.html" class="back-link"><svg viewBox="0 0 24 24" fill="none"><path d="M15 6l-6 6 6 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>Back to Dashboard</a>
+  <h1 class="page-heading">Admin Panel</h1>
+  <a href="members.html" class="pending-banner" id="pending-banner" hidden>
+    <p id="pending-banner-text"></p>
+    <span class="btn">Approve Now</span>
+  </a>
+  <div id="stats-loading" class="skeleton-grid"><div class="skeleton-card"></div><div class="skeleton-card"></div><div class="skeleton-card"></div><div class="skeleton-card"></div></div>
+  <div class="stats-grid" id="stats-grid" hidden>
+    <div class="stat-card"><p class="stat-label">Active Members</p><p class="stat-value" id="stat-members">—</p></div>
+    <div class="stat-card"><p class="stat-label">Meetings This Year</p><p class="stat-value" id="stat-meetings">—</p></div>
+    <div class="stat-card"><p class="stat-label">Dues This Month</p><p class="stat-value" id="stat-dues">—</p></div>
+    <div class="stat-card"><p class="stat-label">Open Welfare Cases</p><p class="stat-value" id="stat-welfare">—</p></div>
+  </div>
+  <h2 class="section-heading">Quick Actions</h2>
+  <div class="actions-grid">
+    <a href="members.html" class="action-card">Approve Pending Members</a>
+    <a href="meetings/create.html" class="action-card">Schedule Meeting</a>
+    <a href="dues/index.html" class="action-card">Record Dues Payment</a>
+    <a href="announcements/create.html" class="action-card">Post Announcement</a>
+  </div>
+  <h2 class="section-heading">Recent Activity</h2>
+  <div id="activity-loading" class="skeleton-grid" style="grid-template-columns:1fr;margin-bottom:0"><div class="skeleton-card" style="height:160px"></div></div>
+  <div id="activity-content" hidden></div>
+</main>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../config.js"></script>
+<script>
+(function(){
+  "use strict";
+  document.title="Admin Panel — "+FAITHBASE_CONFIG.communityName;
+  document.querySelectorAll("[data-config]").forEach(function(el){var k=el.getAttribute("data-config");if(FAITHBASE_CONFIG[k]!==undefined)el.textContent=FAITHBASE_CONFIG[k];});
+
+  var MONTH_NAMES=["January","February","March","April","May","June","July","August","September","October","November","December"];
+  var supabaseClient=null;
+
+  function firstName(n){return!n||!n.trim()?"Member":n.trim().split(/\s+/)[0];}
+  function revealPage(){document.body.classList.remove("checking-session");}
+  function escapeHtml(s){return String(s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");}
+  function formatNaira(a){return"\u20A6"+Number(a||0).toLocaleString("en-NG");}
+  function formatShortDate(iso){return new Date(iso).toLocaleDateString("en-GB",{day:"numeric",month:"short",year:"numeric"});}
+  function profileName(p){var pr=p.profiles;return Array.isArray(pr)?(pr[0]&&pr[0].full_name)||"Someone":(pr&&pr.full_name)||"Someone";}
+  function welfareTypeLabel(t){return t==="sick"?"Sick":t==="bereaved"?"Bereaved":t==="celebrating"?"Celebrating":t==="other"?"Other":t||"Welfare";}
+
+  try{var u=FAITHBASE_CONFIG.supabase.url,k=FAITHBASE_CONFIG.supabase.anonKey;if(u&&k&&u.indexOf("YOUR-")===-1)supabaseClient=supabase.createClient(u,k);}catch(e){}
+
+  document.getElementById("sign-out-btn").addEventListener("click",async function(){try{if(supabaseClient)await supabaseClient.auth.signOut();}catch(e){}window.location.replace("../index.html");});
+
+  async function adminGuard(){
+    if(!supabaseClient){window.location.replace("../auth/login.html");return null;}
+    var sr=await supabaseClient.auth.getSession(),session=sr.data&&sr.data.session;
+    if(!session){window.location.replace("../auth/login.html");return null;}
+    var pr=await supabaseClient.from("profiles").select("full_name,role,status").eq("id",session.user.id).single(),p=pr.data;
+    if(pr.error||!p||p.status!=="active"){await supabaseClient.auth.signOut();window.location.replace("../auth/login.html");return null;}
+    if(p.role!=="admin"){window.location.replace("../member/dashboard.html");return null;}
+    document.getElementById("member-name").textContent=firstName(p.full_name);
+    return p;
+  }
+
+  function renderActivity(items){
+    document.getElementById("activity-loading").hidden=true;
+    var el=document.getElementById("activity-content");
+    el.hidden=false;
+    if(!items.length){el.innerHTML='<div class="empty-state"><p>No recent activity.</p></div>';return;}
+    el.innerHTML='<div class="activity-list">'+items.map(function(it){
+      return'<div class="activity-item"><span class="text">'+escapeHtml(it.text)+'</span><span class="date">'+escapeHtml(formatShortDate(it.ts))+'</span></div>';
+    }).join("")+'</div>';
+  }
+
+  (async function init(){
+    if(!await adminGuard())return;
+    var now=new Date(),cy=now.getFullYear(),cm=now.getMonth()+1;
+    var yearStart=cy+"-01-01T00:00:00.000Z",yearEnd=(cy+1)+"-01-01T00:00:00.000Z";
+
+    var results=await Promise.all([
+      supabaseClient.from("profiles").select("id",{count:"exact",head:true}).eq("status","active"),
+      supabaseClient.from("profiles").select("id",{count:"exact",head:true}).eq("status","pending"),
+      supabaseClient.from("meetings").select("id",{count:"exact",head:true}).gte("meeting_date",yearStart).lt("meeting_date",yearEnd),
+      supabaseClient.from("dues_payments").select("amount_paid").eq("period_year",cy).eq("period_month",cm),
+      supabaseClient.from("welfare_cases").select("id",{count:"exact",head:true}).eq("status","open"),
+      supabaseClient.from("meetings").select("title, created_at, profiles(full_name)").order("created_at",{ascending:false}).limit(5),
+      supabaseClient.from("announcements").select("title, created_at, profiles(full_name)").order("created_at",{ascending:false}).limit(5),
+      supabaseClient.from("dues_payments").select("amount_paid, period_month, period_year, created_at, profiles!recorded_by(full_name)").order("created_at",{ascending:false}).limit(5),
+      supabaseClient.from("welfare_cases").select("welfare_type, status, updated_at, profiles!member_id(full_name)").not("updated_at","is",null).order("updated_at",{ascending:false}).limit(5)
+    ]);
+
+    var pendingCount=results[1].count||0;
+    if(pendingCount>0){
+      document.getElementById("pending-banner-text").textContent=pendingCount+" member"+(pendingCount===1?"":"s")+" awaiting approval";
+      document.getElementById("pending-banner").classList.add("visible");
+    }
+
+    var duesSum=(results[3].data||[]).reduce(function(s,r){return s+Number(r.amount_paid||0);},0);
+    document.getElementById("stats-loading").hidden=true;
+    document.getElementById("stats-grid").hidden=false;
+    document.getElementById("stat-members").textContent=String(results[0].count||0);
+    document.getElementById("stat-meetings").textContent=String(results[2].count||0);
+    document.getElementById("stat-dues").textContent=formatNaira(duesSum);
+    document.getElementById("stat-welfare").textContent=String(results[4].count||0);
+
+    var activity=[];
+    (results[5].data||[]).forEach(function(r){activity.push({ts:r.created_at,text:profileName(r)+" scheduled a meeting: "+(r.title||"Untitled")});});
+    (results[6].data||[]).forEach(function(r){activity.push({ts:r.created_at,text:profileName(r)+" posted an announcement: "+(r.title||"Untitled")});});
+    (results[7].data||[]).forEach(function(r){
+      var mn=MONTH_NAMES[Number(r.period_month)-1]||r.period_month;
+      activity.push({ts:r.created_at,text:profileName(r)+" recorded a dues payment ("+mn+" "+r.period_year+")"});
+    });
+    (results[8].data||[]).forEach(function(r){
+      activity.push({ts:r.updated_at,text:profileName(r)+"'s "+welfareTypeLabel(r.welfare_type)+" case was updated to "+r.status});
+    });
+    activity.sort(function(a,b){return new Date(b.ts)-new Date(a.ts);});
+    renderActivity(activity.slice(0,10));
+    revealPage();
+  })();
+})();
+</script>
+</body>
+</html>
