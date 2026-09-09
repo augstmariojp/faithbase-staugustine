@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Community Settings — St. Augustine Choir</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{--maroon-deep:#3E0F1D;--maroon:#6B1F35;--gold:#C9A227;--gold-bright:#F0CC5C;--parchment:#F7EFE0;--ivory:#FFFBF3;--ink:#241019;--ink-soft:#5C3A44;--error:#B42318;--font-display:'Cormorant Garamond',Georgia,serif;--font-body:'Work Sans',-apple-system,sans-serif;}
+  *{margin:0;padding:0;box-sizing:border-box;} body{font-family:var(--font-body);color:var(--ink);background:var(--parchment);min-height:100vh;-webkit-font-smoothing:antialiased;}
+  a{color:inherit;text-decoration:none;} :focus-visible{outline:3px solid var(--gold-bright);outline-offset:3px;}
+  .site-header{position:sticky;top:0;z-index:50;display:flex;align-items:center;justify-content:space-between;padding:18px 24px;background:var(--maroon-deep);border-bottom:1px solid rgba(201,162,39,0.25);}
+  .brand{display:flex;align-items:center;gap:10px;font-family:var(--font-display);font-size:20px;font-weight:600;color:var(--ivory);}
+  .brand-mark{width:28px;height:28px;color:var(--gold-bright);} .brand-mark svg{width:100%;height:100%;}
+  .header-actions{display:flex;align-items:center;gap:12px;}
+  .header-member-name{font-size:14px;font-weight:600;color:var(--gold-bright);}
+  .header-signin{font-size:14px;font-weight:600;color:var(--gold-bright);padding:9px 18px;border:1px solid rgba(240,204,92,0.5);border-radius:999px;background:transparent;cursor:pointer;}
+  .header-signin:hover,.header-signin:focus-visible{background:var(--gold-bright);color:var(--maroon-deep);}
+  .admin-page{padding:24px 20px 40px;max-width:560px;margin:0 auto;}
+  .back-link{display:inline-flex;align-items:center;gap:6px;font-size:14px;font-weight:600;color:var(--maroon);margin-bottom:20px;}
+  .back-link svg{width:18px;height:18px;}
+  .info-note{background:var(--ivory);border:1px solid rgba(107,31,53,0.12);border-radius:8px;padding:14px 16px;font-size:14px;line-height:1.6;color:var(--ink-soft);margin-bottom:24px;}
+  .auth-card{background:var(--ivory);border:1px solid rgba(107,31,53,0.12);border-top:3px solid var(--maroon);border-radius:10px;padding:32px 28px 36px;box-shadow:0 4px 24px -8px rgba(36,16,25,0.12);}
+  .auth-card h1{font-family:var(--font-display);font-size:28px;font-weight:600;color:var(--maroon);margin-bottom:24px;text-align:center;}
+  .success-banner{display:none;position:relative;background:rgba(240,204,92,0.18);border:1px solid rgba(201,162,39,0.45);border-radius:8px;padding:12px 40px 12px 14px;font-size:14px;color:var(--maroon-deep);margin-bottom:20px;}
+  .success-banner.visible{display:block;}
+  .success-banner-dismiss{position:absolute;top:50%;right:10px;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--maroon);font-size:18px;padding:4px;}
+  .error-banner{display:none;background:rgba(180,35,24,0.08);border:1px solid rgba(180,35,24,0.25);border-radius:8px;padding:12px 14px;font-size:14px;color:var(--error);margin-bottom:20px;}
+  .error-banner.visible{display:block;}
+  .form-field{margin-bottom:20px;}
+  .form-field label{display:block;font-size:13px;font-weight:600;color:var(--maroon);margin-bottom:6px;}
+  .form-field input{width:100%;font-family:var(--font-body);font-size:15px;color:var(--ink);background:var(--parchment);border:1px solid rgba(107,31,53,0.2);border-radius:8px;padding:12px 14px;}
+  .form-field input:focus{outline:none;border-color:var(--maroon);box-shadow:0 0 0 3px rgba(107,31,53,0.12);}
+  .form-field input.input-error{border-color:var(--error);}
+  .field-error{display:none;font-size:12.5px;color:var(--error);margin-top:6px;}
+  .field-error.visible{display:block;}
+  .btn{width:100%;font-family:var(--font-body);font-size:15px;font-weight:600;padding:14px 30px;border-radius:999px;border:none;cursor:pointer;background:var(--gold-bright);color:var(--maroon-deep);display:inline-flex;align-items:center;justify-content:center;gap:8px;margin-top:8px;}
+  .btn:disabled{opacity:0.7;cursor:not-allowed;}
+  .spinner{width:16px;height:16px;border:2px solid rgba(62,15,28,0.2);border-top-color:var(--maroon-deep);border-radius:50%;animation:spin .7s linear infinite;}
+  @keyframes spin{to{transform:rotate(360deg);}}
+  body.checking-session .admin-page{visibility:hidden;}
+  @media (max-width:720px){.site-header{padding:14px 18px;}}
+  @media (prefers-reduced-motion:reduce){.spinner{animation:none;}}
+</style>
+</head>
+<body class="checking-session">
+<header class="site-header">
+  <a href="../index.html" class="brand"><span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M9 18V6l10-2v12" stroke="currentColor" stroke-width="1.6"/><circle cx="6.5" cy="18" r="2.5" stroke="currentColor" stroke-width="1.6"/><circle cx="16.5" cy="16" r="2.5" stroke="currentColor" stroke-width="1.6"/></svg></span><span data-config="communityShortName">St. Augustine Choir</span></a>
+  <div class="header-actions"><span class="header-member-name" id="member-name"></span><button type="button" class="header-signin" id="sign-out-btn">Sign Out</button></div>
+</header>
+<main class="admin-page">
+  <a href="index.html" class="back-link"><svg viewBox="0 0 24 24" fill="none"><path d="M15 6l-6 6 6 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>Back to Admin Panel</a>
+  <p class="info-note">Community name, tagline, logo, and colors are controlled by your site&rsquo;s configuration file. Contact AugstMario to update these.</p>
+  <div class="auth-card" id="form-card" hidden>
+    <h1>Community Settings</h1>
+    <div id="success-banner" class="success-banner" role="status">Settings updated.<button type="button" class="success-banner-dismiss" id="dismiss-success" aria-label="Dismiss">&times;</button></div>
+    <div id="error-banner" class="error-banner" role="alert"></div>
+    <form id="settings-form" novalidate>
+      <div class="form-field">
+        <label for="whatsapp">WhatsApp Group Link <span style="font-weight:400;color:var(--ink-soft)">(optional)</span></label>
+        <input type="url" id="whatsapp" placeholder="https://chat.whatsapp.com/…">
+        <p class="field-error" id="error-whatsapp"></p>
+      </div>
+      <div class="form-field">
+        <label for="meeting-frequency">Regular Meeting Day <span style="font-weight:400;color:var(--ink-soft)">(optional)</span></label>
+        <input type="text" id="meeting-frequency" placeholder="e.g. First Sunday of every month">
+      </div>
+      <div class="form-field">
+        <label for="patron-saint">Patron Saint Name <span style="font-weight:400;color:var(--ink-soft)">(optional)</span></label>
+        <input type="text" id="patron-saint">
+      </div>
+      <div class="form-field">
+        <label for="feast-date">Patron Saint Feast Date <span style="font-weight:400;color:var(--ink-soft)">(optional)</span></label>
+        <input type="date" id="feast-date">
+      </div>
+      <button type="submit" class="btn" id="save-btn">Save Settings</button>
+    </form>
+  </div>
+</main>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../config.js"></script>
+<script>
+(function(){
+  "use strict";
+  document.title="Community Settings — "+FAITHBASE_CONFIG.communityName;
+  document.querySelectorAll("[data-config]").forEach(function(el){var k=el.getAttribute("data-config");if(FAITHBASE_CONFIG[k]!==undefined)el.textContent=FAITHBASE_CONFIG[k];});
+  document.getElementById("dismiss-success").addEventListener("click",function(){document.getElementById("success-banner").classList.remove("visible");});
+
+  var supabaseClient=null,settingsId=null;
+
+  function firstName(n){return!n||!n.trim()?"Member":n.trim().split(/\s+/)[0];}
+  function revealPage(){document.body.classList.remove("checking-session");}
+
+  try{var u=FAITHBASE_CONFIG.supabase.url,k=FAITHBASE_CONFIG.supabase.anonKey;if(u&&k&&u.indexOf("YOUR-")===-1)supabaseClient=supabase.createClient(u,k);}catch(e){}
+
+  document.getElementById("sign-out-btn").addEventListener("click",async function(){try{if(supabaseClient)await supabaseClient.auth.signOut();}catch(e){}window.location.replace("../index.html");});
+
+  async function adminGuard(){
+    if(!supabaseClient){window.location.replace("../auth/login.html");return null;}
+    var sr=await supabaseClient.auth.getSession(),session=sr.data&&sr.data.session;
+    if(!session){window.location.replace("../auth/login.html");return null;}
+    var pr=await supabaseClient.from("profiles").select("full_name,role,status").eq("id",session.user.id).single(),p=pr.data;
+    if(pr.error||!p||p.status!=="active"){await supabaseClient.auth.signOut();window.location.replace("../auth/login.html");return null;}
+    if(p.role!=="admin"){window.location.replace("../member/dashboard.html");return null;}
+    document.getElementById("member-name").textContent=firstName(p.full_name);
+    return p;
+  }
+
+  function toDateInputValue(iso){
+    if(!iso)return"";
+    return String(iso).slice(0,10);
+  }
+
+  document.getElementById("settings-form").addEventListener("submit",async function(e){
+    e.preventDefault();
+    document.getElementById("error-banner").classList.remove("visible");
+    var errEl=document.getElementById("error-whatsapp");
+    errEl.classList.remove("visible");errEl.textContent="";
+    document.getElementById("whatsapp").classList.remove("input-error");
+
+    var whatsapp=document.getElementById("whatsapp").value.trim();
+    if(whatsapp&&!whatsapp.startsWith("https://")){
+      errEl.textContent="WhatsApp link must start with https://";
+      errEl.classList.add("visible");
+      document.getElementById("whatsapp").classList.add("input-error");
+      return;
+    }
+    if(!settingsId){
+      document.getElementById("error-banner").textContent="Settings record not found.";
+      document.getElementById("error-banner").classList.add("visible");
+      return;
+    }
+
+    var btn=document.getElementById("save-btn");
+    btn.disabled=true;btn.innerHTML='<span class="spinner" aria-hidden="true"></span> Saving\u2026';
+
+    var payload={
+      whatsapp_link:whatsapp||null,
+      meeting_frequency:document.getElementById("meeting-frequency").value.trim()||null,
+      patron_saint:document.getElementById("patron-saint").value.trim()||null,
+      feast_date:document.getElementById("feast-date").value||null
+    };
+
+    var r=await supabaseClient.from("community_settings").update(payload).eq("id",settingsId);
+    btn.disabled=false;btn.textContent="Save Settings";
+
+    if(r.error){
+      document.getElementById("error-banner").textContent=r.error.message;
+      document.getElementById("error-banner").classList.add("visible");
+      return;
+    }
+    document.getElementById("success-banner").classList.add("visible");
+  });
+
+  (async function init(){
+    if(!await adminGuard())return;
+    var r=await supabaseClient.from("community_settings").select("id, whatsapp_link, meeting_frequency, patron_saint, feast_date").limit(1).maybeSingle();
+    if(r.error||!r.data){
+      document.getElementById("error-banner").textContent="Could not load community settings.";
+      document.getElementById("error-banner").classList.add("visible");
+      document.getElementById("form-card").hidden=false;
+      revealPage();return;
+    }
+    settingsId=r.data.id;
+    document.getElementById("whatsapp").value=r.data.whatsapp_link||"";
+    document.getElementById("meeting-frequency").value=r.data.meeting_frequency||"";
+    document.getElementById("patron-saint").value=r.data.patron_saint||"";
+    document.getElementById("feast-date").value=toDateInputValue(r.data.feast_date);
+    document.getElementById("form-card").hidden=false;
+    revealPage();
+  })();
+})();
+</script>
+</body>
+</html>

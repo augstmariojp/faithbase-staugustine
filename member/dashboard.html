@@ -308,6 +308,7 @@
     <a href="profile.html">My Profile</a>
     <a href="directory/index.html">Member Directory</a>
   </div>
+  <div class="member-drawer-links" id="drawer-extra-links"></div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -394,6 +395,12 @@
         .eq('id', session.user.id)
         .single();
 
+      var settingsResult = await supabaseClient
+        .from('community_settings')
+        .select('whatsapp_link')
+        .limit(1)
+        .maybeSingle();
+
       var profile = profileResult.data;
       var profileError = profileResult.error;
 
@@ -411,6 +418,17 @@
 
       if (profile.role === 'admin'){
         document.getElementById('admin-tools').hidden = false;
+      }
+
+      var whatsappLink = settingsResult.data && settingsResult.data.whatsapp_link;
+      if (whatsappLink && String(whatsappLink).trim()){
+        var extraLinks = document.getElementById('drawer-extra-links');
+        var wa = document.createElement('a');
+        wa.href = whatsappLink.trim();
+        wa.target = '_blank';
+        wa.rel = 'noopener noreferrer';
+        wa.textContent = 'Community WhatsApp';
+        extraLinks.appendChild(wa);
       }
 
       revealPage();
