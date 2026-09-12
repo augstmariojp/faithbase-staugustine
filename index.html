@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>St. Augustine Choir — OLQN Abuja</title>
 <meta name="description" content="St. Augustine Choir leads the people of Our Lady Queen of Nigeria Catholic Church, Abuja, in song. Join our community.">
+<link rel="icon" type="image/png" href="assets/st-augustine-choir-crest.png">
 
 <!-- Fonts: Cormorant Garamond (display) + Work Sans (body/utility) -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -23,6 +24,8 @@
     --ivory:        #FFFBF3;
     --ink:          #241019;
     --ink-soft:     #5C3A44;
+    --crest-red:       #D23232;
+    --crest-red-dark:  #A82424;
 
     --font-display: 'Cormorant Garamond', Georgia, serif;
     --font-body: 'Work Sans', -apple-system, sans-serif;
@@ -65,6 +68,10 @@
     color:var(--gold-bright);
   }
   .brand-mark svg{width:100%;height:100%;}
+  .brand-mark-img{
+    width:32px;height:32px;flex-shrink:0;
+    object-fit:contain;border-radius:50%;
+  }
   .header-signin{
     font-family:var(--font-body);
     font-size:14px;font-weight:600;
@@ -119,6 +126,13 @@
   }
 
   .hero-inner{position:relative;z-index:2;max-width:720px;margin:0 auto;}
+  .hero-crest{
+    width:clamp(160px, 28vw, 220px);
+    height:auto;
+    margin:0 auto 28px;
+    display:block;
+    filter:drop-shadow(0 0 24px rgba(240,204,92,0.55));
+  }
   .hero-eyebrow{
     display:inline-flex;align-items:center;gap:8px;
     font-family:var(--font-body);
@@ -168,13 +182,14 @@
     display:inline-flex;align-items:center;gap:8px;
   }
   .btn-primary{
-    background:var(--gold-bright);
-    color:var(--maroon-deep);
-    box-shadow:0 0 0 0 rgba(240,204,92,0.5);
+    background:var(--crest-red);
+    color:#fff;
+    box-shadow:0 0 0 0 rgba(210,50,50,0.5);
   }
   .btn-primary:hover,.btn-primary:focus-visible{
     transform:translateY(-2px);
-    box-shadow:0 10px 24px -8px rgba(240,204,92,0.55);
+    background:var(--crest-red-dark);
+    box-shadow:0 10px 24px -8px rgba(168,36,36,0.55);
   }
   .btn-ghost{
     background:transparent;
@@ -304,13 +319,10 @@
 
 <header class="site-header">
   <div class="brand">
-    <span class="brand-mark" aria-hidden="true">
-      <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M9 18V6l10-2v12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
-        <circle cx="6.5" cy="18" r="2.5" stroke="currentColor" stroke-width="1.6"/>
-        <circle cx="16.5" cy="16" r="2.5" stroke="currentColor" stroke-width="1.6"/>
-      </svg>
-    </span>
+    <picture>
+      <source srcset="assets/st-augustine-choir-crest.webp" type="image/webp">
+      <img src="assets/st-augustine-choir-crest.png" alt="" class="brand-mark-img">
+    </picture>
     <span data-config="communityShortName">St. Augustine Choir</span>
   </div>
   <a href="#" class="header-signin" data-route="login">Sign In</a>
@@ -326,6 +338,10 @@
   </div>
 
   <div class="hero-inner">
+    <picture>
+      <source srcset="assets/st-augustine-choir-crest.webp" type="image/webp">
+      <img src="assets/st-augustine-choir-crest.png" alt="St. Augustine Choir crest — Our Lady Queen of Nigeria Catholic Pro-Cathedral, Area 3, Garki, Abuja" class="hero-crest">
+    </picture>
     <p class="hero-eyebrow">
       <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
         <path d="M12 2l1.9 5.9H20l-4.9 3.6 1.9 5.9L12 13.8l-5 3.6 1.9-5.9L4 7.9h6.1L12 2z" fill="currentColor"/>
@@ -371,7 +387,7 @@
 <footer class="site-footer">
   <p class="footer-brand">St. Augustine Choir</p>
   <div class="footer-links">
-    <a href="#" data-route="privacy">Privacy Policy</a>
+    <a href="https://faithbase.ng/privacy.html">Privacy Policy</a>
     <a href="#" data-route="login">Sign In</a>
   </div>
   <p class="footer-credit">Powered by FaithBase &middot; Built by AugstMario</p>

@@ -15,7 +15,7 @@ const FAITHBASE_CONFIG = {
   communityShortName: "St. Augustine Choir",
   patronSaint: "St. Augustine of Hippo",
   patronFeastDay: "August 28",
-  parish: "Our Lady Queen of Nigeria (OLQN) Catholic Church",
+  parish: "Our Lady Queen of Nigeria Catholic Pro-Cathedral, Area 3, Garki, Abuja",
   diocese: "Archdiocese of Abuja",
   location: "Abuja, Nigeria",
 
