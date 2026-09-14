@@ -173,6 +173,32 @@
     font-size:14px;font-weight:500;
     color:var(--ink-soft);
   }
+  .dash-announcement-card{
+    display:block;background:var(--ivory);
+    border:1px solid rgba(107,31,53,0.12);border-radius:10px;
+    padding:12px 14px;margin-bottom:8px;
+    transition:background .15s ease,border-color .15s ease;
+  }
+  .dash-announcement-card:last-child{margin-bottom:0;}
+  .dash-announcement-card:hover,.dash-announcement-card:focus-visible{
+    background:#fff;border-color:rgba(201,162,39,0.35);
+  }
+  .dash-announcement-card .title-row{
+    display:flex;align-items:center;gap:6px;margin-bottom:4px;
+  }
+  .dash-announcement-card .title{
+    font-family:var(--font-display);font-size:15px;font-weight:600;color:var(--maroon);
+  }
+  .dash-announcement-card .pin-badge{
+    font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;
+    color:var(--gold);background:rgba(201,162,39,0.15);
+    padding:2px 6px;border-radius:999px;flex-shrink:0;
+  }
+  .dash-announcement-card .preview{
+    font-size:12.5px;color:var(--ink-soft);line-height:1.4;margin-bottom:4px;
+  }
+  .dash-announcement-card .date{font-size:11px;color:var(--ink-soft);}
+  .dash-announcement-card.is-read{opacity:0.6;}
   .shortcuts-grid{
     display:grid;
     grid-template-columns:repeat(4,1fr);
@@ -206,6 +232,8 @@
   }
   .skeleton-hero{height:140px;margin-bottom:0;border-radius:0;}
   .skeleton-up-next{height:108px;}
+  .skeleton-announcement{height:64px;margin-bottom:8px;}
+  .skeleton-announcement:last-child{margin-bottom:0;}
   .skeleton-shortcut{height:76px;border-radius:10px;}
   @keyframes shimmer{
     0%{background-position:200% 0;}
@@ -354,7 +382,12 @@
   <div id="dashboard-skeleton" aria-hidden="true">
     <div class="skeleton-block skeleton-hero"></div>
     <div class="dashboard-inner">
-      <div class="up-next-row" style="margin-top:28px">
+      <div style="margin-top:28px;margin-bottom:12px">
+        <div class="skeleton-block skeleton-announcement"></div>
+        <div class="skeleton-block skeleton-announcement"></div>
+        <div class="skeleton-block skeleton-announcement"></div>
+      </div>
+      <div class="up-next-row">
         <div class="skeleton-block skeleton-up-next"></div>
         <div class="skeleton-block skeleton-up-next"></div>
       </div>
@@ -384,6 +417,13 @@
       </div>
     </section>
     <div class="dashboard-inner">
+      <section aria-labelledby="announcements-label" style="margin-bottom:32px">
+        <div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:12px">
+          <h2 class="dash-section-label" id="announcements-label" style="margin-bottom:0">Announcements</h2>
+          <a href="announcements/index.html" style="font-size:12px;font-weight:600;color:var(--maroon)">View all</a>
+        </div>
+        <div id="dash-announcements-list"></div>
+      </section>
       <section aria-labelledby="up-next-label">
         <h2 class="dash-section-label" id="up-next-label">Up next</h2>
         <div class="up-next-row">
@@ -508,6 +548,68 @@
     });
   }
 
+  function escapeHtml(str){
+    if (!str) return '';
+    return String(str)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
+  }
+
+  function isRead(id){
+    try {
+      var read = JSON.parse(localStorage.getItem('stac_read_announcements') || '[]');
+      return read.indexOf(id) !== -1;
+    } catch (e) { return false; }
+  }
+
+  function markRead(id){
+    try {
+      var read = JSON.parse(localStorage.getItem('stac_read_announcements') || '[]');
+      if (read.indexOf(id) === -1) {
+        read.push(id);
+        localStorage.setItem('stac_read_announcements', JSON.stringify(read));
+      }
+    } catch (e) {}
+  }
+
+  function plainPreview(body, maxLen){
+    var text = String(body || '').replace(/\*\*/g, '').replace(/\r\n|\r|\n/g, ' ').trim();
+    if (text.length <= maxLen) return text;
+    return text.slice(0, maxLen).trim() + '\u2026';
+  }
+
+  function formatAnnouncementDate(iso){
+    return new Date(iso).toLocaleString('en-GB', {
+      day: 'numeric', month: 'long', year: 'numeric',
+      hour: 'numeric', minute: '2-digit', hour12: true
+    });
+  }
+
+  function renderDashAnnouncements(items){
+    var list = document.getElementById('dash-announcements-list');
+    if (!items || !items.length){
+      list.innerHTML = '<p style="font-size:13px;color:var(--ink-soft)">No announcements yet.</p>';
+      return;
+    }
+    list.innerHTML = items.map(function(item){
+      var read = isRead(item.id);
+      var cls = 'dash-announcement-card' + (read ? ' is-read' : '');
+      var pin = item.is_pinned ? '<span class="pin-badge">Pinned</span>' : '';
+      return '<a href="announcements/detail.html?id=' + encodeURIComponent(item.id) + '" class="' + cls + '" data-id="' + escapeHtml(item.id) + '">' +
+        '<div class="title-row"><span class="title">' + escapeHtml(item.title) + '</span>' + pin + '</div>' +
+        '<p class="preview">' + escapeHtml(plainPreview(item.body, 90)) + '</p>' +
+        '<p class="date">' + escapeHtml(formatAnnouncementDate(item.created_at)) + '</p></a>';
+    }).join('');
+  }
+
+  document.getElementById('dash-announcements-list').addEventListener('click', function(e){
+    var card = e.target.closest('.dash-announcement-card[data-id]');
+    if (!card) return;
+    markRead(card.getAttribute('data-id'));
+  });
+
   function setUpNextCard(linkEl, titleEl, metaEl, item, emptyTitle, formatDate, detailBase){
     if (item && item.id){
       linkEl.href = detailBase + encodeURIComponent(item.id);
@@ -586,7 +688,8 @@
         supabaseClient.from('community_settings').select('whatsapp_link').limit(1).maybeSingle(),
         supabaseClient.from('attendance').select('status').eq('member_id', userId),
         supabaseClient.from('meetings').select('id, title, meeting_date, location').eq('status', 'scheduled').gte('meeting_date', now).order('meeting_date', { ascending: true }).limit(1).maybeSingle(),
-        supabaseClient.from('events').select('id, title, event_date, location').eq('status', 'scheduled').gte('event_date', now).order('event_date', { ascending: true }).limit(1).maybeSingle()
+        supabaseClient.from('events').select('id, title, event_date, location').eq('status', 'scheduled').gte('event_date', now).order('event_date', { ascending: true }).limit(1).maybeSingle(),
+        supabaseClient.from('announcements').select('id, title, body, is_pinned, created_at').order('is_pinned', { ascending: false }).order('created_at', { ascending: false }).limit(3)
       ]);
 
       var profileResult = batch[0];
@@ -594,6 +697,7 @@
       var attendanceResult = batch[2];
       var nextMeetingResult = batch[3];
       var nextEventResult = batch[4];
+      var announcementsResult = batch[5];
 
       var profile = profileResult.data;
       var profileError = profileResult.error;
@@ -618,6 +722,9 @@
       } else {
         attendanceValEl.textContent = presentCount + ' of ' + totalCount + ' meetings';
       }
+
+      var announcements = announcementsResult.error ? [] : (announcementsResult.data || []);
+      renderDashAnnouncements(announcements);
 
       var nextMeeting = nextMeetingResult.data;
       if (nextMeetingResult.error) nextMeeting = null;
