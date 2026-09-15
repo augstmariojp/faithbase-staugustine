@@ -69,6 +69,13 @@
     color:var(--gold-bright);
     white-space:nowrap;
   }
+  .header-avatar{
+    width:30px;height:30px;border-radius:50%;
+    background:var(--gold-bright);color:var(--maroon-deep);
+    display:flex;align-items:center;justify-content:center;
+    font-family:var(--font-body);font-size:12px;font-weight:700;
+    flex-shrink:0;
+  }
   .header-signin{
     font-family:var(--font-body);
     font-size:14px;font-weight:600;
@@ -337,6 +344,7 @@
   </a>
   <div class="header-actions">
     <span class="header-member-name" id="member-name"></span>
+    <span class="header-avatar" id="header-avatar" aria-hidden="true"></span>
     <button type="button" class="header-signin" id="sign-out-btn">Sign Out</button>
   </div>
 </header>
@@ -481,6 +489,13 @@
   function firstName(fullName){
     if (!fullName || !fullName.trim()) return 'Member';
     return fullName.trim().split(/\s+/)[0];
+  }
+  function getInitials(name){
+    if (!name || !name.trim()) return '?';
+    var parts = name.trim().split(/\s+/);
+    var first = parts[0] ? parts[0][0] : '';
+    var last = parts.length > 1 ? parts[parts.length - 1][0] : '';
+    return (first + last).toUpperCase();
   }
 
   function formatMeetingDate(iso){
@@ -672,6 +687,8 @@
 
       var name = firstName(profile.full_name);
       memberNameEl.textContent = name;
+
+      document.getElementById('header-avatar').textContent = getInitials(profile.full_name);
       document.getElementById('dash-hero-name').textContent = name;
       document.title = 'Dashboard — ' + FAITHBASE_CONFIG.communityName;
 

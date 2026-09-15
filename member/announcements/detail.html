@@ -18,6 +18,13 @@
   .brand-mark-img{width:32px;height:32px;object-fit:contain;border-radius:50%;flex-shrink:0;}
   .header-actions{display:flex;align-items:center;gap:12px;}
   .header-member-name{font-size:14px;font-weight:600;color:var(--gold-bright);white-space:nowrap;}
+  .header-avatar{
+    width:30px;height:30px;border-radius:50%;
+    background:var(--gold-bright);color:var(--maroon-deep);
+    display:flex;align-items:center;justify-content:center;
+    font-family:var(--font-body);font-size:12px;font-weight:700;
+    flex-shrink:0;
+  }
   .header-signin{font-size:14px;font-weight:600;color:var(--gold-bright);padding:9px 18px;border:1px solid rgba(240,204,92,0.5);border-radius:999px;background:transparent;cursor:pointer;white-space:nowrap;transition:background .18s ease,color .18s ease,border-color .18s ease;}
   .header-signin:hover,.header-signin:focus-visible{background:var(--gold-bright);color:var(--maroon-deep);border-color:var(--gold-bright);}
   .header-signin:disabled{opacity:0.7;cursor:not-allowed;}
@@ -53,7 +60,7 @@
 <body class="checking-session">
 <header class="site-header">
   <a href="../../index.html" class="brand"><picture><source srcset="../../assets/st-augustine-choir-crest.webp" type="image/webp"><img src="../../assets/st-augustine-choir-crest.png" alt="" class="brand-mark-img"></picture><span data-config="communityShortName">St. Augustine Choir</span></a>
-  <div class="header-actions"><span class="header-member-name" id="member-name"></span><button type="button" class="header-signin" id="sign-out-btn">Sign Out</button></div>
+  <div class="header-actions"><span class="header-member-name" id="member-name"></span><span class="header-avatar" id="header-avatar" aria-hidden="true"></span><button type="button" class="header-signin" id="sign-out-btn">Sign Out</button></div>
 </header>
 <main class="member-page">
   <div id="loading-view"><div class="skeleton-block"></div><div class="skeleton-block"></div></div>
@@ -117,6 +124,13 @@
   var notFoundView=document.getElementById("not-found-view");
 
   function firstName(n){return!n||!n.trim()?"Member":n.trim().split(/\s+/)[0];}
+  function getInitials(name){
+    if (!name || !name.trim()) return '?';
+    var parts = name.trim().split(/\s+/);
+    var first = parts[0] ? parts[0][0] : '';
+    var last = parts.length > 1 ? parts[parts.length - 1][0] : '';
+    return (first + last).toUpperCase();
+  }
   function revealPage(){document.body.classList.remove("checking-session");}
   function redirectToLogin(){window.location.replace("../../auth/login.html");}
   function escapeHtml(s){return String(s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");}
@@ -172,6 +186,8 @@
       var profile=profileResult.data;
       if(profileResult.error||!profile||profile.status!=="active"){await supabaseClient.auth.signOut();redirectToLogin();return;}
       document.getElementById("member-name").textContent=firstName(profile.full_name);
+
+      document.getElementById('header-avatar').textContent = getInitials(profile.full_name);
 
       var result=await supabaseClient.from("announcements")
         .select("id, title, body, created_at, profiles(full_name)")
