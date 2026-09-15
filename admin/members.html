@@ -59,6 +59,7 @@
   .empty-state{text-align:center;padding:48px 20px;color:var(--ink-soft);}
   .empty-state p{font-size:15px;line-height:1.6;}
   .skeleton-list{display:flex;flex-direction:column;gap:12px;}
+  .skeleton-list[hidden],.skeleton-grid[hidden]{display:none!important;}
   .skeleton-row{height:88px;border-radius:10px;background:linear-gradient(90deg,rgba(107,31,53,0.06) 25%,rgba(107,31,53,0.12) 50%,rgba(107,31,53,0.06) 75%);background-size:200% 100%;animation:shimmer 1.4s ease-in-out infinite;}
   @keyframes shimmer{0%{background-position:200% 0;}100%{background-position:-200% 0;}}
   .modal-backdrop{position:fixed;inset:0;background:rgba(36,16,25,0.55);z-index:90;opacity:0;pointer-events:none;transition:opacity .2s;}

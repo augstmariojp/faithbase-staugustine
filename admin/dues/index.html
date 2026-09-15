@@ -64,6 +64,7 @@
   .empty-state{text-align:center;padding:32px 20px;color:var(--ink-soft);background:var(--ivory);border:1px solid rgba(107,31,53,0.1);border-radius:10px;}
   .empty-state p{font-size:15px;}
   .skeleton-list{display:flex;flex-direction:column;gap:12px;margin-bottom:24px;}
+  .skeleton-list[hidden],.skeleton-grid[hidden]{display:none!important;}
   .skeleton-row{height:120px;border-radius:10px;background:linear-gradient(90deg,rgba(107,31,53,0.06) 25%,rgba(107,31,53,0.12) 50%,rgba(107,31,53,0.06) 75%);background-size:200% 100%;animation:shimmer 1.4s ease-in-out infinite;}
   @keyframes shimmer{0%{background-position:200% 0;}100%{background-position:-200% 0;}}
   .error-banner{display:none;background:rgba(180,35,24,0.08);border:1px solid rgba(180,35,24,0.25);border-radius:8px;padding:12px 14px;font-size:14px;color:var(--error);margin-bottom:16px;}
