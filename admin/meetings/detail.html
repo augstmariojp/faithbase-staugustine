@@ -227,7 +227,7 @@
     document.getElementById("minutes-published").checked=!!meeting.minutes_published;
     updatePublishLabels();
     if(meeting.status!=="completed")document.getElementById("complete-section").hidden=false;
-    var ar=await supabaseClient.from("attendance").select("status, member_id, profiles(full_name)").eq("meeting_id",meetingId).order("member_id");
+    var ar=await supabaseClient.from("attendance").select("status, member_id, profiles!member_id(full_name)").eq("meeting_id",meetingId).order("member_id");
     renderAttendance(ar.data||[]);
     document.getElementById("page-content").hidden=false;
     revealPage();
