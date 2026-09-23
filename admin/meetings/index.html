@@ -154,7 +154,8 @@
 
   async function loadUpcoming(){
     var loading=document.getElementById("upcoming-loading"),content=document.getElementById("upcoming-content");
-    var r=await supabaseClient.from("meetings").select("id,title,meeting_date,location,status,attendance_unlocked").eq("status","scheduled").order("meeting_date",{ascending:true});
+    var nowIso=new Date().toISOString();
+    var r=await supabaseClient.from("meetings").select("id,title,meeting_date,location,status,attendance_unlocked").eq("status","scheduled").gte("meeting_date",nowIso).order("meeting_date",{ascending:true});
     var counts=await getAttendanceCounts((r.data||[]).map(function(m){return m.id;}));
     loading.hidden=true;content.hidden=false;
     if(r.error||!r.data||!r.data.length){
