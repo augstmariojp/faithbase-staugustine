@@ -8,6 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
 
 <style>
   :root{
@@ -144,6 +145,18 @@
   .btn:hover,.btn:focus-visible{
     transform:translateY(-2px);
     box-shadow:0 10px 24px -8px rgba(240,204,92,0.55);
+  }
+  .btn-ghost{
+    display:inline-flex;align-items:center;justify-content:center;
+    font-family:var(--font-body);font-size:14px;font-weight:600;
+    padding:10px 22px;border-radius:999px;
+    border:1px solid rgba(107,31,53,0.35);
+    background:transparent;color:var(--maroon);cursor:pointer;
+    transition:background .15s ease, color .15s ease, border-color .15s ease;
+  }
+  .btn-ghost:hover,.btn-ghost:focus-visible{
+    border-color:var(--maroon);
+    color:var(--maroon-deep);
   }
 
   .skeleton-block{
@@ -342,6 +355,90 @@
     revealPage();
   }
 
+  function wireDownloadMinutesPdf(meeting){
+    var downloadBtn = document.getElementById('download-minutes-btn');
+    if (!downloadBtn || !window.jspdf) return;
+
+    var meetingTitleText = meeting.title || 'Meeting';
+    var meetingDateText = formatMeetingDate(meeting.meeting_date);
+    var meetingLocationText = meeting.location || '';
+    var rawMinutesText = meeting.minutes || '';
+
+    downloadBtn.addEventListener('click', function(){
+      var doc = new window.jspdf.jsPDF({ unit: 'pt', format: 'letter' });
+      var pageW = doc.internal.pageSize.getWidth();
+      var margin = 56;
+      var y = 60;
+
+      doc.setFillColor(62, 15, 29);
+      doc.rect(0, 0, pageW, 70, 'F');
+      doc.setTextColor(255, 255, 255);
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(16);
+      doc.text(FAITHBASE_CONFIG.communityName + ' — Meeting Minutes', margin, 42);
+
+      y = 100;
+      doc.setTextColor(36, 16, 25);
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(14);
+      doc.text(meetingTitleText, margin, y);
+      y += 20;
+
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(10.5);
+      doc.setTextColor(92, 58, 68);
+      doc.text(meetingDateText + (meetingLocationText ? '  \u00b7  ' + meetingLocationText : ''), margin, y);
+      y += 26;
+
+      doc.setDrawColor(201, 162, 39);
+      doc.setLineWidth(0.75);
+      doc.line(margin, y, pageW - margin, y);
+      y += 24;
+
+      var plainMinutes = String(rawMinutesText || '')
+        .replace(/\*\*/g, '')
+        .replace(/\r\n/g, '\n');
+      doc.setTextColor(36, 16, 25);
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(11);
+      var maxWidth = pageW - margin * 2;
+      var paragraphs = plainMinutes.split('\n');
+      paragraphs.forEach(function(para){
+        if (!para.trim()) { y += 10; return; }
+        var lines = doc.splitTextToSize(para, maxWidth);
+        lines.forEach(function(line){
+          if (y > doc.internal.pageSize.getHeight() - 70) {
+            doc.addPage();
+            y = 60;
+          }
+          doc.text(line, margin, y);
+          y += 15;
+        });
+        y += 4;
+      });
+
+      var pageCount = doc.internal.getNumberOfPages();
+      for (var i = 1; i <= pageCount; i++) {
+        doc.setPage(i);
+        var h = doc.internal.pageSize.getHeight();
+        doc.setDrawColor(201, 162, 39);
+        doc.setLineWidth(0.5);
+        doc.line(margin, h - 40, pageW - margin, h - 40);
+        doc.setFontSize(8);
+        doc.setTextColor(92, 58, 68);
+        doc.text(
+          'Generated from ' + FAITHBASE_CONFIG.communityName + ' FaithBase on ' +
+          new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' }),
+          margin, h - 26
+        );
+        doc.text('Page ' + i + ' of ' + pageCount, pageW - margin, h - 26, { align: 'right' });
+      }
+
+      var safeTitle = String(meetingTitleText || 'meeting').replace(/[^a-zA-Z0-9]+/g, '-').toLowerCase();
+      doc.save(safeTitle + '-minutes.pdf');
+    });
+  }
+
   function showDetail(meeting){
     loadingView.hidden = true;
     notFoundView.hidden = true;
@@ -359,9 +456,21 @@
     document.getElementById('meeting-agenda').textContent = meeting.agenda || 'No agenda provided.';
 
     var minutesSection = document.getElementById('minutes-section');
+    var existingDownloadBtn = document.getElementById('download-minutes-btn');
+    if (existingDownloadBtn) existingDownloadBtn.remove();
+
     if (meeting.status !== 'scheduled' && meeting.minutes_published && meeting.minutes){
       minutesSection.hidden = false;
       document.getElementById('meeting-minutes').textContent = meeting.minutes;
+
+      var downloadBtn = document.createElement('button');
+      downloadBtn.type = 'button';
+      downloadBtn.className = 'btn-ghost';
+      downloadBtn.id = 'download-minutes-btn';
+      downloadBtn.style.marginTop = '12px';
+      downloadBtn.textContent = 'Download as PDF';
+      minutesSection.appendChild(downloadBtn);
+      wireDownloadMinutesPdf(meeting);
     } else {
       minutesSection.hidden = true;
     }
