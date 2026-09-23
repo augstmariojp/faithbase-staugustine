@@ -72,6 +72,12 @@
       <div class="form-field"><label for="location">Location</label><input type="text" id="location" required><p class="field-error" id="error-location"></p></div>
       <div class="form-field"><label for="agenda">Agenda <span style="font-weight:400;color:var(--ink-soft)">(optional)</span></label><textarea id="agenda"></textarea></div>
       <div class="form-field"><label for="quorum">Quorum Required <span style="font-weight:400;color:var(--ink-soft)">(optional)</span></label><input type="number" id="quorum" min="0" step="1"><p class="field-error" id="error-quorum"></p></div>
+      <div class="form-field" id="post-announcement-field" style="display:flex;align-items:center;gap:10px;">
+        <input type="checkbox" id="post-announcement" checked style="width:18px;height:18px;accent-color:var(--maroon);">
+        <label for="post-announcement" style="margin:0;font-size:14px;font-weight:500;color:var(--ink);">
+          Also post this as an announcement
+        </label>
+      </div>
       <button type="submit" class="btn" id="submit-btn">Schedule Meeting</button>
       <p class="form-footer"><a href="index.html">Cancel</a></p>
     </form>
@@ -132,13 +138,34 @@
     if(!valid)return;
     submitBtn.disabled=true;
     submitBtn.innerHTML='<span class="spinner"></span> Scheduling\u2026';
-    var iso=new Date(document.getElementById("date").value+"T"+document.getElementById("time").value).toISOString();
+    var titleText=document.getElementById("title").value.trim();
+    var locationText=document.getElementById("location").value.trim();
+    var meetingDateObj=new Date(document.getElementById("date").value+"T"+document.getElementById("time").value);
+    var iso=meetingDateObj.toISOString();
+    var formattedDateTimeText=meetingDateObj.toLocaleString("en-GB",{
+      weekday:"long",day:"numeric",month:"long",year:"numeric",
+      hour:"numeric",minute:"2-digit",hour12:true
+    }).replace(",","").replace(/ at /," at ");
     var quorumVal=document.getElementById("quorum").value;
-    var payload={title:document.getElementById("title").value.trim(),meeting_date:iso,location:document.getElementById("location").value.trim(),created_by:currentUserId};
+    var payload={title:titleText,meeting_date:iso,location:locationText,created_by:currentUserId};
     var agenda=document.getElementById("agenda").value.trim();if(agenda)payload.agenda=agenda;
     if(quorumVal!=="")payload.quorum_required=parseInt(quorumVal,10);
     var r=await supabaseClient.from("meetings").insert(payload);
     if(r.error){submitBtn.disabled=false;submitBtn.textContent="Schedule Meeting";errorBanner.textContent=r.error.message||"Something went wrong.";errorBanner.classList.add("visible");return;}
+    var postAsAnnouncement=document.getElementById("post-announcement");
+    if(postAsAnnouncement&&postAsAnnouncement.checked){
+      var announcementBody=
+        "A new meeting has been scheduled: "+titleText+".\n\n"+
+        "Date: "+formattedDateTimeText+"\n"+
+        (locationText?"Location: "+locationText+"\n":"")+
+        "\nCheck the Meetings tab for full details.";
+      await supabaseClient.from("announcements").insert({
+        title:"New Meeting: "+titleText,
+        body:announcementBody,
+        is_pinned:false,
+        created_by:currentUserId
+      });
+    }
     window.location.replace("index.html?created=success");
   });
 
