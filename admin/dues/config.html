@@ -66,7 +66,7 @@
 </header>
 <main class="admin-page">
   <a href="index.html" class="back-link"><svg viewBox="0 0 24 24" fill="none"><path d="M15 6l-6 6 6 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>Back to Manage Dues</a>
-  <div class="warning-banner">Changing the dues amount will apply to all future periods. Past records are not affected.</div>
+  <div class="warning-banner">You can set an effective date in the past to apply dues retroactively (e.g. from the start of the year). This only changes which months are billed going forward from that date — payments already recorded are not affected.</div>
   <div class="auth-card">
     <h1>Configure Dues</h1>
     <div id="error-banner" class="error-banner" role="alert"></div>
@@ -97,7 +97,6 @@
 
   var supabaseClient=null,currentUserId=null;
   var effectiveInput=document.getElementById("effective-from");
-  effectiveInput.min=new Date().toISOString().split("T")[0];
 
   function firstName(n){return!n||!n.trim()?"Member":n.trim().split(/\s+/)[0];}
   function getInitials(name){
@@ -148,7 +147,6 @@
     var amountErr="",effErr="";
     if(!amount.value||Number(amount.value)<0)amountErr="Enter a valid amount.";
     if(!eff.value)effErr="This field is required.";
-    else if(eff.value<effectiveInput.min)effErr="Effective date cannot be in the past.";
     document.getElementById("error-amount").classList.toggle("visible",!!amountErr);
     document.getElementById("error-amount").textContent=amountErr;
     amount.classList.toggle("input-error",!!amountErr);
@@ -169,7 +167,6 @@
     if(r.error){errBanner.textContent=r.error.message||"Something went wrong.";errBanner.classList.add("visible");return;}
     okBanner.textContent="New dues rate saved.";okBanner.classList.add("visible");
     document.getElementById("config-form").reset();
-    effectiveInput.min=new Date().toISOString().split("T")[0];
     await loadHistory();
   });
 
