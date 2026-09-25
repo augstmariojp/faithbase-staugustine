@@ -158,7 +158,11 @@
   function payKey(mid,m,y){return mid+"|"+m;}
   function getPayment(mid,m,y){return payments.find(function(p){return p.member_id===mid&&Number(p.period_month)===m&&Number(p.period_year)===y;});}
   function joinedParts(d){var dt=new Date(d||Date.now());return{year:dt.getFullYear(),month:dt.getMonth()+1};}
-  function expectedAmountForMonth(y,m){var first=new Date(y,m-1,1),app=null;for(var i=0;i<duesConfig.length;i++){var eff=new Date(duesConfig[i].effective_from);if(eff<=first)app=duesConfig[i];else break;}return app?Number(app.amount):null;}
+  function parseDateOnly(s){
+    var parts = String(s).split('-');
+    return new Date(Number(parts[0]), Number(parts[1])-1, Number(parts[2]));
+  }
+  function expectedAmountForMonth(y,m){var first=new Date(y,m-1,1),app=null;for(var i=0;i<duesConfig.length;i++){var eff=parseDateOnly(duesConfig[i].effective_from);if(eff<=first)app=duesConfig[i];else break;}return app?Number(app.amount):null;}
   function getMonthState(member,y,m){
     var j=joinedParts(member.date_joined),now=new Date(),cy=now.getFullYear(),cm=now.getMonth()+1;
     if(y<j.year||(y===j.year&&m<j.month))return"before-joined";
