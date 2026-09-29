@@ -299,8 +299,8 @@
   (async function init(){
     if(!await adminGuard())return;
     var results=await Promise.all([
-      supabaseClient.from("levies").select("id, title, amount, due_date, description, status").eq("id",levyId).maybeSingle(),
-      supabaseClient.from("profiles").select("id, full_name").eq("status","active").order("full_name",{ascending:true}),
+      supabaseClient.from("levies").select("id, title, amount, due_date, description, status, created_at").eq("id",levyId).maybeSingle(),
+      supabaseClient.from("profiles").select("id, full_name, date_joined").eq("status","active").order("full_name",{ascending:true}),
       supabaseClient.from("levy_payments").select("member_id, amount_paid, payment_date").eq("levy_id",levyId)
     ]);
     if(results[0].error||!results[0].data){
@@ -308,7 +308,9 @@
       revealPage();return;
     }
     levy=results[0].data;
-    members=results[1].data||[];
+    members=(results[1].data||[]).filter(function(m){
+      return !m.date_joined || new Date(m.date_joined) <= new Date(levy.created_at);
+    });
     payments=results[2].data||[];
     renderLevyInfo();
     renderTotals();
