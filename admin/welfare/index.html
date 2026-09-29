@@ -205,9 +205,17 @@
   (async function init(){
     if(!await adminGuard())return;
     var results=await Promise.all([
-      supabaseClient.from("welfare_cases").select("id, welfare_type, status, created_at, profiles(full_name)").order("created_at",{ascending:false}),
+      supabaseClient.from("welfare_cases").select("id, welfare_type, status, created_at, profiles!welfare_cases_member_id_fkey(full_name)").order("created_at",{ascending:false}),
       supabaseClient.from("welfare_fund").select("transaction_type, amount")
     ]);
+    if(results[0].error){
+      console.error("Failed to load welfare cases:",results[0].error);
+      document.getElementById("open-loading").hidden=true;
+      document.getElementById("open-content").hidden=false;
+      document.getElementById("open-content").innerHTML='<div class="empty-state"><p>Could not load welfare cases. Please refresh the page or contact support if this continues.</p></div>';
+      revealPage();
+      return;
+    }
     allCases=results[0].data||[];
     document.getElementById("balance-amount").textContent=formatNaira(computeBalance(results[1].data));
     renderTab("open");
