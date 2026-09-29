@@ -38,6 +38,8 @@
   .btn:hover,.btn:focus-visible{transform:translateY(-2px);box-shadow:0 10px 24px -8px rgba(240,204,92,0.55);}
   .stats-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-bottom:28px;}
   .stat-card{background:var(--ivory);border:1px solid rgba(107,31,53,0.12);border-top:3px solid var(--maroon);border-radius:10px;padding:20px 18px;text-align:center;}
+  a.stat-card{display:block;cursor:pointer;color:inherit;transition:box-shadow .15s ease,transform .15s ease;}
+  a.stat-card:hover,a.stat-card:focus-visible{box-shadow:0 8px 24px -10px rgba(36,16,25,0.15);transform:translateY(-1px);}
   .stat-card .stat-label{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;color:var(--ink-soft);margin-bottom:8px;}
   .stat-card .stat-value{font-family:var(--font-display);font-size:clamp(24px,5vw,32px);font-weight:600;color:var(--maroon);line-height:1.2;}
   .section-heading{font-family:var(--font-display);font-size:22px;font-weight:600;color:var(--maroon);margin-bottom:16px;}
@@ -58,7 +60,7 @@
   body.checking-session .admin-page{visibility:hidden;}
   @media (min-width:720px){.stats-grid{grid-template-columns:repeat(4,1fr);}.skeleton-grid{grid-template-columns:repeat(4,1fr);}}
   @media (max-width:720px){.site-header{padding:14px 18px;}.admin-page{padding:20px 16px 32px;}.page-heading{font-size:28px;}}
-  @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto;}.skeleton-card,.action-card{animation:none;transition:none;}.btn:hover,.btn:focus-visible,.action-card:hover,.action-card:focus-visible{transform:none;}}
+  @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto;}.skeleton-card,.action-card{animation:none;transition:none;}.btn:hover,.btn:focus-visible,.action-card:hover,.action-card:focus-visible,a.stat-card:hover,a.stat-card:focus-visible{transform:none;}}
 </style>
 </head>
 <body class="checking-session">
@@ -78,7 +80,7 @@
     <div class="stat-card"><p class="stat-label">Active Members</p><p class="stat-value" id="stat-members">—</p></div>
     <div class="stat-card"><p class="stat-label">Meetings This Year</p><p class="stat-value" id="stat-meetings">—</p></div>
     <div class="stat-card"><p class="stat-label">Dues This Month</p><p class="stat-value" id="stat-dues">—</p></div>
-    <div class="stat-card"><p class="stat-label">Open Welfare Cases</p><p class="stat-value" id="stat-welfare">—</p></div>
+    <a href="welfare/index.html" class="stat-card"><p class="stat-label">Open Welfare Cases</p><p class="stat-value" id="stat-welfare">—</p></a>
   </div>
   <h2 class="section-heading">Quick Actions</h2>
   <div class="actions-grid">
