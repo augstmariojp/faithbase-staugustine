@@ -248,7 +248,7 @@
 
   async function fetchLinkableCases(){
     var r=await supabaseClient.from("welfare_cases")
-      .select("id, welfare_type, profiles(full_name)")
+      .select("id, welfare_type, profiles!welfare_cases_member_id_fkey(full_name)")
       .in("status",["open","visited"])
       .order("created_at",{ascending:false});
     linkableCases=r.data||[];
