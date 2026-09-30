@@ -396,12 +396,14 @@
   });
 
   async function approveMember(id){
-    var r=await supabaseClient.from("profiles").update({status:"active"}).eq("id",id);
-    if(r.error){showToast(r.error.message);return;}
     var m=memberById(id);
-    if(m){m.status="active";if(!m.date_joined)m.date_joined=new Date().toISOString();}
+    var payload={status:"active"};
+    if(m&&!m.date_joined)payload.date_joined=new Date().toISOString();
+    var r=await supabaseClient.from("profiles").update(payload).eq("id",id);
+    if(r.error){showToast(r.error.message);return;}
+    if(m){m.status="active";if(!m.date_joined)m.date_joined=payload.date_joined;}
     updateCounts();renderList();showToast("Member approved.");
-  }
+}
 
   async function rejectMember(id){
     var r=await supabaseClient.from("profiles").delete().eq("id",id);
