@@ -255,11 +255,14 @@
       document.getElementById("not-found").hidden=false;revealPage();return;
     }
     var r=await supabaseClient.from("welfare_cases")
-      .select("id, member_id, welfare_type, description, status, amount_disbursed, admin_notes, updated_at, created_at, profiles(full_name)")
+      .select("id, member_id, welfare_type, description, status, amount_disbursed, admin_notes, updated_at, created_at, profiles!welfare_cases_member_id_fkey(full_name)")
       .eq("id",caseId).maybeSingle();
-    if(r.error||!r.data){
+if(r.error){
+      console.error("Failed to load welfare case:",r.error);
+}
+if(r.error||!r.data){
       document.getElementById("not-found").hidden=false;revealPage();return;
-    }
+}
     welfareCase=r.data;
     populateForm();
     document.getElementById("page-content").hidden=false;
