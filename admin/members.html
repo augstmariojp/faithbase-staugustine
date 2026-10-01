@@ -406,11 +406,11 @@
 }
 
   async function rejectMember(id){
-    var r=await supabaseClient.from("profiles").delete().eq("id",id);
-    if(r.error){showToast(r.error.message);return;}
+    var r=await supabaseClient.functions.invoke('reject-member',{body:{memberId:id}});
+    if(r.error){showToast(r.error.message||"Could not reject member.");return;}
     allMembers=allMembers.filter(function(m){return m.id!==id;});
     updateCounts();renderList();showToast("Member rejected.");
-  }
+}
 
   async function updateStatus(id,status,toast){
     var r=await supabaseClient.from("profiles").update({status:status}).eq("id",id);
