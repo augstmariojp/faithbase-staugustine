@@ -84,6 +84,18 @@
   @media (max-width:720px){.summary-grid{grid-template-columns:1fr 1fr;}.site-header{padding:14px 18px;}}
   @media (prefers-reduced-motion:reduce){.modal,.modal-backdrop,.toggle-slider,.toggle-slider::before{transition:none;}}
 </style>
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#B9342B">
+<link rel="apple-touch-icon" href="/icons/icon-192.png">
+<script>
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", function(){
+    navigator.serviceWorker.register("/sw.js").catch(function(err){
+      console.error("Service worker registration failed:", err);
+    });
+  });
+}
+</script>
 </head>
 <body class="checking-session">
 <header class="site-header">

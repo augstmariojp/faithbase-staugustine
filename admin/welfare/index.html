@@ -70,6 +70,18 @@
   @media (max-width:400px){.tab-btn{font-size:11px;padding:8px 2px;}}
   @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto;}.skeleton-row,.case-row{animation:none;transition:none;}.btn:hover,.btn:focus-visible,.case-row:hover,.case-row:focus-visible{transform:none;}}
 </style>
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#B9342B">
+<link rel="apple-touch-icon" href="/icons/icon-192.png">
+<script>
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", function(){
+    navigator.serviceWorker.register("/sw.js").catch(function(err){
+      console.error("Service worker registration failed:", err);
+    });
+  });
+}
+</script>
 </head>
 <body class="checking-session">
 <header class="site-header">

@@ -57,6 +57,18 @@
   @media (max-width:720px){.site-header{padding:14px 18px;}.header-actions{gap:8px;}.header-member-name{font-size:13px;}.header-signin{padding:8px 14px;font-size:13px;}.member-page{padding:24px 16px 28px;}.page-heading{font-size:28px;}}
   @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto;}.skeleton-row,.announcement-row:hover,.announcement-row:focus-visible{transform:none;}}
 </style>
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#B9342B">
+<link rel="apple-touch-icon" href="/icons/icon-192.png">
+<script>
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", function(){
+    navigator.serviceWorker.register("/sw.js").catch(function(err){
+      console.error("Service worker registration failed:", err);
+    });
+  });
+}
+</script>
 </head>
 <body class="checking-session">
 <header class="site-header">
