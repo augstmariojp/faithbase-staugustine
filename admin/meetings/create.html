@@ -65,6 +65,7 @@ if ("serviceWorker" in navigator) {
 }
 </script>
 <script defer src="/install-prompt.js"></script>
+<script src="/push-subscribe.js"></script>
 </head>
 <body class="checking-session">
 <header class="site-header">
@@ -165,7 +166,13 @@ if ("serviceWorker" in navigator) {
     if(quorumVal!=="")payload.quorum_required=parseInt(quorumVal,10);
     var r=await supabaseClient.from("meetings").insert(payload);
     if(r.error){submitBtn.disabled=false;submitBtn.textContent="Schedule Meeting";errorBanner.textContent=r.error.message||"Something went wrong.";errorBanner.classList.add("visible");return;}
+    supabaseClient.functions.invoke("send-push",{body:{
+      title:"Meeting Scheduled",
+      body:titleText+" \u00b7 "+formattedDateTimeText,
+      url:"/member/dashboard.html"
+    }}).catch(function(err){console.error("Push notification failed:",err);});
     var postAsAnnouncement=document.getElementById("post-announcement");
+    
     if(postAsAnnouncement&&postAsAnnouncement.checked){
       var announcementBody=
         "A new meeting has been scheduled: "+titleText+".\n\n"+

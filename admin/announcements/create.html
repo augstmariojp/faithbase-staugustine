@@ -89,6 +89,7 @@ if ("serviceWorker" in navigator) {
 }
 </script>
 <script defer src="/install-prompt.js"></script>
+<script src="/push-subscribe.js"></script>
 </head>
 <body class="checking-session">
 <header class="site-header">
@@ -229,8 +230,16 @@ if ("serviceWorker" in navigator) {
 
     btn.disabled=false;btn.textContent=isEdit?"Update Announcement":"Publish Announcement";
     if(r.error){errBanner.textContent=r.error.message||"Something went wrong.";errBanner.classList.add("visible");return;}
-    if(isEdit)window.location.replace("detail.html?id="+encodeURIComponent(editId)+"&updated=success");
-    else window.location.replace("index.html?created=success");
+    if(isEdit){
+      window.location.replace("detail.html?id="+encodeURIComponent(editId)+"&updated=success");
+    }else{
+      supabaseClient.functions.invoke("send-push",{body:{
+        title:"New Announcement",
+        body:payload.title,
+        url:"/member/dashboard.html"
+      }}).catch(function(err){console.error("Push notification failed:",err);});
+      window.location.replace("index.html?created=success");
+    }
   });
 
   (async function init(){

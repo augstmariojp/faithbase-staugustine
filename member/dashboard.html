@@ -344,6 +344,7 @@ if ("serviceWorker" in navigator) {
 }
 </script>
 <script defer src="/install-prompt.js"></script>
+<script src="/push-subscribe.js"></script>
 </head>
 <body class="checking-session">
 
@@ -433,6 +434,10 @@ if ("serviceWorker" in navigator) {
           <a href="welfare/index.html" class="shortcut-tile"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 21s-7-4.5-7-10a4 4 0 017-2 4 4 0 017 2c0 5.5-7 10-7 10z" stroke="currentColor" stroke-width="1.6"/></svg><span>Welfare</span></a>
           <a href="documents/index.html" class="shortcut-tile"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M8 4h8l4 4v12a2 2 0 01-2 2H8a2 2 0 01-2-2V6a2 2 0 012-2z" stroke="currentColor" stroke-width="1.6"/><path d="M16 4v4h4M10 13h4M10 17h4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg><span>Documents</span></a>
           <a href="profile.html" class="shortcut-tile"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="8" r="3.5" stroke="currentColor" stroke-width="1.6"/><path d="M6 20v-1a6 6 0 0112 0v1" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg><span>Profile</span></a>
+          <button type="button" class="shortcut-tile" id="enable-notifications-tile" style="font-family:inherit;cursor:pointer">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M18 16v-5a6 6 0 10-12 0v5l-2 2v1h16v-1l-2-2z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M9.5 20a2.5 2.5 0 005 0" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+            <span id="enable-notifications-label">Notifications</span>
+          </button>
         </nav>
       </section>
     </div>
@@ -616,6 +621,25 @@ if ("serviceWorker" in navigator) {
     document.getElementById('dashboard-content').hidden = false;
   }
 
+  function setupNotificationsTile(){
+    var tile = document.getElementById('enable-notifications-tile');
+    var label = document.getElementById('enable-notifications-label');
+    if (!tile) return;
+    if (!('Notification' in window)) {
+      tile.hidden = true;
+      return;
+    }
+    if (Notification.permission === 'granted') {
+      label.textContent = 'Notifications On';
+    }
+    tile.addEventListener('click', async function(){
+      if (Notification.permission === 'granted') return;
+      label.textContent = 'Enabling\u2026';
+      var ok = await window.faithbaseEnableNotifications();
+      label.textContent = ok ? 'Notifications On' : 'Notifications';
+    });
+  }
+
   function appendWhatsAppShortcut(url){
     var grid = document.getElementById('shortcuts-grid');
     if (!grid || !url) return;
@@ -637,6 +661,7 @@ if ("serviceWorker" in navigator) {
     var key = FAITHBASE_CONFIG.supabase.anonKey;
     if (url && key && url.indexOf('YOUR-') === -1){
       supabaseClient = supabase.createClient(url, key);
+      window.supabaseClient = supabaseClient;
     }
   } catch (e) {}
 
@@ -751,6 +776,7 @@ if ("serviceWorker" in navigator) {
         appendWhatsAppShortcut(whatsappLink);
       }
 
+      setupNotificationsTile();
       showDashboardReady();
     } catch (e){
       if (supabaseClient){
